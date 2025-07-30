@@ -28,7 +28,7 @@ var roleUpgrader = {
             }
         }
         
-        //creep.moveTo(27, 16, { visualizePathStyle: { stroke: '#00ff00' } });
+        //creep.moveTo(30, 16, { visualizePathStyle: { stroke: '#00ff00' } });
         
         if (creep.memory.upgrading) {
             if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {

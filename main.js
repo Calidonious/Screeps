@@ -14,7 +14,7 @@ var roleLinkManager = require('role.linkManager');
 module.exports.loop = function () {
     
     // Execute tower logic
-    //towerLogic.run();
+    towerLogic.run();
     
     // Execute link management logic
     //roleLinkManager.run(); // Call the run method of roleLinkManager
@@ -27,7 +27,7 @@ module.exports.loop = function () {
     }
 
     // Minimum number of creeps for each role cur:9
-    var minHarvesters = 3;
+    var minHarvesters = 6;
     var minBuilders = 1;
     var minUpgraders = 1;
     var minDefenders = 0;
@@ -63,11 +63,11 @@ module.exports.loop = function () {
 
     // Spawn creeps if below minimum amount for each role
     if (numHarvesters < minHarvesters) {
-        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester', group: 1 } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester', group: 2 } });
     } else if (numBuilders < minBuilders) {
-        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'builder' } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'builder' } });
     } else if (numUpgraders < minUpgraders) {
-        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, MOVE, MOVE], 'Upgrader' + Game.time, { memory: { role: 'upgrader' } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE], 'Upgrader' + Game.time, { memory: { role: 'upgrader' } });
     } else if (numDefenders < minDefenders) {
         Game.spawns['Spawn1'].spawnCreep([ATTACK, ATTACK, MOVE], 'Defender' + Game.time, { memory: { role: 'defender' } });
     } else if (numScouts < minScouts) {

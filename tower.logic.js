@@ -1,6 +1,6 @@
 var towerLogic = {
     // Define the whitelist of usernames
-    whitelist: ['Jaycee', 'OtherAllyUsername'],
+    whitelist: [],
 
     run: function () {
         var towers = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {

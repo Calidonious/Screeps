@@ -21,13 +21,13 @@ var roleHarvester = {
         
         // Group 1: Default to source1 and secondary to source2
         if (creep.memory.group === 1) {
-            var source1 = Game.getObjectById('6845d068b4a6e60029b25757');
-            var source2 = Game.getObjectById('6845d068b4a6e60029b25755');
+            var source1 = Game.getObjectById('5bbcac169099fc012e634e30');
+            var source2 = Game.getObjectById('5bbcac169099fc012e634e2f');
         }
         // Group 2: Default to source2 and secondary to source1
         else if (creep.memory.group === 2) {
-            var source1 = Game.getObjectById('6845d068b4a6e60029b25755');
-            var source2 = Game.getObjectById('6845d068b4a6e60029b25757');
+            var source1 = Game.getObjectById('5bbcac169099fc012e634e2f');
+            var source2 = Game.getObjectById('5bbcac169099fc012e634e30');
         }
         
         if (creep.store.getFreeCapacity() > 0) {
@@ -54,8 +54,11 @@ var roleHarvester = {
             var targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
-                            structure.structureType == STRUCTURE_SPAWN) && 
-                            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    structure.structureType == STRUCTURE_TOWER ||
+                    structure.structureType == STRUCTURE_CONTAINER ||
+                    structure.structureType == STRUCTURE_SPAWN) && 
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    
                 }
             });
             if (targets.length > 0) {
