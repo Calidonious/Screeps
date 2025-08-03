@@ -1,42 +1,49 @@
 var roleDefender = {
-    run: function(creep) {
-        // Define the corners of the area
-        var topLeft = new RoomPosition(21, 17, creep.room.name);
-        var topRight = new RoomPosition(34, 17, creep.room.name);
-        var bottomLeft = new RoomPosition(21, 32, creep.room.name);
-        var bottomRight = new RoomPosition(34, 32, creep.room.name);
 
-        // Check if the defender is close to dying
-        if (creep.hits < creep.hitsMax / 2) {
-            var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+    /** @param {Creep} creep **/
+    run: function(creep) {
+        const inHomeRoom = creep.room.name === creep.memory.homeRoom;
+        const isMelee = creep.getActiveBodyparts(ATTACK) > 0;
+        const isRanged = creep.getActiveBodyparts(RANGED_ATTACK) > 0;
+        const canHeal = creep.getActiveBodyparts(HEAL) > 0;
+        const lowHealth = creep.hits < creep.hitsMax * 0.5;
+
+        // 🔁 Auto-heal self
+        if (canHeal && creep.hits < creep.hitsMax) {
+            creep.heal(creep);
+        }
+
+        // 🏃 Retreat if injured and allowed
+        if (lowHealth && inHomeRoom) {
+            const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
             if (spawn) {
-                creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
-                creep.say('🏥 Moving to spawn for renewal');
+                creep.say('🛡️ Heal');
+                creep.moveTo(spawn);
                 return;
             }
         }
 
-        // Check for hostile creeps in the area
-        var hostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-            filter: (creep) => {
-                return (
-                    creep.pos.isEqualTo(topLeft) ||
-                    creep.pos.isEqualTo(topRight) ||
-                    creep.pos.isEqualTo(bottomLeft) ||
-                    creep.pos.isEqualTo(bottomRight)
-                );
-            }
-        });
+        // ✅ Find enemies
+        const target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS) ||
+                       creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
+                           filter: s => s.structureType !== STRUCTURE_CONTROLLER
+                       });
 
-        if (hostile) {
-            if (creep.attack(hostile) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(hostile, { visualizePathStyle: { stroke: '#ff0000' } });
+        if (target) {
+            // Engage enemy
+            if (isRanged && creep.pos.inRangeTo(target, 3)) {
+                creep.rangedAttack(target);
+            }
+            if (isMelee && creep.pos.isNearTo(target)) {
+                creep.attack(target);
+            }
+            if (!creep.pos.inRangeTo(target, 1)) {
+                creep.moveTo(target, { visualizePathStyle: { stroke: '#ff5555' } });
             }
         } else {
-            // If no hostile creeps in the area, patrol around
-            var patrolPoints = [topLeft, topRight, bottomLeft, bottomRight];
-            var target = creep.pos.findClosestByRange(patrolPoints);
-            creep.moveTo(target, { visualizePathStyle: { stroke: '#00ff00' } });
+            // 😴 Idle or patrol
+            const idlePos = creep.room.controller ? creep.room.controller.pos : new RoomPosition(25, 25, creep.room.name);
+            creep.moveTo(idlePos, { visualizePathStyle: { stroke: '#999999' } });
         }
     }
 };

@@ -1,40 +1,84 @@
 var roleMedic = {
-    run: function(creep) {
-        // Define the waypoints for patrolling
-        var waypoints = [
-            new RoomPosition(21, 17, creep.room.name), // Top left
-            new RoomPosition(34, 17, creep.room.name), // Top right
-            new RoomPosition(34, 32, creep.room.name), // Bottom right
-            new RoomPosition(21, 32, creep.room.name)  // Bottom left
-        ];
 
-        // Check if the medic is close to dying
-        if (creep.hits < creep.hitsMax / 2) {
-            var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-            if (spawn) {
-                creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
-                creep.say('🏥 Moving to spawn for renewal');
+    /** @param {Creep} creep **/
+    run: function(creep) {
+        const followName = creep.memory.follow;
+        const targetRoom = creep.memory.targetRoom;
+        const targetCreep = followName ? Game.creeps[followName] : null;
+        const canHeal = creep.getActiveBodyparts(HEAL) > 0;
+        const inTargetRoom = !targetRoom || creep.room.name === targetRoom;
+
+        const MIN_SAFE_DISTANCE = 8;
+
+        // ✅ Heal self if hurt
+        if (canHeal && creep.hits < creep.hitsMax) {
+            creep.heal(creep);
+        }
+
+        // ✅ Hostile avoidance
+        const nearbyHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        if (nearbyHostile && creep.pos.getRangeTo(nearbyHostile) < MIN_SAFE_DISTANCE) {
+            const fleePath = PathFinder.search(creep.pos, [{ pos: nearbyHostile.pos, range: MIN_SAFE_DISTANCE }], {
+                flee: true,
+                maxRooms: 1,
+                plainCost: 2,
+                swampCost: 10,
+                roomCallback: () => false
+            });
+            if (fleePath.path.length > 0) {
+                creep.move(fleePath.path[0].direction);
                 return;
             }
         }
 
-        // Find the closest injured creep
-        var injured = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
-            filter: (creep) => {
-                return creep.hits < creep.hitsMax;
+        // ✅ Move to target room if defined
+        if (targetRoom && !inTargetRoom) {
+            creep.moveTo(new RoomPosition(6, 8, targetRoom), {
+                visualizePathStyle: { stroke: '#aaaaaa' }
+            });
+            return;
+        }
+
+        // ✅ Stay close to follow target & heal
+        if (targetCreep && targetCreep.room.name === creep.room.name) {
+            const range = creep.pos.getRangeTo(targetCreep);
+
+            if (range <= 1) {
+                creep.heal(targetCreep);
+            } else if (range <= 3 && creep.rangedHeal) {
+                creep.rangedHeal(targetCreep);
             }
+
+            if (range > 2) {
+                creep.moveTo(targetCreep, {
+                    visualizePathStyle: { stroke: '#00ff00' },
+                    range: 2
+                });
+            }
+
+            return;
+        }
+
+        // 🔁 Fallback: heal any injured ally
+        const backup = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
+            filter: c => c.hits < c.hitsMax && c.name !== creep.name
         });
 
-        // If there's an injured creep, heal it
-        if (injured) {
-            if (creep.heal(injured) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(injured, { visualizePathStyle: { stroke: '#00ff00' } });
+        if (backup) {
+            const range = creep.pos.getRangeTo(backup);
+            if (range <= 1) {
+                creep.heal(backup);
+            } else {
+                creep.moveTo(backup, {
+                    visualizePathStyle: { stroke: '#00ffff' }
+                });
+                if (range <= 3 && creep.rangedHeal) {
+                    creep.rangedHeal(backup);
+                }
             }
         } else {
-            // Patrol between waypoints
-            creep.say('🚑 Patrolling');
-            var nearestWaypoint = creep.pos.findClosestByRange(waypoints);
-            creep.moveTo(nearestWaypoint, { visualizePathStyle: { stroke: '#00ff00' } });
+            const idlePos = creep.room.controller ? creep.room.controller.pos : new RoomPosition(6, 8, creep.room.name);
+            creep.moveTo(idlePos, { visualizePathStyle: { stroke: '#999999' } });
         }
     }
 };

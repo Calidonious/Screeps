@@ -2,11 +2,11 @@ var roleUpgrader = {
     run: function(creep) {
         if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.upgrading = false;
-            creep.say('🔄Withdraw');
+            creep.say('🔄');
         }
         if (!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {
             creep.memory.upgrading = true;
-            creep.say('⚡ upgrade');
+            creep.say('⚡');
         }
         
         // Check if the creep is low on health
@@ -14,7 +14,7 @@ var roleUpgrader = {
             var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
             if (spawn) {
                 creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
-                creep.say('🏥 Healing!');
+                creep.say('🏥');
             }
         }
         
@@ -23,7 +23,7 @@ var roleUpgrader = {
             var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
             if (spawn) {
                 creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
-                creep.say('🏥 Renew!');
+                creep.say('⏳');
                 return; // Return here to prioritize renewal over other actions
             }
         }

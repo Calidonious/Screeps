@@ -1,50 +1,180 @@
-var roleScout = {
-    run: function(creep) {
-        // If all adjacent rooms are scouted, report back information about the current room
-        var energySources = creep.room.find(FIND_SOURCES).length;
-        var hostileCreeps = creep.room.find(FIND_HOSTILE_CREEPS).length;
-        var controllerLevel = creep.room.controller ? creep.room.controller.level : "No controller";
-        var roomOwner = creep.room.controller ? creep.room.controller.owner.username : "Unclaimed";
+const avoidZones = () => {
+    if (!Memory.scouting) Memory.scouting = {};
+    if (!Memory.scouting.avoidRooms) Memory.scouting.avoidRooms = {};
+    return Memory.scouting.avoidRooms;
+};
 
-        // Find minerals in the room
-        var minerals = creep.room.find(FIND_MINERALS);
-        var mineralType = minerals.length > 0 ? minerals[0].mineralType : "No minerals";
+const isInAvoidZone = (creep) => {
+    const avoid = avoidZones();
+    return avoid[creep.room.name] ? true : false;
+};
 
-        // Report back information
-        console.log('Room:', creep.room.name);
-        console.log('Owner:', roomOwner);
-        console.log('Energy Sources:', energySources);
-        console.log('Hostile Creeps:', hostileCreeps);
-        console.log('Controller Level:', controllerLevel);
-        console.log('Mineral Type:', mineralType);
+const markRoomAsHostile = (creep) => {
+    const avoid = avoidZones();
+    if (!avoid[creep.room.name]) {
+        avoid[creep.room.name] = [[creep.pos.x, creep.pos.y]];
+        console.log(`[Scout] ${creep.name} marked ${creep.room.name} as hostile at (${creep.pos.x}, ${creep.pos.y})`);
+        creep.say("⚠️ Hostiles!");
+    }
+};
 
-        // Say 'Glory' every 50 ticks
-        if (Game.time % 25 === 0) {
-            creep.say('Glory', true);
+const initScoutingMemory = () => {
+    if (!Memory.scouting) Memory.scouting = {};
+    if (!Memory.scouting.visitedRooms) Memory.scouting.visitedRooms = [];
+    if (!Memory.scouting.avoidRooms) Memory.scouting.avoidRooms = {};
+};
+
+const updateGlobalVisitedRooms = (roomName) => {
+    initScoutingMemory();
+    if (!Memory.scouting.visitedRooms.includes(roomName)) {
+        Memory.scouting.visitedRooms.push(roomName);
+    }
+};
+
+const getNextRoomToScout = (creep) => {
+    initScoutingMemory();
+    const exits = Game.map.describeExits(creep.room.name);
+    if (!creep.memory.exitsUsed) creep.memory.exitsUsed = {};
+    const used = creep.memory.exitsUsed[creep.room.name] || [];
+    const lastRoom = creep.memory.lastRoom;
+
+    // Prefer unexplored exits not previously used
+    for (const dir in exits) {
+        const room = exits[dir];
+        if (
+            !used.includes(room) &&
+            !Memory.scouting.visitedRooms.includes(room) &&
+            !Memory.scouting.avoidRooms[room]
+        ) {
+            return room;
         }
+    }
 
-        // Say 'To the' every 100 ticks
-        if (Game.time % 26 === 0) {
-            creep.say('To the', true);
+    // Then allow going to visited rooms not yet used from this room
+    for (const dir in exits) {
+        const room = exits[dir];
+        if (
+            !used.includes(room) &&
+            !Memory.scouting.avoidRooms[room]
+        ) {
+            return room;
         }
+    }
 
-        // Say 'Machine' every 150 ticks
-        if (Game.time % 27 === 0) {
-            creep.say('Machine', true);
+    // As a last resort, allow returning to the last room (loop breaker)
+    for (const dir in exits) {
+        const room = exits[dir];
+        if (!Memory.scouting.avoidRooms[room]) {
+            return room;
         }
+    }
 
-        // Move to position (25, 40) in the current room
-        creep.moveTo(25, 40, { visualizePathStyle: { stroke: '#ffffff' } });
+    return null;
+};
 
-        // Get the next room to scout
-        var roomsToScout = ["W9S1", "W8S1", "W7S1", "W6S1", "W5S1", "W4S1", "W3S1", "W2S1", "W1S1", "W0S1", "W0S2", "W1S2", "W2S2", "W3S2", "W4S2", "W5S2", "W6S2", "W7S2", "W8S2", "W9S2", "W10S2", "W10S1"];
-        var nextRoomIndex = roomsToScout.indexOf(creep.room.name) + 1;
 
-        // If there's a next room, move to it
-        if (nextRoomIndex < roomsToScout.length) {
-            var nextRoom = roomsToScout[nextRoomIndex];
-            creep.moveTo(new RoomPosition(25, 25, nextRoom), { visualizePathStyle: { stroke: '#ffffff' } });
+const signController = (creep) => {
+    const ctrl = creep.room.controller;
+    if (ctrl && (!ctrl.sign || ctrl.sign.username !== creep.owner.username)) {
+        if (creep.pos.inRangeTo(ctrl, 1)) {
+            creep.signController(ctrl, "Glory to the machine! All my watts for the great coil!");
+        } else {
+            creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#00ffff' } });
         }
+    }
+};
+
+const logRoomInfo = (creep) => {
+    if (!Memory.rooms) Memory.rooms = {}; // ← This line is required!
+    const sources = creep.room.find(FIND_SOURCES).length;
+    const hostiles = creep.room.find(FIND_HOSTILE_CREEPS).length;
+    const controller = creep.room.controller;
+    const controllerLevel = controller ? controller.level : "No controller";
+    const roomOwner = (controller && controller.owner && controller.owner.username) || "Unclaimed";
+    const minerals = creep.room.find(FIND_MINERALS);
+    const mineralType = (minerals.length > 0 && minerals[0].mineralType) || "No minerals";
+
+    Memory.rooms[creep.room.name] = {
+        owner: roomOwner,
+        sources,
+        hostiles,
+        controllerLevel,
+        mineralType,
+        lastScouted: Game.time
+    };
+
+    console.log(`[Scout] ${creep.name} scouted ${creep.room.name}`);
+};
+
+const randomSay = (creep) => {
+    const cycle = Game.time % 12;
+    if (cycle === 0) creep.say('Glory');
+    if (cycle === 1) creep.say('To the');
+    if (cycle === 2) creep.say('Machine!');
+    if (cycle === 3) creep.say('ALL OF MY');
+    if (cycle === 4) creep.say('WATTS!');
+    if (cycle === 5) creep.say('FOR THE');
+    if (cycle === 6) creep.say('GREAT COIL!');
+    if (cycle === 7) creep.say('WE MEAN');
+    if (cycle === 8) creep.say('NO HARM!');
+    if (cycle === 9) creep.say('DETH TO');
+    if (cycle === 10) creep.say('INVADERS!');
+    
+};
+
+const explore = (creep) => {
+    initScoutingMemory();
+
+    // Detect hostile action (e.g., creep is injured)
+    if (creep.hits < creep.hitsMax) {
+        markRoomAsHostile(creep);
+    }
+
+    // Avoiding bad rooms
+    if (isInAvoidZone(creep)) {
+        const exits = Game.map.describeExits(creep.room.name);
+        const fallbackRoom = Object.values(exits)[0];
+        creep.moveTo(new RoomPosition(25, 25, fallbackRoom), { visualizePathStyle: { stroke: '#ff4444' } });
+        return;
+    }
+
+    updateGlobalVisitedRooms(creep.room.name);
+    logRoomInfo(creep);
+    signController(creep);
+    randomSay(creep);
+
+    const targetRoom = getNextRoomToScout(creep);
+
+    if (targetRoom) {
+    const currentRoom = creep.room.name;
+    if (!creep.memory.exitsUsed) creep.memory.exitsUsed = {};
+    if (!creep.memory.exitsUsed[currentRoom]) {
+        creep.memory.exitsUsed[currentRoom] = [];
+    }
+
+    // Record this exit
+    if (!creep.memory.exitsUsed[currentRoom].includes(targetRoom)) {
+        creep.memory.exitsUsed[currentRoom].push(targetRoom);
+    }
+
+    creep.memory.lastRoom = currentRoom;
+    creep.moveTo(new RoomPosition(25, 25, targetRoom), {
+        visualizePathStyle: { stroke: '#ffaa00' }
+    });
+    } else {
+        const exits = Game.map.describeExits(creep.room.name);
+        const rooms = Object.values(exits);
+        const randomRoom = rooms[Math.floor(Math.random() * rooms.length)];
+        creep.memory.lastRoom = creep.room.name;
+        creep.moveTo(new RoomPosition(25, 25, randomRoom), {
+            visualizePathStyle: { stroke: '#8888ff' }
+        });
+    }
+};
+
+const roleScout = {
+    run: (creep) => {
+        explore(creep);
     }
 };
 

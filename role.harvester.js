@@ -1,11 +1,40 @@
 const STORAGE_ID = '688d5a468b99246abd95096f';
 
+const CONTAINER_BY_GROUP = {
+    1: 'CONTAINER_ID_FOR_GROUP_1',
+    2: 'CONTAINER_ID_FOR_GROUP_2',
+};
+
+const RENEW_THRESHOLD = 1300; // Minimum desired life span after renewal
+
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
 
-function needsRenewal(creep) {
-    return creep.ticksToLive < 200;
+function shouldStartRenewing(creep) {
+    return creep.ticksToLive < 200 && !creep.memory.renewing;
+}
+
+function shouldContinueRenewing(creep) {
+    return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
+}
+
+function stopRenewing(creep) {
+    creep.memory.renewing = false;
+}
+
+function startRenewing(creep) {
+    creep.memory.renewing = true;
+}
+
+function renewCreep(creep) {
+    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+    if (spawn) {
+        if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
+        }
+        creep.say('⏳ Renewing');
+    }
 }
 
 function moveToSpawn(creep) {
@@ -26,7 +55,7 @@ function getSourcesByGroup(group) {
 function harvestEnergy(creep, sources) {
     for (const source of sources) {
         if (source && source.energy > 0) {
-            creep.say(`🔄 Harvesting`);
+            creep.say('🔄');
             if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
@@ -36,13 +65,27 @@ function harvestEnergy(creep, sources) {
     creep.say('❌ No energy');
 }
 
+function getDesignatedContainer(creep) {
+    const id = CONTAINER_BY_GROUP[creep.memory.group];
+    return id ? Game.getObjectById(id) : null;
+}
+
 function deliverEnergy(creep) {
+    const designated = getDesignatedContainer(creep);
+    if (designated && designated.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+        if (creep.transfer(designated, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(designated, { visualizePathStyle: { stroke: '#ffffff' } });
+        }
+        creep.say('📦 Container');
+        return;
+    }
+
     const priorityStorage = Game.getObjectById(STORAGE_ID);
     if (priorityStorage && priorityStorage.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
         if (creep.transfer(priorityStorage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(priorityStorage, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('📦 To Storage');
+        creep.say('📦 Storage');
         return;
     }
 
@@ -62,20 +105,28 @@ function deliverEnergy(creep) {
         }
         creep.say('📦 Fallback');
     } else {
-        creep.say('📦 Nowhere to put energy');
+        creep.say('📦 Nowhere');
     }
 }
 
 const roleHarvester = {
     run(creep) {
+        // Healing (optional)
         if (isWounded(creep)) {
-            creep.say('🏥 Heal');
+            creep.say('🏥');
             if (moveToSpawn(creep)) return;
         }
 
-        if (needsRenewal(creep)) {
-            creep.say('⏳ Renewing');
-            if (moveToSpawn(creep)) return;
+        // Renewal logic
+        if (shouldStartRenewing(creep)) {
+            startRenewing(creep);
+        }
+
+        if (shouldContinueRenewing(creep)) {
+            renewCreep(creep);
+            return;
+        } else if (creep.memory.renewing) {
+            stopRenewing(creep);
         }
 
         const [source1, source2] = getSourcesByGroup(creep.memory.group);

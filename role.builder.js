@@ -47,7 +47,7 @@ function doRepair(creep) {
         targets.sort((a, b) => a.hits - b.hits);
         if (creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
             creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffaa00' } });
-            creep.say('🛠️ Repair');
+            creep.say('🛠️');
         }
         return true;
     }
@@ -68,7 +68,7 @@ function depositEnergy(creep) {
     if (targets.length > 0) {
         if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
-            creep.say('📦 Store');
+            creep.say('📦');
         }
     }
 }
