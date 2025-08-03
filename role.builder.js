@@ -3,10 +3,7 @@ function fillEnergy(creep, asBuilder) {
         // Builder-style fill: use containers, storage, etc.
         let source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (s) =>
-                (s.structureType == STRUCTURE_STORAGE ||
-                 s.structureType == STRUCTURE_CONTAINER ||
-                 s.structureType == STRUCTURE_EXTENSION ||
-                 s.structureType == STRUCTURE_SPAWN) &&
+                (s.structureType == STRUCTURE_STORAGE) &&
                 s.store[RESOURCE_ENERGY] > 0
         });
 

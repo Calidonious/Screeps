@@ -32,7 +32,7 @@ module.exports.loop = function () {
     var minUpgraders = 1;
     var minDefenders = 0;
     var minScouts = 0;
-    var minTransporters = 0;
+    var minTransporters = 1;
     var minRepairers = 0;
     var minClaimers = 0;
     var minHarassers = 0;
@@ -63,7 +63,7 @@ module.exports.loop = function () {
 
     // Spawn creeps if below minimum amount for each role
     if (numHarvesters < minHarvesters) {
-        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester', group: 2 } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester', group: 2 } });
     } else if (numBuilders < minBuilders) {
         Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'builder' } });
     } else if (numUpgraders < minUpgraders) {
@@ -73,7 +73,7 @@ module.exports.loop = function () {
     } else if (numScouts < minScouts) {
         Game.spawns['Spawn1'].spawnCreep([MOVE], 'Scout' + Game.time, { memory: { role: 'scout', targetRoom: undefined } });
     } else if (numTransporters < minTransporters) {
-        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE], 'Transporter' + Game.time, { memory: { role: 'transporter' } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], 'Transporter' + Game.time, { memory: { role: 'transporter' } });
     } else if (numRepairers < minRepairers) {
         Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE], 'Repairer' + Game.time, { memory: { role: 'repairer' } });
     } else if (numClaimers < minClaimers) {
