@@ -5,7 +5,7 @@ const CONTAINER_BY_GROUP = {
     2: 'CONTAINER_ID_FOR_GROUP_2',
 };
 
-const RENEW_THRESHOLD = 1300; // Minimum desired life span after renewal
+const RENEW_THRESHOLD = 1000; // Minimum desired life span after renewal
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -33,7 +33,7 @@ function renewCreep(creep) {
         if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('⏳ Renewing');
+        creep.say('⏳');
     }
 }
 
@@ -55,7 +55,7 @@ function getSourcesByGroup(group) {
 function harvestEnergy(creep, sources) {
     for (const source of sources) {
         if (source && source.energy > 0) {
-            creep.say('🔄');
+            creep.say('🚜');
             if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
                 creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
@@ -76,7 +76,7 @@ function deliverEnergy(creep) {
         if (creep.transfer(designated, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(designated, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('📦 Container');
+        creep.say('📦 C');
         return;
     }
 
@@ -85,7 +85,7 @@ function deliverEnergy(creep) {
         if (creep.transfer(priorityStorage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(priorityStorage, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('📦 Storage');
+        creep.say('📦 S');
         return;
     }
 

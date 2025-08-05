@@ -8,7 +8,7 @@ var roleDefender = {
         const canHeal = creep.getActiveBodyparts(HEAL) > 0;
         const lowHealth = creep.hits < creep.hitsMax * 0.5;
 
-        // 🔁 Auto-heal self
+        // Auto-heal self
         if (canHeal && creep.hits < creep.hitsMax) {
             creep.heal(creep);
         }
@@ -23,7 +23,7 @@ var roleDefender = {
             }
         }
 
-        // ✅ Find enemies
+        // Find enemies
         const target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS) ||
                        creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                            filter: s => s.structureType !== STRUCTURE_CONTROLLER
@@ -41,8 +41,8 @@ var roleDefender = {
                 creep.moveTo(target, { visualizePathStyle: { stroke: '#ff5555' } });
             }
         } else {
-            // 😴 Idle or patrol
-            const idlePos = creep.room.controller ? creep.room.controller.pos : new RoomPosition(25, 25, creep.room.name);
+            // Idle or patrol
+            const idlePos = creep.room.controller ? creep.room.controller.pos : new RoomPosition(16, 15, creep.room.name);
             creep.moveTo(idlePos, { visualizePathStyle: { stroke: '#999999' } });
         }
     }

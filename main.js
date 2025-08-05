@@ -4,6 +4,7 @@ var roleUpgrader = require('role.upgrader');
 var roleDefender = require('role.defender');
 var roleScout = require('role.scout');
 var roleTransporter = require('role.transporter');
+var roleTranfer = require('role.transfer');
 var roleClaimer = require('role.claimer');
 var roleHarasser = require('role.harasser');
 var roleMedic = require('role.medic');
@@ -84,9 +85,10 @@ module.exports.loop = function () {
     // Minimum number of creeps for each role
     var minHarvesters = 6;
     var minBuilders = 2;
-    var minUpgraders = 1;
+    var minUpgraders = 2;
     var minScouts = 0;
-    var minTransporters = 2;
+    var minTransporters = 3;
+    var minTransfers = 0;
     var minClaimers = 0;
     var minHarassers = 0;
     var minDefenders = totalMinDefenders;
@@ -99,6 +101,7 @@ module.exports.loop = function () {
     var numDefenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender').length;
     var numScouts = _.filter(Game.creeps, (creep) => creep.memory.role == 'scout').length;
     var numTransporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'transporter').length;
+    var numTransfers = _.filter(Game.creeps, (creep) => creep.memory.role == 'transfer').length;
     var numClaimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer').length;
     var numHarassers = _.filter(Game.creeps, (creep) => creep.memory.role == 'harasser').length;
     var numMedics = _.filter(Game.creeps, (creep) => creep.memory.role == 'medic').length;
@@ -126,12 +129,17 @@ module.exports.loop = function () {
         Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], getUniqueCreepName('Upgrader'), { memory: { role: 'upgrader' } });
         
     } else if (numTransporters < minTransporters) {
-        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], getUniqueCreepName('Transporter'), { memory: { role: 'transporter' } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE], getUniqueCreepName('Transporter'), { memory: { role: 'transporter', group: 2 } });
+        
+    } else if (numTransfers < minTransfers) {
+        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE], 'Transfer1', {memory: { role: 'transfer', group: 1 }});
     
     
     // Military units  D:850 H:1300 M:600  
     } else if (numDefenders < minDefenders) {
-        Game.spawns['Spawn1'].spawnCreep([TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE], getUniqueCreepName('Defender'), { memory: { role: 'defender', homeRoom: 'W14N37' } });
+        Game.spawns['Spawn1'].spawnCreep(
+            [TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, RANGED_ATTACK, RANGED_ATTACK, MOVE, MOVE, MOVE, MOVE, MOVE],
+            getUniqueCreepName('Defender'), { memory: { role: 'defender', homeRoom: 'W14N37' } });
         
     } else if (numHarassers < minHarassers) {
         Game.spawns['Spawn1'].spawnCreep(
@@ -173,6 +181,9 @@ module.exports.loop = function () {
         }
         if (creep.memory.role == 'transporter') {
             roleTransporter.run(creep);
+        }
+        if (creep.memory.role == 'transfer') {
+            roleTransfer.run(creep);
         }
         if (creep.memory.role == 'claimer') {
             roleClaimer.run(creep);

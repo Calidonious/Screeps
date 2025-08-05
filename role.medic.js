@@ -10,12 +10,12 @@ var roleMedic = {
 
         const MIN_SAFE_DISTANCE = 8;
 
-        // ✅ Heal self if hurt
+        // Heal self if hurt
         if (canHeal && creep.hits < creep.hitsMax) {
             creep.heal(creep);
         }
 
-        // ✅ Hostile avoidance
+        // Hostile avoidance
         const nearbyHostile = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (nearbyHostile && creep.pos.getRangeTo(nearbyHostile) < MIN_SAFE_DISTANCE) {
             const fleePath = PathFinder.search(creep.pos, [{ pos: nearbyHostile.pos, range: MIN_SAFE_DISTANCE }], {
@@ -31,7 +31,7 @@ var roleMedic = {
             }
         }
 
-        // ✅ Move to target room if defined
+        // Move to target room if defined
         if (targetRoom && !inTargetRoom) {
             creep.moveTo(new RoomPosition(6, 8, targetRoom), {
                 visualizePathStyle: { stroke: '#aaaaaa' }
@@ -39,7 +39,7 @@ var roleMedic = {
             return;
         }
 
-        // ✅ Stay close to follow target & heal
+        // Stay close to follow target & heal
         if (targetCreep && targetCreep.room.name === creep.room.name) {
             const range = creep.pos.getRangeTo(targetCreep);
 
@@ -59,7 +59,7 @@ var roleMedic = {
             return;
         }
 
-        // 🔁 Fallback: heal any injured ally
+        // Fallback: heal any injured ally
         const backup = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
             filter: c => c.hits < c.hitsMax && c.name !== creep.name
         });
