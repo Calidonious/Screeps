@@ -1,9 +1,19 @@
-const HARVEST_SOURCE_ID = '5bbcac169099fc012e634e2f';
-const STORAGE_ID = '688d5a468b99246abd95096f';
-const IDLE_POS = new RoomPosition(8, 27, 'W14N37');
 const REPAIR_HOLD = 3000000
 
-const RENEW_THRESHOLD = 1000; // Minimum desired life span after renewal
+const RENEW_THRESHOLD = 500; // Minimum desired life span after renewal
+
+const BUILDER_GROUPS = {
+    1: {
+        sourceId: '', //5bbcac169099fc012e634e30
+        storageId: '688d5a468b99246abd95096f',
+        idlePos: new RoomPosition(8, 27, 'W14N37')
+    },
+};
+
+function getGroupConfig(creep) {
+    const group = creep.memory.group;
+    return BUILDER_GROUPS[group] || {};
+}
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -43,7 +53,6 @@ function moveToSpawn(creep) {
     }
     return false;
 }
-
 
 function doBuild(creep) {
     const allSites = creep.room.find(FIND_CONSTRUCTION_SITES);
@@ -105,7 +114,8 @@ function doRepair(creep) {
 }
 
 function withdrawFromStorage(creep) {
-    const storage = Game.getObjectById(STORAGE_ID);
+    const { storageId } = getGroupConfig(creep);
+    const storage = Game.getObjectById(storageId);
     
     // try storage
     if (storage && storage.store[RESOURCE_ENERGY] > 0) {
@@ -149,24 +159,28 @@ function withdrawFromStorage(creep) {
 
 
 function harvestEnergy(creep) {
-    const source = Game.getObjectById(HARVEST_SOURCE_ID);
+    const { sourceId } = getGroupConfig(creep);
+    const source = Game.getObjectById(sourceId);
+    
     if (source && source.energy > 0) {
         if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
             creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
             creep.say('🚜');
         }
     } else {
-        creep.say('❌ source');
-        creep.moveTo(14,14);
+        creep.say('📭'); // ❌ source
+        creep.moveTo(7,24);
     }
 }
 
 function depositEnergy(creep) {
-    const storage = Game.getObjectById(STORAGE_ID);
+    const { storageId } = getGroupConfig(creep);
+    const storage = Game.getObjectById(storageId);
+    
     if (storage && storage.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
         if (creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
-            creep.say('📦Storage');
+            creep.say('📦S');
         }
         return true;
     }
@@ -192,8 +206,9 @@ function depositEnergy(creep) {
 }
 
 function idle(creep) {
-    if (!creep.pos.isEqualTo(IDLE_POS)) {
-        creep.moveTo(IDLE_POS, { visualizePathStyle: { stroke: '#888888' } });
+    const { idlePos } = getGroupConfig(creep);
+    if (idlePos && !creep.pos.isEqualTo(idlePos)) {
+        creep.moveTo(idlePos, { visualizePathStyle: { stroke: '#888888' } });
     }
 }
 

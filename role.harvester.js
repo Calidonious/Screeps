@@ -1,11 +1,48 @@
-const STORAGE_ID = '688d5a468b99246abd95096f';
-
-const CONTAINER_BY_GROUP = {
-    1: 'CONTAINER_ID_FOR_GROUP_1',
-    2: 'CONTAINER_ID_FOR_GROUP_2',
+const HARVESTER_CONFIG = {
+    'W14N37': {
+        1: {
+            sourceId: '5bbcac169099fc012e634e30',
+            containerId: 'CONTAINER_ID_FOR_GROUP_1',
+            idlePos: new RoomPosition(28, 29, 'W14N37')
+        },
+        2: {
+            sourceId: '5bbcac169099fc012e634e2f',
+            containerId: '68927f15563654719b60fc5f',
+            idlePos: new RoomPosition(8, 13, 'W14N37')
+        },
+        storageId: '688d5a468b99246abd95096f'
+    },
+    'W15N37': {
+        1: {
+            sourceId: '5bbcac099099fc012e634c11',
+            containerId: 'CONTAINER_ID_FOR_GROUP_1',
+            idlePos: new RoomPosition(33, 46, 'W15N37')
+        },
+        2: {
+            sourceId: '5bbcac099099fc012e634c0f',
+            containerId: '',
+            idlePos: new RoomPosition(40, 21, 'W15N37')
+        },
+        storageId: ''
+    },
+    // Add more rooms here
 };
 
-const RENEW_THRESHOLD = 1000; // Minimum desired life span after renewal
+
+const RENEW_THRESHOLD = 500;
+
+function getRoomConfig(creep) {
+    const roomName = creep.room.name;
+    const group = creep.memory.group;
+    const roomConfig = HARVESTER_CONFIG[roomName];
+    if (!roomConfig || !roomConfig[group]) return null;
+    return {
+        source: Game.getObjectById(roomConfig[group].sourceId),
+        container: Game.getObjectById(roomConfig[group].containerId),
+        storage: Game.getObjectById(roomConfig.storageId),
+        idlePos: roomConfig[group].idlePos
+    };
+}
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -19,12 +56,12 @@ function shouldContinueRenewing(creep) {
     return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
 }
 
-function stopRenewing(creep) {
-    creep.memory.renewing = false;
-}
-
 function startRenewing(creep) {
     creep.memory.renewing = true;
+}
+
+function stopRenewing(creep) {
+    creep.memory.renewing = false;
 }
 
 function renewCreep(creep) {
@@ -37,66 +74,47 @@ function renewCreep(creep) {
     }
 }
 
-function moveToSpawn(creep) {
-    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-    if (spawn) {
-        creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
-        return true;
-    }
-    return false;
-}
-
-function getSourcesByGroup(group) {
-    const sourceA = Game.getObjectById('5bbcac169099fc012e634e30');
-    const sourceB = Game.getObjectById('5bbcac169099fc012e634e2f');
-    return group === 1 ? [sourceA, sourceB] : [sourceB, sourceA];
-}
-
-function harvestEnergy(creep, sources) {
-    for (const source of sources) {
-        if (source && source.energy > 0) {
-            creep.say('🚜');
-            if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
-            }
-            return;
+function harvestEnergy(creep, source, idlePos) {
+    if (source && source.energy > 0) {
+        creep.say('🚜');
+        if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
+        }
+    } else {
+        creep.say('❌No energy');
+        if (idlePos) {
+            creep.moveTo(idlePos);
         }
     }
-    creep.say('❌ No energy');
 }
 
-function getDesignatedContainer(creep) {
-    const id = CONTAINER_BY_GROUP[creep.memory.group];
-    return id ? Game.getObjectById(id) : null;
-}
-
-function deliverEnergy(creep) {
-    const designated = getDesignatedContainer(creep);
-    if (designated && designated.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-        if (creep.transfer(designated, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(designated, { visualizePathStyle: { stroke: '#ffffff' } });
+function deliverEnergy(creep, container, storage) {
+    if (container && container.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+        if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(container, { visualizePathStyle: { stroke: '#ffffff' } });
         }
         creep.say('📦 C');
         return;
     }
 
-    const priorityStorage = Game.getObjectById(STORAGE_ID);
-    if (priorityStorage && priorityStorage.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-        if (creep.transfer(priorityStorage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(priorityStorage, { visualizePathStyle: { stroke: '#ffffff' } });
+    if (storage && storage.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+        if (creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
         }
         creep.say('📦 S');
         return;
     }
 
     const fallbackTargets = creep.room.find(FIND_STRUCTURES, {
-        filter: (structure) => (
-            (structure.structureType === STRUCTURE_EXTENSION ||
-             structure.structureType === STRUCTURE_SPAWN ||
-             structure.structureType === STRUCTURE_TOWER ||
-             structure.structureType === STRUCTURE_CONTAINER) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        )
+        filter: function (structure) {
+            return (
+                (structure.structureType === STRUCTURE_EXTENSION ||
+                 structure.structureType === STRUCTURE_SPAWN ||
+                 structure.structureType === STRUCTURE_TOWER ||
+                 structure.structureType === STRUCTURE_CONTAINER) &&
+                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            );
+        }
     });
 
     if (fallbackTargets.length > 0) {
@@ -110,14 +128,24 @@ function deliverEnergy(creep) {
 }
 
 const roleHarvester = {
-    run(creep) {
-        // Healing (optional)
-        if (isWounded(creep)) {
-            creep.say('🏥');
-            if (moveToSpawn(creep)) return;
+    run: function (creep) {
+        if (!creep.memory.group) {
+            creep.say('❓ No group');
+            return;
         }
 
-        // Renewal logic
+        const config = getRoomConfig(creep);
+        if (!config) {
+            creep.say('⚠️ Bad config');
+            return;
+        }
+
+        if (isWounded(creep)) {
+            creep.say('🏥');
+            renewCreep(creep);
+            return;
+        }
+
         if (shouldStartRenewing(creep)) {
             startRenewing(creep);
         }
@@ -129,12 +157,10 @@ const roleHarvester = {
             stopRenewing(creep);
         }
 
-        const [source1, source2] = getSourcesByGroup(creep.memory.group);
-
         if (creep.store.getFreeCapacity() > 0) {
-            harvestEnergy(creep, [source1, source2]);
+            harvestEnergy(creep, config.source, config.idlePos);
         } else {
-            deliverEnergy(creep);
+            deliverEnergy(creep, config.container, config.storage);
         }
     }
 };

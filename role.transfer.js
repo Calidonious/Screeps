@@ -1,8 +1,8 @@
 const TRANSFER_CONFIG = {
     1: {
-        fromId: 'CONTAINER_ID_GROUP_1', // container ID
-        toId: 'LINK_ID_GROUP_1',        // link ID
-        position: { x: 10, y: 16 },
+        fromId: '68927f15563654719b60fc5f', // container ID
+        toId: '68927c892211de6e2edf4aeb',        // link ID
+        position: { x: 10, y: 13 },
         type: 'containerToLink'
     },
     2: {
@@ -12,14 +12,14 @@ const TRANSFER_CONFIG = {
         type: 'containerToLink'
     },
     3: {
-        fromId: 'LINK_ID_GROUP_3',      //  link ID
-        toId: 'STORAGE_ID_GROUP_3',     //  storage ID
+        fromId: '68927e5688ba96a2a57a121c',      //  link ID
+        toId: '688d5a468b99246abd95096f',     //  storage ID
         position: { x: 10, y: 30 },
         type: 'linkToStorage'
     }
 };
 
-const RENEW_THRESHOLD = 1000; // Minimum desired life span after renewal
+const RENEW_THRESHOLD = 500; // Minimum desired life span after renewal
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;

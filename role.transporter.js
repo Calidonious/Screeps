@@ -1,4 +1,16 @@
-const RENEW_THRESHOLD = 1000; // Minimum desired life span after renewal
+const RENEW_THRESHOLD = 500; // Minimum desired life span after renewal
+
+// === Per-Room Configuration ===
+const ROOM_CONFIGS = {
+    'W14N37': {
+        STORAGE_ID: '688d5a468b99246abd95096f',
+        IDLE_POSITIONS: {
+            1: { x: 8, y: 29 },
+            2: { x: 14, y: 36 },
+            3: { x: 14, y: 30 }
+        }
+    },
+};
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -43,10 +55,18 @@ var roleTransporter = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        const STORAGE_ID = '688d5a468b99246abd95096f';
-        const storage = Game.getObjectById(STORAGE_ID);
+        const roomName = creep.room.name;
+        const roomConfig = ROOM_CONFIGS[roomName];
 
-        // Healing (optional)
+        if (!roomConfig || !roomConfig.STORAGE_ID || !roomConfig.IDLE_POSITIONS) {
+            creep.say('❌Config');
+            return;
+        }
+
+        const storage = Game.getObjectById(roomConfig.STORAGE_ID);
+        const idlePosData = roomConfig.IDLE_POSITIONS[creep.memory.group];
+
+        // Healing
         if (isWounded(creep)) {
             creep.say('🏥');
             if (moveToSpawn(creep)) return;
@@ -97,13 +117,12 @@ var roleTransporter = {
             // Find all valid targets for this group
             const targets = creep.room.find(FIND_MY_STRUCTURES, {
                 filter: (structure) =>
-                    structureTypes.includes(structure.structureType) &&
+                    structureTypes.indexOf(structure.structureType) !== -1 &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             });
 
             if (targets.length > 0) {
-                // Distribute work by choosing a target based on creep's name hash
-                const sortedTargets = _.sortBy(targets, t => t.id); // stable order
+                const sortedTargets = _.sortBy(targets, t => t.id);
                 const targetIndex = creep.name.charCodeAt(creep.name.length - 1) % sortedTargets.length;
                 const target = sortedTargets[targetIndex];
 
@@ -112,15 +131,13 @@ var roleTransporter = {
                     creep.say('⚡');
                 }
             } else {
-                if (creep.memory.group == 1){
-                    creep.moveTo(8,29);
-                } else if (creep.memory.group == 2){
-                    creep.moveTo(14,36);
-                } else if (creep.memory.group == 3){
-                    creep.moveTo(14,30)
-                };
-                
-                creep.say('📭');
+                // Idle if nothing to deliver
+                if (idlePosData) {
+                    creep.moveTo(new RoomPosition(idlePosData.x, idlePosData.y, roomName));
+                    creep.say('📭');
+                } else {
+                    creep.say('❌IdlePos');
+                }
             }
 
         } else {

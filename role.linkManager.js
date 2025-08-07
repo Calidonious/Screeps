@@ -2,10 +2,10 @@ const roleLinkManager = {
     run: function () {
         // === Define structure IDs here ===
         const sourceLinkIds = [
-            'LINK_ID_1', // Replace with actual ID of source link 1
-            'LINK_ID_2'  // Replace with actual ID of source link 2
+            '68927c892211de6e2edf4aeb', // ID of source link 1
+            'LINK_ID_2'  // ID of source link 2
         ];
-        const receiverLinkId = 'RECEIVER_LINK_ID'; // Replace with actual ID of the link next to storage
+        const receiverLinkId = '68927e5688ba96a2a57a121c'; // ID of the link next to storage
         // ======================================
 
         const receiverLink = Game.getObjectById(receiverLinkId);
@@ -18,8 +18,7 @@ const roleLinkManager = {
             // Check cooldown and energy before transferring
             if (
                 sourceLink.cooldown === 0 &&
-                sourceLink.energy >= 100 &&
-                sourceLink.pos.inRangeTo(receiverLink.pos, 2)
+                sourceLink.energy >= 800
             ) {
                 sourceLink.transferEnergy(receiverLink);
             }
