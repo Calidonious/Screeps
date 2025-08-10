@@ -16,14 +16,14 @@ const HARVESTER_CONFIG = {
         1: {
             sourceId: '5bbcac099099fc012e634c11',
             containerId: 'CONTAINER_ID_FOR_GROUP_1',
-            idlePos: new RoomPosition(33, 46, 'W15N37')
+            idlePos: new RoomPosition(34, 43, 'W15N37')
         },
         2: {
             sourceId: '5bbcac099099fc012e634c0f',
-            containerId: '',
-            idlePos: new RoomPosition(40, 21, 'W15N37')
+            containerId: '68982f5e7bc95867b188c3c0',
+            idlePos: new RoomPosition(41, 22, 'W15N37')
         },
-        storageId: ''
+        storageId: '689593f14c3ddc337079485d'
     },
     // Add more rooms here
 };

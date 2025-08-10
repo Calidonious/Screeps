@@ -1,28 +1,41 @@
 const roleLinkManager = {
     run: function () {
-        // === Define structure IDs here ===
-        const sourceLinkIds = [
-            '68927c892211de6e2edf4aeb', // ID of source link 1
-            'LINK_ID_2'  // ID of source link 2
-        ];
-        const receiverLinkId = '68927e5688ba96a2a57a121c'; // ID of the link next to storage
-        // ======================================
-
-        const receiverLink = Game.getObjectById(receiverLinkId);
-        if (!receiverLink) return;
-
-        sourceLinkIds.forEach(linkId => {
-            const sourceLink = Game.getObjectById(linkId);
-            if (!sourceLink) return;
-
-            // Check cooldown and energy before transferring
-            if (
-                sourceLink.cooldown === 0 &&
-                sourceLink.energy >= 800
-            ) {
-                sourceLink.transferEnergy(receiverLink);
+        // === Per-room link configurations ===
+        const linkConfigs = {
+            'W14N37': {
+                sourceLinks: [
+                    '68927c892211de6e2edf4aeb', // source link 1
+                    'LINK_ID_2'                // source link 2
+                ],
+                receiverLink: '68927e5688ba96a2a57a121c' // link near storage
+            },
+            'W15N37': {
+                sourceLinks: [
+                    '68982bc28899736031f0d7e1',
+                    'LINK_ID_4'
+                ],
+                receiverLink: '689831029413445505fa93cf'
             }
-        });
+            
+        };
+
+        // Loop through each room config
+        for (const roomName in linkConfigs) {
+            const { sourceLinks, receiverLink } = linkConfigs[roomName];
+
+            const recvLinkObj = Game.getObjectById(receiverLink);
+            if (!recvLinkObj) continue;
+
+            sourceLinks.forEach(sourceId => {
+                const srcLinkObj = Game.getObjectById(sourceId);
+                if (!srcLinkObj) return;
+
+                // Send only if ready and nearly full
+                if (srcLinkObj.cooldown === 0 && srcLinkObj.energy >= 800) {
+                    srcLinkObj.transferEnergy(recvLinkObj);
+                }
+            });
+        }
     }
 };
 

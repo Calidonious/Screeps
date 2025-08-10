@@ -7,7 +7,15 @@ const ROOM_CONFIGS = {
         IDLE_POSITIONS: {
             1: { x: 8, y: 29 },
             2: { x: 14, y: 36 },
-            3: { x: 14, y: 30 }
+            3: { x: 11, y: 29 }
+        }
+    },
+    'W15N37': {
+        STORAGE_ID: '689593f14c3ddc337079485d',
+        IDLE_POSITIONS: {
+            1: { x: 37, y: 44 },
+            2: { x: 39, y: 43 },
+            3: { x: 32, y: 47 }
         }
     },
 };
@@ -95,10 +103,8 @@ var roleTransporter = {
         }
 
         if (creep.memory.delivering) {
-            // === Delivery Mode ===
-            let structureTypes;
+            let structureTypes = [];
 
-            // Determine target types based on group
             switch (creep.memory.group) {
                 case 1:
                     structureTypes = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER];
@@ -114,30 +120,61 @@ var roleTransporter = {
                     return;
             }
 
-            // Find all valid targets for this group
-            const targets = creep.room.find(FIND_MY_STRUCTURES, {
-                filter: (structure) =>
-                    structureTypes.indexOf(structure.structureType) !== -1 &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            // Step 1: Always fill spawns first (if in allowed types)
+            const spawnsNeeding = creep.room.find(FIND_MY_STRUCTURES, {
+                filter: s =>
+                    structureTypes.includes(s.structureType) &&
+                    s.structureType === STRUCTURE_SPAWN &&
+                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             });
 
-            if (targets.length > 0) {
-                const sortedTargets = _.sortBy(targets, t => t.id);
-                const targetIndex = creep.name.charCodeAt(creep.name.length - 1) % sortedTargets.length;
-                const target = sortedTargets[targetIndex];
+            if (spawnsNeeding.length > 0) {
+                const closestSpawn = creep.pos.findClosestByPath(spawnsNeeding);
+                if (creep.transfer(closestSpawn, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(closestSpawn, { visualizePathStyle: { stroke: '#ffffff' } });
+                }
+                return;
+            }
 
-                if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
-                    creep.say('⚡');
+            // Step 2: For extensions, sort by distance
+            const extensionsNeeding = creep.room.find(FIND_MY_STRUCTURES, {
+                filter: s =>
+                    structureTypes.includes(s.structureType) &&
+                    s.structureType === STRUCTURE_EXTENSION &&
+                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            });
+
+            if (extensionsNeeding.length > 0) {
+                const closestExt = creep.pos.findClosestByPath(extensionsNeeding);
+                if (creep.transfer(closestExt, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(closestExt, { visualizePathStyle: { stroke: '#ffffff' } });
                 }
+                return;
+            }
+
+            // Step 3: Fill remaining allowed types (like towers)
+            const otherTargets = creep.room.find(FIND_MY_STRUCTURES, {
+                filter: s =>
+                    structureTypes.includes(s.structureType) &&
+                    s.structureType !== STRUCTURE_SPAWN &&
+                    s.structureType !== STRUCTURE_EXTENSION &&
+                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            });
+
+            if (otherTargets.length > 0) {
+                const closestOther = creep.pos.findClosestByPath(otherTargets);
+                if (creep.transfer(closestOther, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(closestOther, { visualizePathStyle: { stroke: '#ffffff' } });
+                }
+                return;
+            }
+
+            // Step 4: Idle if nothing to do
+            if (idlePosData) {
+                creep.moveTo(new RoomPosition(idlePosData.x, idlePosData.y, roomName));
+                creep.say('📭');
             } else {
-                // Idle if nothing to deliver
-                if (idlePosData) {
-                    creep.moveTo(new RoomPosition(idlePosData.x, idlePosData.y, roomName));
-                    creep.say('📭');
-                } else {
-                    creep.say('❌IdlePos');
-                }
+                creep.say('❌IdlePos');
             }
 
         } else {

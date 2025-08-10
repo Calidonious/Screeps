@@ -76,7 +76,7 @@ const getNextRoomToScout = (creep) => {
 const signController = (creep) => {
     const ctrl = creep.room.controller;
     if (ctrl && (!ctrl.sign || ctrl.sign.username !== creep.owner.username)) {
-        if (creep.pos.inRangeTo(ctrl, 1)) {
+        if (creep.pos.inRangeTo(ctrl, 20)) {
             creep.signController(ctrl, "Glory to the machine! All my watts for the great coil!");
         } else {
             creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#00ffff' } });

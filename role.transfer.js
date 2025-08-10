@@ -1,46 +1,63 @@
 const TRANSFER_CONFIG = {
-    1: {
-        fromId: '68927f15563654719b60fc5f', // container ID
-        toId: '68927c892211de6e2edf4aeb',        // link ID
-        position: { x: 10, y: 13 },
-        type: 'containerToLink'
+    'W14N37': {
+        1: {
+            fromId: '68927f15563654719b60fc5f', // container ID
+            toId: '68927c892211de6e2edf4aeb', // link ID
+            position: { x: 10, y: 13 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 27 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '68927e5688ba96a2a57a121c', // link ID
+            toId: '688d5a468b99246abd95096f', // storage ID
+            position: { x: 10, y: 30 },
+            type: 'linkToStorage'
+        }
     },
-    2: {
-        fromId: 'CONTAINER_ID_GROUP_2', // container ID
-        toId: 'LINK_ID_GROUP_2',        // link ID
-        position: { x: 29, y: 28 },
-        type: 'containerToLink'
-    },
-    3: {
-        fromId: '68927e5688ba96a2a57a121c',      //  link ID
-        toId: '688d5a468b99246abd95096f',     //  storage ID
-        position: { x: 10, y: 30 },
-        type: 'linkToStorage'
+    'W15N37': {
+        1: {
+            fromId: '68982f5e7bc95867b188c3c0',
+            toId: '68982bc28899736031f0d7e1',
+            position: { x: 40, y: 21 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 28 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '689831029413445505fa93cf', // link ID
+            toId: '689593f14c3ddc337079485d', // storage ID
+            position: { x: 36, y: 42 },
+            type: 'linkToStorage'
+        }
     }
 };
 
-const RENEW_THRESHOLD = 500; // Minimum desired life span after renewal
+const RENEW_THRESHOLD = 500;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
-
 function shouldStartRenewing(creep) {
     return creep.ticksToLive < 200 && !creep.memory.renewing;
 }
-
 function shouldContinueRenewing(creep) {
     return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
 }
-
 function stopRenewing(creep) {
     creep.memory.renewing = false;
 }
-
 function startRenewing(creep) {
     creep.memory.renewing = true;
 }
-
 function renewCreep(creep) {
     const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
     if (spawn) {
@@ -50,7 +67,6 @@ function renewCreep(creep) {
         creep.say('⏳');
     }
 }
-
 function moveToSpawn(creep) {
     const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
     if (spawn) {
@@ -59,52 +75,45 @@ function moveToSpawn(creep) {
     }
     return false;
 }
+
 const roleTransfer = {
     run(creep) {
-        // Healing (optional)
         if (isWounded(creep)) {
             creep.say('🏥');
             if (moveToSpawn(creep)) return;
         }
 
-        // Renewal logic
-        if (shouldStartRenewing(creep)) {
-            startRenewing(creep);
-        }
-
+        if (shouldStartRenewing(creep)) startRenewing(creep);
         if (shouldContinueRenewing(creep)) {
             renewCreep(creep);
             return;
         } else if (creep.memory.renewing) {
             stopRenewing(creep);
         }
-        
+
+        const roomName = creep.memory.homeRoom || creep.room.name;
+        if (!TRANSFER_CONFIG[roomName]) {
+            console.log(`❌ No transfer config for room ${roomName} (${creep.name})`);
+            return;
+        }
+
         const group = creep.memory.group;
-        const config = TRANSFER_CONFIG[group];
+        const config = TRANSFER_CONFIG[roomName][group];
         if (!config) {
-            console.log(`❌ roleTransfer: Invalid group ${group} for ${creep.name}`);
+            console.log(`❌ Invalid group ${group} in room ${roomName} for ${creep.name}`);
             return;
         }
 
         const from = Game.getObjectById(config.fromId);
         const to = Game.getObjectById(config.toId);
-        const targetPos = new RoomPosition(config.position.x, config.position.y, creep.room.name);
+        const targetPos = new RoomPosition(config.position.x, config.position.y, roomName);
 
-
-        // Move to assigned position if not already there
         if (!creep.pos.isEqualTo(targetPos)) {
             creep.moveTo(targetPos, { visualizePathStyle: { stroke: '#8888ff' } });
             return;
         }
 
-        // Perform transfer actions
-        if (config.type === 'containerToLink') {
-            if (creep.store[RESOURCE_ENERGY] === 0 && from && from.store[RESOURCE_ENERGY] > 0) {
-                creep.withdraw(from, RESOURCE_ENERGY);
-            } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-                creep.transfer(to, RESOURCE_ENERGY);
-            }
-        } else if (config.type === 'linkToStorage') {
+        if (config.type === 'containerToLink' || config.type === 'linkToStorage') {
             if (creep.store[RESOURCE_ENERGY] === 0 && from && from.store[RESOURCE_ENERGY] > 0) {
                 creep.withdraw(from, RESOURCE_ENERGY);
             } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {

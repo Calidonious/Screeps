@@ -6,7 +6,12 @@ const BUILDER_GROUPS = {
     1: {
         sourceId: '', //5bbcac169099fc012e634e30
         storageId: '688d5a468b99246abd95096f',
-        idlePos: new RoomPosition(8, 27, 'W14N37')
+        idlePos: new RoomPosition(7, 24, 'W14N37')
+    },
+    2: {
+        sourceId: '', //5bbcac169099fc012e634e30
+        storageId: '689593f14c3ddc337079485d',
+        idlePos: new RoomPosition(30, 46, 'W15N37')
     },
 };
 
@@ -169,7 +174,8 @@ function harvestEnergy(creep) {
         }
     } else {
         creep.say('📭'); // ❌ source
-        creep.moveTo(7,24);
+        const { idlePos } = getGroupConfig(creep);
+        creep.moveTo(idlePos);
     }
 }
 

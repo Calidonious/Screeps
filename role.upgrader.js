@@ -39,9 +39,25 @@ function moveToSpawn(creep) {
     return false;
 }
 
+// === Config for multi-room positions and signing ===
+const upgraderConfig = {
+    "W14N37": {
+        group1Pos: { x: 11, y: 40 },
+        group2Pos: { x: 11, y: 41 }, //group 2 signs before upgrading
+        signText: "Glory to the machine! All my watts for the great coil!"
+    },
+    "W15N37": {
+        group1Pos: { x: 33, y: 44 },
+        group2Pos: { x: 34, y: 45 },
+        signText: "Glory to the machine! All my watts for the great coil!"
+    }
+};
 
 var roleUpgrader = {
     run: function(creep) {
+        const roomName = creep.memory.homeRoom || creep.room.name;
+        const group = creep.memory.group || 1;
+
         // Healing (optional)
         if (isWounded(creep)) {
             creep.say('🏥');
@@ -52,59 +68,72 @@ var roleUpgrader = {
         if (shouldStartRenewing(creep)) {
             startRenewing(creep);
         }
-
         if (shouldContinueRenewing(creep)) {
             renewCreep(creep);
             return;
         } else if (creep.memory.renewing) {
             stopRenewing(creep);
         }
-        
-        if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
+
+        // Switching states between upgrading and getting energy
+        if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] === 0) {
             creep.memory.upgrading = false;
             creep.say('🫴');
         }
-        if (!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {
+        if (!creep.memory.upgrading && creep.store.getFreeCapacity() === 0) {
             creep.memory.upgrading = true;
             creep.say('⚡');
         }
-        
-        //creep.moveTo(30, 16, { visualizePathStyle: { stroke: '#00ff00' } });
-        
+
         if (creep.memory.upgrading) {
-            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
-                creep.say('⚡');
+            const ctrl = creep.room.controller;
+
+            // Group 2 → Sign controller if not signed
+            if (group === 2 && ctrl && (!ctrl.sign || ctrl.sign.username !== creep.owner.username)) {
+                var signText = "Controlled";
+                if (upgraderConfig[roomName] && upgraderConfig[roomName].signText) {
+                    signText = upgraderConfig[roomName].signText;
+                }
+                if (creep.signController(ctrl, signText) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#ffaa00' } });
+                    return;
+                }
             }
+
+            // Move to assigned upgrade position if set
+            const posConfig = upgraderConfig[roomName];
+            if (posConfig) {
+                const targetPos = group === 2 ? posConfig.group2Pos : posConfig.group1Pos;
+                if (targetPos && (creep.pos.x !== targetPos.x || creep.pos.y !== targetPos.y)) {
+                    creep.moveTo(new RoomPosition(targetPos.x, targetPos.y, roomName), { visualizePathStyle: { stroke: '#00ff00' } });
+                    return;
+                }
+            }
+
+            // Upgrade controller
+            if (creep.upgradeController(ctrl) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#ffffff' } });
+            }
+
         } else {
-            // Check if there is energy in storage
-            var storage = creep.room.storage;
+            // Energy fetching
+            const storage = creep.room.storage;
             if (storage && storage.store[RESOURCE_ENERGY] > 0) {
-                // Withdraw energy from storage
-                if (creep.withdraw(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(storage, {visualizePathStyle: {stroke: '#ffffff'}});
-                    creep.say('🫴');
+                if (creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
                 }
             } else {
-                var energySources = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_SPAWN ||
-                        structure.structureType == STRUCTURE_EXTENSION ||
-                        structure.structureType == STRUCTURE_CONTAINER) &&
-                        structure.store[RESOURCE_ENERGY] > 0;
-                        
-                    }
-                    
+                const energySources = creep.room.find(FIND_STRUCTURES, {
+                    filter: s =>
+                        (s.structureType === STRUCTURE_SPAWN ||
+                         s.structureType === STRUCTURE_EXTENSION ||
+                         s.structureType === STRUCTURE_CONTAINER) &&
+                        s.store[RESOURCE_ENERGY] > 0
                 });
-                
-                if (energySources.length > 0) {
-                    if (creep.withdraw(energySources[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(energySources[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                        creep.say('🫴 Alt source');
-                        
+                if (energySources.length) {
+                    if (creep.withdraw(energySources[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(energySources[0], { visualizePathStyle: { stroke: '#ffffff' } });
                     }
-                } else {
-                    creep.say('No energy sources available');
                 }
             }
         }

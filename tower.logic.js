@@ -1,38 +1,70 @@
-var towerLogic = {
-    // Define the whitelist of usernames
+const towerLogic = {
     whitelist: [],
 
+    // Per-room tower settings
+    roomConfig: {
+        'W14N37': {
+            repairWalls: false,
+            wallThreshold: 15000, // walls get repaired up to this hits
+            repairRamparts: true,
+            rampartThreshold: 3000000
+        },
+        'W15N37': {
+            repairWalls: true,
+            wallThreshold: 90000,
+            repairRamparts: true,
+            rampartThreshold: 3000000
+        }
+    },
+
     run: function () {
-        var towers = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
-            filter: (s) => s.structureType == STRUCTURE_TOWER
-        });
-        
+        const towers = _.filter(Game.structures, s => s.structureType === STRUCTURE_TOWER);
+
         towers.forEach(tower => {
-            // Check for hostile creeps
-            var hostileCreep = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                filter: (creep) => !towerLogic.whitelist.includes(creep.owner.username) // Check if the creep owner is not in the whitelist
+            const roomName = tower.room.name;
+            const cfg = this.roomConfig[roomName] || {
+                repairWalls: false,
+                wallThreshold: 0,
+                repairRamparts: false,
+                rampartThreshold: 0
+            };
+
+            // 1. Attack hostiles
+            const hostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+                filter: (creep) => !this.whitelist.includes(creep.owner.username)
             });
-            if (hostileCreep) {
-                tower.attack(hostileCreep);
-            } else {
-                // Find damaged structures
-                var damagedStructures = tower.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => structure.hits < structure.hitsMax && 
-                    structure.structureType != STRUCTURE_WALL && 
-                    structure.structureType != STRUCTURE_RAMPART
-                });
-                if (damagedStructures.length > 0) {
-                    damagedStructures.sort((a, b) => a.hits - b.hits);
-                    tower.repair(damagedStructures[0]);
-                } else {
-                    // Find injured creeps and heal them
-                    var injuredCreep = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
-                        filter: (creep) => creep.hits < creep.hitsMax
-                    });
-                    if (injuredCreep) {
-                        tower.heal(injuredCreep);
+            if (hostile) {
+                tower.attack(hostile);
+                return;
+            }
+
+            // 2. Repair logic
+            let damagedStructures = tower.room.find(FIND_STRUCTURES, {
+                filter: (s) => {
+                    if (s.structureType === STRUCTURE_WALL) {
+                        return cfg.repairWalls && s.hits < cfg.wallThreshold;
                     }
+                    if (s.structureType === STRUCTURE_RAMPART) {
+                        return cfg.repairRamparts && s.hits < cfg.rampartThreshold;
+                    }
+                    return s.hits < s.hitsMax &&
+                           s.structureType !== STRUCTURE_WALL &&
+                           s.structureType !== STRUCTURE_RAMPART;
                 }
+            });
+
+            if (damagedStructures.length > 0) {
+                damagedStructures.sort((a, b) => a.hits - b.hits);
+                tower.repair(damagedStructures[0]);
+                return;
+            }
+
+            // 3. Heal creeps
+            const injured = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
+                filter: (creep) => creep.hits < creep.hitsMax
+            });
+            if (injured) {
+                tower.heal(injured);
             }
         });
     }
