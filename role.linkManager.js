@@ -5,7 +5,7 @@ const roleLinkManager = {
             'W14N37': {
                 sourceLinks: [
                     '68927c892211de6e2edf4aeb', // source link 1
-                    'LINK_ID_2'                // source link 2
+                    '6898de8be150056fcac08e49'                // source link 2
                 ],
                 receiverLink: '68927e5688ba96a2a57a121c' // link near storage
             },

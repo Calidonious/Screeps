@@ -7,8 +7,8 @@ const TRANSFER_CONFIG = {
             type: 'containerToLink'
         },
         2: {
-            fromId: 'CONTAINER_ID_GROUP_2',
-            toId: 'LINK_ID_GROUP_2',
+            fromId: '6898df3629f295767f335f7c',
+            toId: '6898de8be150056fcac08e49',
             position: { x: 29, y: 27 },
             type: 'containerToLink'
         },

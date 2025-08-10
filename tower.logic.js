@@ -29,7 +29,7 @@ const towerLogic = {
                 rampartThreshold: 0
             };
 
-            // 1. Attack hostiles
+            // Attack hostiles
             const hostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
                 filter: (creep) => !this.whitelist.includes(creep.owner.username)
             });
@@ -38,7 +38,7 @@ const towerLogic = {
                 return;
             }
 
-            // 2. Repair logic
+            // Repair logic
             let damagedStructures = tower.room.find(FIND_STRUCTURES, {
                 filter: (s) => {
                     if (s.structureType === STRUCTURE_WALL) {
@@ -59,7 +59,7 @@ const towerLogic = {
                 return;
             }
 
-            // 3. Heal creeps
+            // Heal creeps
             const injured = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
                 filter: (creep) => creep.hits < creep.hitsMax
             });

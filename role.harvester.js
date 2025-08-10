@@ -2,7 +2,7 @@ const HARVESTER_CONFIG = {
     'W14N37': {
         1: {
             sourceId: '5bbcac169099fc012e634e30',
-            containerId: 'CONTAINER_ID_FOR_GROUP_1',
+            containerId: '6898df3629f295767f335f7c',
             idlePos: new RoomPosition(28, 29, 'W14N37')
         },
         2: {

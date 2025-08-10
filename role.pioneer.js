@@ -120,7 +120,7 @@ var rolePioneer = {
             return;
         }
 
-        // 1️⃣ Build — Assign unique site if available
+        // ️Build — Assign unique site if available
         const allSites = creep.room.find(FIND_CONSTRUCTION_SITES);
         if (allSites.length) {
             if (!creep.memory.buildTargetId || !Game.getObjectById(creep.memory.buildTargetId)) {
@@ -138,7 +138,7 @@ var rolePioneer = {
             return;
         }
 
-        // 2️⃣ Fill
+        // Fill
         const fillTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: s =>
                 (s.structureType === STRUCTURE_SPAWN ||
@@ -151,7 +151,7 @@ var rolePioneer = {
             return;
         }
 
-        // 3️⃣ Repair
+        // Repair
         const repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: s => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL
         });

@@ -1,5 +1,4 @@
 var roleClaimer = {
-
     /** @param {Creep} creep **/
     run: function(creep) {
         const targetRoom = creep.memory.targetRoom;

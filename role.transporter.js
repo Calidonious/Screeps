@@ -120,7 +120,7 @@ var roleTransporter = {
                     return;
             }
 
-            // Step 1: Always fill spawns first (if in allowed types)
+            // Always fill spawns first (if in allowed types)
             const spawnsNeeding = creep.room.find(FIND_MY_STRUCTURES, {
                 filter: s =>
                     structureTypes.includes(s.structureType) &&
@@ -136,7 +136,7 @@ var roleTransporter = {
                 return;
             }
 
-            // Step 2: For extensions, sort by distance
+            // For extensions, sort by distance
             const extensionsNeeding = creep.room.find(FIND_MY_STRUCTURES, {
                 filter: s =>
                     structureTypes.includes(s.structureType) &&
@@ -152,7 +152,7 @@ var roleTransporter = {
                 return;
             }
 
-            // Step 3: Fill remaining allowed types (like towers)
+            // Fill remaining allowed types (like towers)
             const otherTargets = creep.room.find(FIND_MY_STRUCTURES, {
                 filter: s =>
                     structureTypes.includes(s.structureType) &&
@@ -169,7 +169,7 @@ var roleTransporter = {
                 return;
             }
 
-            // Step 4: Idle if nothing to do
+            // Idle if nothing to do
             if (idlePosData) {
                 creep.moveTo(new RoomPosition(idlePosData.x, idlePosData.y, roomName));
                 creep.say('📭');

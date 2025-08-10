@@ -2,11 +2,11 @@ module.exports = {
     'Spawn1': {
         room: 'W14N37',
         min: {
-            harvester: 3,
+            harvester: 2,
             builder: 2,
             upgrader: 1,
             transporter: 3,
-            transfer: 2,
+            transfer: 3,
             claimer: 0,
             pioneer: 0,
             harasser: 0,
@@ -44,11 +44,11 @@ module.exports = {
     'Spawn2': {
         room: 'W15N37',
         min: {
-            harvester: 5,
-            builder: 3,
-            upgrader: 2,
-            transporter: 6,
-            transfer: 4,
+            harvester: 2,
+            builder: 1,
+            upgrader: 1,
+            transporter: 3,
+            transfer: 2,
             claimer: 0,
             pioneer: 0,
             harasser: 0,
