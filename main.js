@@ -1,5 +1,3 @@
-// main.js (Functional, Multi-Room, Spawn-Config Aware, Per-Room Creep Counting)
-
 const roleHarvester = require('role.harvester');
 const roleBuilder = require('role.builder');
 const roleUpgrader = require('role.upgrader');
@@ -10,6 +8,8 @@ const roleTransfer = require('role.transfer');
 const roleClaimer = require('role.claimer');
 const roleHarasser = require('role.harasser');
 const roleMedic = require('role.medic');
+const roleCollector = require('role.collector');
+const roleExtractor = require('role.extractor');
 const towerLogic = require('tower.logic');
 const roleLinkManager = require('role.linkManager');
 const spawnConfigs = require('spawn.config');
@@ -113,7 +113,9 @@ module.exports.loop = function () {
             transfer: roleTransfer,
             claimer: roleClaimer,
             harasser: roleHarasser,
-            medic: roleMedic
+            medic: roleMedic,
+            collector: roleCollector,
+            extractor: roleExtractor,
         }[creep.memory.role];
 
         if (roleModule) roleModule.run(creep);

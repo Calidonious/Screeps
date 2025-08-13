@@ -76,7 +76,7 @@ const getNextRoomToScout = (creep) => {
 const signController = (creep) => {
     const ctrl = creep.room.controller;
     if (ctrl && (!ctrl.sign || ctrl.sign.username !== creep.owner.username)) {
-        if (creep.pos.inRangeTo(ctrl, 20)) {
+        if (creep.pos.inRangeTo(ctrl, 40)) {
             creep.signController(ctrl, "Glory to the machine! All my watts for the great coil!");
         } else {
             creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#00ffff' } });
@@ -108,17 +108,17 @@ const logRoomInfo = (creep) => {
 
 const randomSay = (creep) => {
     const cycle = Game.time % 12;
-    if (cycle === 0) creep.say('Glory');
-    if (cycle === 1) creep.say('To the');
-    if (cycle === 2) creep.say('Machine!');
-    if (cycle === 3) creep.say('ALL OF MY');
-    if (cycle === 4) creep.say('WATTS!');
-    if (cycle === 5) creep.say('FOR THE');
-    if (cycle === 6) creep.say('GREAT COIL!');
-    if (cycle === 7) creep.say('WE MEAN');
-    if (cycle === 8) creep.say('NO HARM!');
-    if (cycle === 9) creep.say('DETH TO');
-    if (cycle === 10) creep.say('INVADERS!');
+    if (cycle === 0) creep.say('Glory', true);
+    if (cycle === 1) creep.say('To the', true);
+    if (cycle === 2) creep.say('Machine!', true);
+    if (cycle === 3) creep.say('ALL OF MY', true);
+    if (cycle === 4) creep.say('WATTS!', true);
+    if (cycle === 5) creep.say('FOR THE', true);
+    if (cycle === 6) creep.say('GREAT COIL!', true);
+    if (cycle === 7) creep.say('WE MEAN', true);
+    if (cycle === 8) creep.say('NO HARM!', true);
+    if (cycle === 9) creep.say('DETH TO', true);
+    if (cycle === 10) creep.say('INVADERS!', true);
     
 };
 

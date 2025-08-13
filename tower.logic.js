@@ -4,14 +4,14 @@ const towerLogic = {
     // Per-room tower settings
     roomConfig: {
         'W14N37': {
-            repairWalls: false,
-            wallThreshold: 15000, // walls get repaired up to this hits
+            repairWalls: true,
+            wallThreshold: 145000, // walls get repaired up to this hits
             repairRamparts: true,
             rampartThreshold: 3000000
         },
         'W15N37': {
             repairWalls: true,
-            wallThreshold: 90000,
+            wallThreshold: 300000,
             repairRamparts: true,
             rampartThreshold: 3000000
         }

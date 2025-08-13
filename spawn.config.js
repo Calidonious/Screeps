@@ -4,8 +4,8 @@ module.exports = {
         min: {
             harvester: 2,
             builder: 2,
-            upgrader: 1,
-            transporter: 3,
+            upgrader: 2,
+            transporter: 4,
             transfer: 3,
             claimer: 0,
             pioneer: 0,
@@ -13,6 +13,8 @@ module.exports = {
             scout: 0,
             defender: 0,
             medic: 0,
+            collector: 0,
+            extractor: 0,
         },
         bodies: {
             harvester: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
@@ -25,19 +27,23 @@ module.exports = {
             medic: [HEAL,MOVE,MOVE],
             claimer: [CLAIM,MOVE],
             pioneer: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
-            scout: [MOVE]
+            scout: [MOVE],
+            collector: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
+            extractor: [WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
         },
         memory: {
             harvester: { group: 2 },
             builder: { group: 1 },
             upgrader: {},
-            transporter: { group: 2 },
+            transporter: { group: 3 },
             transfer: { group: 2 },
             harasser: { targetRoom: 'W14N37' },
             medic: { targetRoom: 'W14N37', follow: 'MedicBuddy' },
             claimer: { targetRoom: 'W15N37', suicideAfterClaim: false },
             pioneer: { targetRoom: 'W15N37', group: 1 },
-            scout: {}
+            scout: {},
+            collector: {},
+            extractor: {},
         }
     },
     
@@ -46,7 +52,7 @@ module.exports = {
         min: {
             harvester: 2,
             builder: 1,
-            upgrader: 1,
+            upgrader: 2,
             transporter: 3,
             transfer: 2,
             claimer: 0,
@@ -55,6 +61,8 @@ module.exports = {
             scout: 0,
             defender: 0,
             medic: 0,
+            collector: 0,
+            extractor: 0,
         },
         bodies: {
             harvester: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
@@ -67,19 +75,23 @@ module.exports = {
             medic: [HEAL,MOVE,MOVE],
             claimer: [CLAIM,MOVE],
             pioneer: [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE],
-            scout: [MOVE]
+            scout: [MOVE],
+            collector: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
+            extractor: [WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
         },
         memory: {
             harvester: { group: 2 },
             builder: { group: 2 },
-            upgrader: {},
+            upgrader: { group: 1 },
             transporter: { group: 2 },
             transfer: { group: 3 },
             harasser: { targetRoom: 'W14N37' },
             medic: { targetRoom: 'W14N37', follow: 'MedicBuddy' },
             claimer: { targetRoom: 'W15N37', suicideAfterClaim: false },
             pioneer: { targetRoom: 'W15N37', group: 1 },
-            scout: {}
+            scout: {},
+            collector:{},
+            extractor: {},
         }
     },
 };
