@@ -81,7 +81,7 @@ function harvestEnergy(creep, source, idlePos) {
             creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
         }
     } else {
-        creep.say('❌No energy');
+        creep.say('👍🏻'); //no energy
         if (idlePos) {
             creep.moveTo(idlePos);
         }

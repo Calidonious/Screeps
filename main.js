@@ -17,7 +17,7 @@ const spawnConfigs = require('spawn.config');
 module.exports.loop = function () {
     const funnyNames = [
         'Killbot 3000','Stabby Boi','Sneaky Steve','MurderCube','AngryToast','Zap Lad',
-        'Blood Extractor Bot','MeatShield','Boom Roomba','Sir Slashalot','Pain Distributor',
+        'Blood Exanguination Bot','MeatShield','Boom Roomba','Sir Slashalot','Pain Distributor',
         'Yeeter','Hostile Hugger','Clanka','Clanker','Bob The Atom Smasher',
     ];
 

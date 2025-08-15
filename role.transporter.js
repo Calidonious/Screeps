@@ -14,7 +14,7 @@ const ROOM_CONFIGS = {
         STORAGE_ID: '689593f14c3ddc337079485d',
         IDLE_POSITIONS: {
             1: { x: 37, y: 44 },
-            2: { x: 39, y: 43 },
+            2: { x: 39, y: 44 },
             3: { x: 32, y: 47 }
         }
     },

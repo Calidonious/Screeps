@@ -110,14 +110,17 @@ const roleTransfer = {
 
         if (!creep.pos.isEqualTo(targetPos)) {
             creep.moveTo(targetPos, { visualizePathStyle: { stroke: '#8888ff' } });
+            creep.say('🚗💨');
             return;
         }
 
         if (config.type === 'containerToLink' || config.type === 'linkToStorage') {
             if (creep.store[RESOURCE_ENERGY] === 0 && from && from.store[RESOURCE_ENERGY] > 0) {
                 creep.withdraw(from, RESOURCE_ENERGY);
+                creep.say('🫴');
             } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
                 creep.transfer(to, RESOURCE_ENERGY);
+                creep.say('🫳');
             }
         }
     }

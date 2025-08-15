@@ -43,7 +43,7 @@ var roleExtractor = {
     config: {
         'W14N37': {
             idlePos: { x: 22, y: 26 }, // Where to wait when idle
-            mineralId: '', // Mineral deposit ID
+            mineralId: '5bbcb25640062e4259e93905', // Mineral deposit ID
             dropoffId: '688d5a468b99246abd95096f' // Storage/Terminal/Container ID
         },
         'W15N37': {
@@ -76,7 +76,7 @@ var roleExtractor = {
         var roomCfg = this.config[homeRoom] || {};
 
         // If carrying something, deliver to drop-off
-        if (_.sum(creep.store) > 0) {
+        if (_.sum(creep.store) === creep.store.getCapacity()) {
             var target = Game.getObjectById(roomCfg.dropoffId);
 
             if (!target) {
@@ -96,6 +96,7 @@ var roleExtractor = {
                 for (var resourceType in creep.store) {
                     if (creep.transfer(target, resourceType) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
+                        creep.say('📦');
                     }
                 }
             }
@@ -114,8 +115,10 @@ var roleExtractor = {
             }
 
             var harvestResult = creep.harvest(mineral);
+            creep.say('⛏️');
             if (harvestResult === ERR_NOT_IN_RANGE) {
                 creep.moveTo(mineral, { visualizePathStyle: { stroke: '#ffaa00' } });
+                creep.say('⛏️');
             }
             return;
         }
@@ -130,6 +133,7 @@ var roleExtractor = {
                 { visualizePathStyle: { stroke: '#ffaa00' } });
         } else {
             creep.moveTo(new RoomPosition(25, 25, roomName), { visualizePathStyle: { stroke: '#ffaa00' } });
+            creep.say('📭');
         }
     }
 };
