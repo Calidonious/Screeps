@@ -15,6 +15,7 @@ module.exports = {
             medic: 0,
             collector: 1,
             extractor: 1,
+            labManager: 0,
         },
         bodies: {
             harvester: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
@@ -30,6 +31,7 @@ module.exports = {
             scout: [MOVE],
             collector: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
             extractor: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
+            labManager: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
         },
         memory: {
             harvester: { group: 2 },
@@ -42,8 +44,9 @@ module.exports = {
             claimer: { targetRoom: 'W15N37', suicideAfterClaim: false },
             pioneer: { targetRoom: 'W15N37', group: 1 },
             scout: {},
-            collector: {},
+            collector: { group: 1 },
             extractor: {},
+            labManager: { group: 1 },
         }
     },
     
@@ -63,6 +66,7 @@ module.exports = {
             medic: 0,
             collector: 1,
             extractor: 0,
+            labManager: 0,
         },
         bodies: {
             harvester: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
@@ -77,7 +81,8 @@ module.exports = {
             pioneer: [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE],
             scout: [MOVE],
             collector: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],
-            extractor: [WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
+            extractor: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
+            labManager: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
         },
         memory: {
             harvester: { group: 2 },
@@ -90,8 +95,9 @@ module.exports = {
             claimer: { targetRoom: 'W15N37', suicideAfterClaim: false },
             pioneer: { targetRoom: 'W15N37', group: 1 },
             scout: {},
-            collector:{},
+            collector:{ group: 1 },
             extractor: {},
+            labManager: { group: 1 },
         }
     },
 };

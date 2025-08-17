@@ -1,4 +1,4 @@
-const RENEW_THRESHOLD = 500;
+const RENEW_THRESHOLD = 700;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -43,13 +43,13 @@ var roleExtractor = {
     config: {
         'W14N37': {
             idlePos: { x: 22, y: 26 }, // Where to wait when idle
-            mineralId: '5bbcb25640062e4259e93905', // Mineral deposit ID
-            dropoffId: '688d5a468b99246abd95096f' // Storage/Terminal/Container ID
+            mineralId: '5bbcb25640062e4259e93905', // hydrogen
+            dropoffId: '68a0005110ab6307347c0d2e' // Terminal
         },
         'W15N37': {
-            idlePos: { x: 15, y: 15 },
-            mineralId: '',
-            dropoffId: ''
+            idlePos: { x: 8, y: 29 },
+            mineralId: '5bbcb24f40062e4259e938bd', // zynthium
+            dropoffId: '689ec5ee57237e81b20999b7', // terminal
         }
     },
 

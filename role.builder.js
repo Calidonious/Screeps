@@ -1,4 +1,4 @@
-const REPAIR_HOLD = 3000000
+const REPAIR_HOLD = 10000
 
 const RENEW_THRESHOLD = 500; // Minimum desired life span after renewal
 

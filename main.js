@@ -1,24 +1,32 @@
-const roleHarvester = require('role.harvester');
+const spawnConfigs = require('config.spawn');
+const LinkManager = require('logic.linkManager');
+const terminalLogic = require('logic.terminal');
+const towerLogic = require('logic.tower');
+const labLogic = require('logic.lab');
+
 const roleBuilder = require('role.builder');
-const roleUpgrader = require('role.upgrader');
-const roleDefender = require('role.defender');
-const roleScout = require('role.scout');
-const roleTransporter = require('role.transporter');
-const roleTransfer = require('role.transfer');
 const roleClaimer = require('role.claimer');
-const roleHarasser = require('role.harasser');
-const roleMedic = require('role.medic');
 const roleCollector = require('role.collector');
+const roleDefender = require('role.defender');
 const roleExtractor = require('role.extractor');
-const towerLogic = require('tower.logic');
-const roleLinkManager = require('role.linkManager');
-const spawnConfigs = require('spawn.config');
+const roleHarasser = require('role.harasser');
+const roleHarvester = require('role.harvester');
+const roleMedic = require('role.medic');
+const rolePioneer = require('role.pioneer');
+const roleScout = require('role.scout');
+const roleTransfer = require('role.transfer');
+const roleTransporter = require('role.transporter');
+const roleUpgrader = require('role.upgrader');
+const roleLabManager = require('role.labManager'); 
+
 
 module.exports.loop = function () {
     const funnyNames = [
         'Killbot 3000','Stabby Boi','Sneaky Steve','MurderCube','AngryToast','Zap Lad',
-        'Blood Exanguination Bot','MeatShield','Boom Roomba','Sir Slashalot','Pain Distributor',
-        'Yeeter','Hostile Hugger','Clanka','Clanker','Bob The Atom Smasher',
+        'Blood Exanguination Bot','MeatShield','Boomba Roomba','Sir Slashalot','Pain Distributor',
+        'Yeeter','Hostile Hugger','Clanka','Clanker','Bob The Atom Smasher', 'Emancipator bot', 
+        'T-2000', 'Optimus', 'Astro', 'Awsomo', 'C-3PO', 'Darlik', 'CogsWorth', 'Hal', 'Jimmy',
+        'Officer Stabbington', 
     ];
 
     const getUniqueCreepName = (role) => {
@@ -43,7 +51,9 @@ module.exports.loop = function () {
 
     // Run static logic
     towerLogic.run();
-    roleLinkManager.run();
+    LinkManager.run();
+    terminalLogic.run();
+    labLogic.run();
 
     // Memory cleanup
     for (const name in Memory.creeps) {
@@ -114,8 +124,10 @@ module.exports.loop = function () {
             claimer: roleClaimer,
             harasser: roleHarasser,
             medic: roleMedic,
+            pioneer: rolePioneer,
             collector: roleCollector,
             extractor: roleExtractor,
+            labManager: roleLabManager,
         }[creep.memory.role];
 
         if (roleModule) roleModule.run(creep);
