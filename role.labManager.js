@@ -1,4 +1,4 @@
-const RENEW_THRESHOLD = 500;
+const RENEW_THRESHOLD = 800;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -39,8 +39,12 @@ function moveToSpawn(creep) {
     return false;
 }
 
+const labLogic = require('logic.lab');
 var roleLabManager = {
-    run: function (creep, roomCfg) {
+    run: function (creep) {
+        const roomCfg = labLogic.config[creep.room.name];
+        if (!roomCfg) return;
+        
         // Healing (optional)
         if (isWounded(creep)) {
             creep.say('🏥');

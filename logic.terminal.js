@@ -2,18 +2,29 @@ var terminalLogic = {
     config: {
         W15N37: {
             id: '689ec5ee57237e81b20999b7',
-            mode: 'send',
+            mode: 'receive',
             partners: [
                 {
                     room: 'W14N37',
                     //resources: [RESOURCE_HYDROGEN, RESOURCE_OXYGEN],
-                    chunkSize: 1000
+                    chunkSize: 1000,
+                    allowEnergy: false,        // allow sending energy?
+                    energyTarget: 20000       // stop once receiver has >= this much energy
                 },
             ]
         },
         W14N37: {
             id: '68a0005110ab6307347c0d2e',
-            mode: 'receive'
+            mode: 'receive',
+            partners: [
+                {
+                    room: 'W15N37',
+                    //resources: [RESOURCE_ZYNTHIUM], // only send Z
+                    chunkSize: 1000,
+                    allowEnergy: false,      // won’t send energy
+                    energyTarget: 15000
+                },
+            ]
         },
     },
 
@@ -35,12 +46,41 @@ var terminalLogic = {
                 const partnerTerminal = Game.getObjectById(partner.id);
                 if (!partnerTerminal) continue;
 
-                // Loop resources in sender terminal
+                // --- Check Energy Sending ---
+                if (partnerCfg.allowEnergy && partnerCfg.energyTarget) {
+                    if (partnerTerminal.store[RESOURCE_ENERGY] < partnerCfg.energyTarget) {
+                        const needed = partnerCfg.energyTarget - partnerTerminal.store[RESOURCE_ENERGY];
+                        const sendAmount = Math.min(needed, partnerCfg.chunkSize || 1000, terminal.store[RESOURCE_ENERGY]);
+
+                        if (sendAmount > 0) {
+                            const cost = Game.market.calcTransactionCost(
+                                sendAmount,
+                                roomName,
+                                partnerCfg.room
+                            );
+
+                            if (terminal.store[RESOURCE_ENERGY] >= cost + sendAmount) {
+                                const result = terminal.send(RESOURCE_ENERGY, sendAmount, partnerCfg.room);
+                                if (result === OK) {
+                                    console.log(`[TerminalLogic] ${roomName} sent ${sendAmount} energy to ${partnerCfg.room} (target ${partnerCfg.energyTarget})`);
+                                } else {
+                                    console.log(`[TerminalLogic] ${roomName} failed to send energy to ${partnerCfg.room}: ${result}`);
+                                }
+                                return; // one batch per tick
+                            }
+                        }
+                    }
+                }
+
+                // --- Normal Resource Sending ---
                 for (const resourceType in terminal.store) {
                     const amount = terminal.store[resourceType];
 
-                    // Skip energy and empty amounts
-                    if (resourceType === RESOURCE_ENERGY || amount <= 0) continue;
+                    // Skip empty amounts
+                    if (amount <= 0) continue;
+
+                    // Skip energy unless allowed
+                    if (resourceType === RESOURCE_ENERGY) continue;
 
                     // If resources are specified, skip if not in list
                     if (partnerCfg.resources && !partnerCfg.resources.includes(resourceType)) continue;
@@ -62,7 +102,7 @@ var terminalLogic = {
                         console.log(`[TerminalLogic] ${roomName} failed to send ${resourceType} to ${partnerCfg.room}: ${result}`);
                     }
 
-                    return; // send only one batch per tick
+                    return; // one batch per tick
                 }
             }
         }

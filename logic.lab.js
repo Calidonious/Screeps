@@ -6,19 +6,19 @@ var labLogic = {
             labEnergyTarget: 2000,
             idlePos: { x: 10, y: 18 },
             enableReactions: true,   // toggle reactions on/off
-            enableManagers: true,
+            enableManagers: false,
 
             // Input labs: reagents
             inputLabs: [
-                { id: '68a16633528fb297a918d017', resource: RESOURCE_HYDROGEN },
-                { id: 'labId2', resource: RESOURCE_OXYGEN }
+                { id: '68a16633528fb297a918d017', resource: RESOURCE_ZYNTHIUM },
+                { id: '68a27e8600d73a39398b50d7', resource: RESOURCE_HYDROGEN }
             ],
 
             // Reaction labs: produce compounds
             reactionLabs: ['68a1c3cc759572125328d85c'],
 
             // Target compound
-            targetCompound: RESOURCE_HYDROXIDE,
+            targetCompound: RESOURCE_ZYNTHIUM_HYDRIDE,
 
             // Optional boost labs
             boostLabs: [] // { id: 'labId5', resource: RESOURCE_CATALYZED_GHODIUM_ALKALIDE }
@@ -30,7 +30,7 @@ var labLogic = {
             labEnergyTarget: 2000,
             idlePos: { x: 39, y: 26 },
             enableReactions: true,   // toggle reactions on/off
-            enableManagers: true,
+            enableManagers: false,
 
             inputLabs: [
                 { id: '68a18295dcc52e264ef07030', resource: RESOURCE_ZYNTHIUM },

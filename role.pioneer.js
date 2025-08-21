@@ -34,7 +34,24 @@ function moveToSpawn(creep) {
 }
 
 var rolePioneer = {
-    run: function(creep) {
+    // Config per group
+    config: {
+        1: { // Builders
+            sourceId: "5bbcac249099fc012e63505b", // leave blank for closest
+            idle: { x: 9, y: 24 } // fallback idle pos
+        },
+        2: { // Upgraders
+            sourceId: "5bbcac249099fc012e63505b",
+            idle: { x: 8, y: 24 }
+        },
+        3: { // Fillers
+            sourceId: "5bbcac249099fc012e63505a", // fallback source
+            storageId: "", // optional: if defined, withdraw from this storage
+            idle: { x: 7, y: 24 }
+        }
+    },
+
+    run: function (creep) {
         // Healing
         if (isWounded(creep)) {
             if (moveToSpawn(creep)) return;
@@ -51,14 +68,14 @@ var rolePioneer = {
 
         const targetRoom = creep.memory.targetRoom;
         const group = creep.memory.group || 1;
+        const groupCfg = this.config[group] || {};
 
-        // Path to target
+        // Pathing (custom for pioneers moving to new rooms)
         const path = [
-            { room: 'W14N36', x: 20, y: 10 },
-            { room: 'W14N36', x: 1, y: 36 },
-            { room: 'W15N36', x: 44, y: 15 },
-            { room: 'W15N36', x: 27, y: 2 },
-            { room: targetRoom, x: 25, y: 45 }
+            { room: 'W14N38', x: 22, y: 22 },
+            { room: 'W14N39', x: 29, y: 28 },
+            { room: 'W13N39', x: 31, y: 34 },
+            { room: targetRoom, x: 31, y: 34 }
         ];
         if (creep.memory.pathIndex === undefined) creep.memory.pathIndex = 0;
         if (creep.room.name !== targetRoom) {
@@ -72,93 +89,124 @@ var rolePioneer = {
         }
         creep.memory.pathIndex = undefined;
 
-        // Working state toggle
-        if (creep.memory.working && creep.store[RESOURCE_ENERGY] === 0) {
-            creep.memory.working = false;
-        }
-        if (!creep.memory.working && creep.store.getFreeCapacity() === 0) {
-            creep.memory.working = true;
-        }
+        // Working toggle
+        if (creep.memory.working && creep.store[RESOURCE_ENERGY] === 0) creep.memory.working = false;
+        if (!creep.memory.working && creep.store.getFreeCapacity() === 0) creep.memory.working = true;
 
-        // === Group 2: Upgrader ===
-        if (group === 2) {
+        // --- Group-specific logic ---
+        if (group === 2) { // Upgrader
             if (!creep.memory.working) {
-                const src = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-                if (src && creep.harvest(src) === ERR_NOT_IN_RANGE) creep.moveTo(src, { visualizePathStyle: { stroke: '#ffaa00' } });
+                this.harvest(creep, groupCfg);
             } else {
                 const ctrl = creep.room.controller;
-                if (ctrl && creep.upgradeController(ctrl) === ERR_NOT_IN_RANGE) creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#00ffcc' } });
+                if (ctrl && creep.upgradeController(ctrl) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#00ffcc' } });
+                }
             }
             return;
         }
 
-        // === Group 3: Filler Only ===
-        if (group === 3) {
+        if (group === 3) { // Filler
             if (!creep.memory.working) {
-                const src = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-                if (src && creep.harvest(src) === ERR_NOT_IN_RANGE) creep.moveTo(src, { visualizePathStyle: { stroke: '#ffaa00' } });
+                this.collectEnergy(creep, groupCfg);
             } else {
-                const fillTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: s =>
-                        (s.structureType === STRUCTURE_SPAWN ||
-                         s.structureType === STRUCTURE_EXTENSION ||
-                         s.structureType === STRUCTURE_TOWER ||
-                         s.structureType === STRUCTURE_STORAGE) &&
-                        s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-                });
+                const fillTarget = this.findFillTarget(creep, groupCfg);
                 if (fillTarget && creep.transfer(fillTarget, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(fillTarget, { visualizePathStyle: { stroke: '#ffaa00' } });
+                } else if (!fillTarget && groupCfg.idle) {
+                    creep.moveTo(new RoomPosition(groupCfg.idle.x, groupCfg.idle.y, creep.room.name));
                 }
             }
             return;
         }
 
-        // === Group 1: Builders (different site per creep if possible) ===
+        // === Group 1: Builder ===
         if (!creep.memory.working) {
-            const src = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-            if (src && creep.harvest(src) === ERR_NOT_IN_RANGE) creep.moveTo(src, { visualizePathStyle: { stroke: '#ffaa00' } });
+            this.harvest(creep, groupCfg);
             return;
         }
 
-        // ️Build — Assign unique site if available
-        const allSites = creep.room.find(FIND_CONSTRUCTION_SITES);
-        if (allSites.length) {
-            if (!creep.memory.buildTargetId || !Game.getObjectById(creep.memory.buildTargetId)) {
-                // Pick site with fewest assigned creeps
-                const siteAssignments = {};
-                for (let cName in Game.creeps) {
-                    const c = Game.creeps[cName];
-                    if (c.memory.buildTargetId) siteAssignments[c.memory.buildTargetId] = (siteAssignments[c.memory.buildTargetId] || 0) + 1;
-                }
-                allSites.sort((a, b) => (siteAssignments[a.id] || 0) - (siteAssignments[b.id] || 0));
-                creep.memory.buildTargetId = allSites[0].id;
+        const site = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+        if (site) {
+            if (creep.build(site) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(site, { visualizePathStyle: { stroke: '#00ff00' } });
             }
-            const site = Game.getObjectById(creep.memory.buildTargetId);
-            if (site && creep.build(site) === ERR_NOT_IN_RANGE) creep.moveTo(site, { visualizePathStyle: { stroke: '#00ff00' } });
             return;
         }
 
-        // Fill
-        const fillTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: s =>
-                (s.structureType === STRUCTURE_SPAWN ||
-                 s.structureType === STRUCTURE_EXTENSION ||
-                 s.structureType === STRUCTURE_TOWER) &&
-                s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        });
+        // Fill as fallback
+        const fillTarget = this.findFillTarget(creep, groupCfg);
         if (fillTarget && creep.transfer(fillTarget, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(fillTarget, { visualizePathStyle: { stroke: '#ffaa00' } });
             return;
         }
 
-        // Repair
+        // Repair fallback
         const repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: s => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL
+            filter: s => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
         });
         if (repairTarget && creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
             creep.moveTo(repairTarget, { visualizePathStyle: { stroke: '#9999ff' } });
             return;
         }
+
+        // Idle if nothing else
+        if (groupCfg.idle) {
+            creep.moveTo(new RoomPosition(groupCfg.idle.x, groupCfg.idle.y, creep.room.name));
+        }
+    },
+
+    // --- Helpers ---
+    harvest: function (creep, groupCfg) {
+        let src = null;
+        if (groupCfg.sourceId) {
+            src = Game.getObjectById(groupCfg.sourceId);
+        }
+        if (!src) {
+            src = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+        }
+        if (src && creep.harvest(src) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(src, { visualizePathStyle: { stroke: '#ffaa00' } });
+        }
+    },
+
+    collectEnergy: function (creep, groupCfg) {
+        if (groupCfg.storageId) {
+            const storage = Game.getObjectById(groupCfg.storageId);
+            if (storage && creep.withdraw(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffaa00' } });
+            }
+        } else {
+            this.harvest(creep, groupCfg);
+        }
+    },
+
+    // Prioritized fill: Spawn/Extensions > Towers > (Storage if no storageId set)
+    findFillTarget: function (creep, groupCfg) {
+        let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: s =>
+                (s.structureType === STRUCTURE_SPAWN ||
+                 s.structureType === STRUCTURE_EXTENSION) &&
+                s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        });
+
+        if (!target) {
+            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: s =>
+                    s.structureType === STRUCTURE_TOWER &&
+                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            });
+        }
+
+        if (!target && !groupCfg.storageId) {
+            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: s =>
+                    s.structureType === STRUCTURE_STORAGE &&
+                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            });
+        }
+
+        return target;
     }
 };
 

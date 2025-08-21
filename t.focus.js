@@ -1,59 +1,32 @@
 const towerLogic = {
     whitelist: [],
 
-    // Base mode if alternation is disabled
-    mode: "focus", // "focus" | "split"
-
-    // Auto-alternation config
-    alternation: {
-        enabled: true,  // toggle auto alternation
-        interval: 5,    // ticks between switching modes
-        lastSwitch: 0,   // internal state
-        currentMode: "focus"
-    },
-
     // Per-room tower settings
     roomConfig: {
         'W14N37': {
-            repairWalls: true,
-            wallThreshold: 200000,
-            repairRamparts: true,
+            repairWalls: true, // 46 walls
+            wallThreshold: 200000, // walls get repaired up to this hits
+            repairRamparts: true, // 4 ramparts
             rampartThreshold: 3000000
         },
         'W15N37': {
-            repairWalls: true,
+            repairWalls: true, // 22 walls
             wallThreshold: 320000,
-            repairRamparts: true,
+            repairRamparts: true, // 2 ramparts
             rampartThreshold: 3000000
         },
         'W13N39': {
-            repairWalls: true,
+            repairWalls: true, // 25 walls
             wallThreshold: 12000,
-            repairRamparts: true,
+            repairRamparts: true, // 4 ramparts
             rampartThreshold: 12000
         }
-    },
-
-    getMode: function (healers) {
-        if (!this.alternation.enabled || healers.length === 0) {
-            return this.mode; // manual or fallback mode
-        }
-
-        // Auto alternation (only when healers are present)
-        if (Game.time - this.alternation.lastSwitch >= this.alternation.interval) {
-            this.alternation.currentMode =
-                this.alternation.currentMode === "focus" ? "split" : "focus";
-            this.alternation.lastSwitch = Game.time;
-
-            console.log(`[TowerLogic] Switched to ${this.alternation.currentMode} mode (healers detected)`);
-        }
-        return this.alternation.currentMode;
     },
 
     run: function () {
         const towers = _.filter(Game.structures, s => s.structureType === STRUCTURE_TOWER);
 
-        towers.forEach((tower, idx) => {
+        towers.forEach(tower => {
             const roomName = tower.room.name;
             const cfg = this.roomConfig[roomName] || {
                 repairWalls: false,
@@ -62,34 +35,24 @@ const towerLogic = {
                 rampartThreshold: 0
             };
 
-            // Hostiles
+            // Hostiles in room
             const hostiles = tower.room.find(FIND_HOSTILE_CREEPS, {
                 filter: (creep) => !this.whitelist.includes(creep.owner.username)
             });
 
             if (hostiles.length > 0) {
+                // Prioritize healers (creeps with HEAL parts)
                 const healers = _.filter(hostiles, c =>
                     c.body.some(part => part.type === HEAL && part.hits > 0)
                 );
 
-                const currentMode = this.getMode(healers);
-
                 let target = null;
-
-                if (currentMode === "focus") {
-                    // === FOCUS MODE ===
-                    if (healers.length > 0) {
-                        target = _.min(healers, 'hits');
-                    } else {
-                        target = _.min(hostiles, 'hits');
-                    }
-                } else if (currentMode === "split") {
-                    // === SPLIT MODE ===
-                    if (healers.length > 0) {
-                        target = healers[idx % healers.length];
-                    } else {
-                        target = hostiles[idx % hostiles.length];
-                    }
+                if (healers.length > 0) {
+                    // Attack the weakest healer
+                    target = _.min(healers, 'hits');
+                } else {
+                    // Otherwise attack the weakest overall hostile
+                    target = _.min(hostiles, 'hits');
                 }
 
                 if (target && target !== Infinity) {
@@ -98,7 +61,7 @@ const towerLogic = {
                 }
             }
 
-            // === No hostiles, do repairs/heals ===
+            // Repair logic
             let damagedStructures = tower.room.find(FIND_STRUCTURES, {
                 filter: (s) => {
                     if (s.structureType === STRUCTURE_WALL) {

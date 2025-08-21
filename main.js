@@ -4,6 +4,7 @@ const terminalLogic = require('logic.terminal');
 const towerLogic = require('logic.tower');
 const labLogic = require('logic.lab');
 
+
 const roleBuilder = require('role.builder');
 const roleClaimer = require('role.claimer');
 const roleCollector = require('role.collector');
@@ -17,8 +18,7 @@ const roleScout = require('role.scout');
 const roleTransfer = require('role.transfer');
 const roleTransporter = require('role.transporter');
 const roleUpgrader = require('role.upgrader');
-const roleLabManager = require('role.labManager'); 
-
+const roleLabManager = require('role.labManager');
 
 module.exports.loop = function () {
     const funnyNames = [
@@ -26,7 +26,7 @@ module.exports.loop = function () {
         'Blood Exanguination Bot','MeatShield','Boomba Roomba','Sir Slashalot','Pain Distributor',
         'Yeeter','Hostile Hugger','Clanka','Clanker','Bob The Atom Smasher', 'Emancipator bot', 
         'T-2000', 'Optimus', 'Astro', 'Awsomo', 'C-3PO', 'Darlik', 'CogsWorth', 'Hal', 'Jimmy',
-        'Officer Stabbington', 
+        'Officer Stabbington',
     ];
 
     const getUniqueCreepName = (role) => {
@@ -46,7 +46,9 @@ module.exports.loop = function () {
 
     // Utility to count creeps by role AND homeRoom
     function countCreepsByRoomAndRole(roomName, role) {
-        return _.sum(Game.creeps, c => c.memory.role === role && c.memory.homeRoom === roomName ? 1 : 0);
+        return _.sum(Game.creeps, c =>
+            c && c.memory && c.memory.role === role && c.memory.homeRoom === roomName ? 1 : 0
+        );
     }
 
     // Run static logic
@@ -56,8 +58,10 @@ module.exports.loop = function () {
     labLogic.run();
 
     // Memory cleanup
-    for (const name in Memory.creeps) {
-        if (!Game.creeps[name]) delete Memory.creeps[name];
+    for (let name in Memory.creeps) {
+        if (!Game.creeps[name]) {
+            delete Memory.creeps[name];
+        }
     }
 
     // Auto-renew creeps
@@ -69,19 +73,22 @@ module.exports.loop = function () {
         }
     }
 
-    // Auto-adjust defender/medic needs
-    let totalMinDefenders = 0, totalMinMedics = 0;
-    defenseRooms.forEach(roomName => {
-        const hostiles = getHostiles(roomName);
-        if (hostiles.length > 0) {
-            if (hostiles.length >= 2) totalMinDefenders += Math.min(2, hostiles.length);
-            if (hostiles.length >= 4) totalMinMedics += Math.min(2, Math.ceil(hostiles.length / 2));
-        }
-    });
-
+    // Auto-adjust defender/medic needs per room
     Object.values(spawnConfigs).forEach(cfg => {
-        cfg.min.defender = totalMinDefenders;
-        cfg.min.medic = totalMinMedics;
+        const hostiles = getHostiles(cfg.room);
+    
+        let roomDefenders = 0;
+        let roomMedics = 0;
+    
+        if (hostiles.length > 0) {
+            console.log(`[ALERT] Room ${cfg.room} under attack! Hostiles: ${hostiles.length}`);
+            
+            if (hostiles.length >= 2) roomDefenders = Math.min(1, hostiles.length);
+            if (hostiles.length >= 4) roomMedics = Math.min(1, Math.ceil(hostiles.length / 2));
+        }
+    
+        cfg.min.defender = roomDefenders;
+        cfg.min.medic = roomMedics;
     });
 
     // Spawn creeps per room based on min per role
@@ -100,6 +107,7 @@ module.exports.loop = function () {
                 const mem = Object.assign({}, memory[role] || {});
                 mem.homeRoom = room;
 
+                // Assign medic to follow defender
                 if (role === 'medic' && min[role] > 0 && mem.follow === undefined) {
                     const defenders = _.filter(Game.creeps, c => c.memory.role === 'defender' && c.memory.homeRoom === room);
                     if (defenders.length) mem.follow = defenders[0].name;
@@ -110,26 +118,40 @@ module.exports.loop = function () {
         }
     });
 
+    // Role execution map
+    const roleModules = {
+        harvester: roleHarvester,
+        builder: roleBuilder,
+        upgrader: roleUpgrader,
+        defender: roleDefender,
+        scout: roleScout,
+        transporter: roleTransporter,
+        transfer: roleTransfer,
+        claimer: roleClaimer,
+        harasser: roleHarasser,
+        medic: roleMedic,
+        pioneer: rolePioneer,
+        collector: roleCollector,
+        extractor: roleExtractor,
+        labManager: roleLabManager,
+    };
+
     // Run all creeps by role
     for (const name in Game.creeps) {
         const creep = Game.creeps[name];
-        const roleModule = {
-            harvester: roleHarvester,
-            builder: roleBuilder,
-            upgrader: roleUpgrader,
-            defender: roleDefender,
-            scout: roleScout,
-            transporter: roleTransporter,
-            transfer: roleTransfer,
-            claimer: roleClaimer,
-            harasser: roleHarasser,
-            medic: roleMedic,
-            pioneer: rolePioneer,
-            collector: roleCollector,
-            extractor: roleExtractor,
-            labManager: roleLabManager,
-        }[creep.memory.role];
+        if (!creep || !creep.memory || !creep.memory.role) {
+            continue; // skip creeps without memory/role
+        }
 
-        if (roleModule) roleModule.run(creep);
+        const role = creep.memory.role;
+        const roleModule = roleModules[role];
+
+        if (roleModule && roleModule.run) {
+            try {
+                roleModule.run(creep);
+            } catch (err) {
+                console.log(`[Error] ${creep.name} (${role}): ${err}`);
+            }
+        }
     }
 };

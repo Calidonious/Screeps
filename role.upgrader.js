@@ -1,4 +1,4 @@
-const RENEW_THRESHOLD = 500; // Minimum desired life span after renewal
+const RENEW_THRESHOLD = 800; // Minimum desired life span after renewal
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;

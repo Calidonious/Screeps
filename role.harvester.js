@@ -25,11 +25,23 @@ const HARVESTER_CONFIG = {
         },
         storageId: '689593f14c3ddc337079485d'
     },
-    // Add more rooms here
+    'W13N39': {
+        1: {
+            sourceId: '5bbcac249099fc012e63505a',
+            containerId: 'CONTAINER_ID_FOR_GROUP_1',
+            idlePos: new RoomPosition(34, 43, 'W15N37')
+        },
+        2: {
+            sourceId: '5bbcac249099fc012e63505b',
+            containerId: '',
+            idlePos: new RoomPosition(41, 22, 'W15N37')
+        },
+        storageId: ''
+    },
 };
 
 
-const RENEW_THRESHOLD = 500;
+const RENEW_THRESHOLD = 800;
 
 function getRoomConfig(creep) {
     const roomName = creep.room.name;

@@ -1,4 +1,4 @@
-const RENEW_THRESHOLD = 700;
+const RENEW_THRESHOLD = 800;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;

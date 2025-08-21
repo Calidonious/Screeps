@@ -41,7 +41,7 @@ const TRANSFER_CONFIG = {
     }
 };
 
-const RENEW_THRESHOLD = 500;
+const RENEW_THRESHOLD = 800;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;

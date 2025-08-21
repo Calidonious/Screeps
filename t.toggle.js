@@ -6,8 +6,8 @@ const towerLogic = {
 
     // Auto-alternation config
     alternation: {
-        enabled: true,  // toggle auto alternation
-        interval: 5,    // ticks between switching modes
+        enabled: false,  // toggle auto alternation
+        interval: 3,    // ticks between switching modes
         lastSwitch: 0,   // internal state
         currentMode: "focus"
     },
