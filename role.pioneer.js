@@ -38,16 +38,23 @@ var rolePioneer = {
     config: {
         1: { // Builders
             sourceId: "5bbcac249099fc012e63505b", // leave blank for closest
-            idle: { x: 9, y: 24 } // fallback idle pos
+            storageId: "", // optional: withdraw from storage if defined
+            idle: { x: 9, y: 24 }
         },
         2: { // Upgraders
             sourceId: "5bbcac249099fc012e63505b",
+            storageId: "", // optional: withdraw from storage if defined
             idle: { x: 8, y: 24 }
         },
         3: { // Fillers
-            sourceId: "5bbcac249099fc012e63505a", // fallback source
-            storageId: "", // optional: if defined, withdraw from this storage
-            idle: { x: 7, y: 24 }
+            sourceId: "5bbcac249099fc012e63505a",
+            storageId: "68a688e6d89b6f1cd82a4e03", // optional: withdraw from storage if defined
+            idle: { x: 8, y: 24 }
+        },
+        4: { // Harvesters → Storage
+            sourceId: "5bbcac249099fc012e63505b", // must be defined
+            storageId: "68a688e6d89b6f1cd82a4e03", // must be defined
+            idle: { x: 6, y: 24 }
         }
     },
 
@@ -70,7 +77,7 @@ var rolePioneer = {
         const group = creep.memory.group || 1;
         const groupCfg = this.config[group] || {};
 
-        // Pathing (custom for pioneers moving to new rooms)
+        // Pathing
         const path = [
             { room: 'W14N38', x: 22, y: 22 },
             { room: 'W14N39', x: 29, y: 28 },
@@ -93,10 +100,25 @@ var rolePioneer = {
         if (creep.memory.working && creep.store[RESOURCE_ENERGY] === 0) creep.memory.working = false;
         if (!creep.memory.working && creep.store.getFreeCapacity() === 0) creep.memory.working = true;
 
-        // --- Group-specific logic ---
-        if (group === 2) { // Upgrader
+        // === Group 4: Harvester → Storage ===
+        if (group === 4) {
             if (!creep.memory.working) {
                 this.harvest(creep, groupCfg);
+            } else {
+                const storage = Game.getObjectById(groupCfg.storageId);
+                if (storage && creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffaa00' } });
+                } else if (!storage && groupCfg.idle) {
+                    creep.moveTo(new RoomPosition(groupCfg.idle.x, groupCfg.idle.y, creep.room.name));
+                }
+            }
+            return;
+        }
+
+        // === Group 2: Upgrader ===
+        if (group === 2) {
+            if (!creep.memory.working) {
+                this.collectEnergy(creep, groupCfg);
             } else {
                 const ctrl = creep.room.controller;
                 if (ctrl && creep.upgradeController(ctrl) === ERR_NOT_IN_RANGE) {
@@ -106,7 +128,8 @@ var rolePioneer = {
             return;
         }
 
-        if (group === 3) { // Filler
+        // === Group 3: Filler ===
+        if (group === 3) {
             if (!creep.memory.working) {
                 this.collectEnergy(creep, groupCfg);
             } else {
@@ -122,7 +145,7 @@ var rolePioneer = {
 
         // === Group 1: Builder ===
         if (!creep.memory.working) {
-            this.harvest(creep, groupCfg);
+            this.collectEnergy(creep, groupCfg);
             return;
         }
 
@@ -134,14 +157,12 @@ var rolePioneer = {
             return;
         }
 
-        // Fill as fallback
         const fillTarget = this.findFillTarget(creep, groupCfg);
         if (fillTarget && creep.transfer(fillTarget, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(fillTarget, { visualizePathStyle: { stroke: '#ffaa00' } });
             return;
         }
 
-        // Repair fallback
         const repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: s => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
         });
@@ -150,7 +171,6 @@ var rolePioneer = {
             return;
         }
 
-        // Idle if nothing else
         if (groupCfg.idle) {
             creep.moveTo(new RoomPosition(groupCfg.idle.x, groupCfg.idle.y, creep.room.name));
         }
@@ -181,7 +201,6 @@ var rolePioneer = {
         }
     },
 
-    // Prioritized fill: Spawn/Extensions > Towers > (Storage if no storageId set)
     findFillTarget: function (creep, groupCfg) {
         let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: s =>

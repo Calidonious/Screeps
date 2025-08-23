@@ -49,7 +49,7 @@ var roleExtractor = {
         'W15N37': {
             idlePos: { x: 8, y: 29 },
             mineralId: '5bbcb24f40062e4259e938bd', // zynthium
-            dropoffId: '689ec5ee57237e81b20999b7', // terminal
+            dropoffId: '689593f14c3ddc337079485d', // terminal
         }
     },
 

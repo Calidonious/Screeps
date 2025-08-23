@@ -28,15 +28,15 @@ const HARVESTER_CONFIG = {
     'W13N39': {
         1: {
             sourceId: '5bbcac249099fc012e63505a',
-            containerId: 'CONTAINER_ID_FOR_GROUP_1',
-            idlePos: new RoomPosition(34, 43, 'W15N37')
+            containerId: '',
+            idlePos: new RoomPosition(24, 15, 'W13N39')
         },
         2: {
             sourceId: '5bbcac249099fc012e63505b',
             containerId: '',
-            idlePos: new RoomPosition(41, 22, 'W15N37')
+            idlePos: new RoomPosition(44, 19, 'W13N39')
         },
-        storageId: ''
+        storageId: '68a688e6d89b6f1cd82a4e03'
     },
 };
 

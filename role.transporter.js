@@ -18,6 +18,14 @@ const ROOM_CONFIGS = {
             3: { x: 32, y: 47 }
         }
     },
+    'W13N39': {
+        STORAGE_ID: '68a688e6d89b6f1cd82a4e03',
+        IDLE_POSITIONS: {
+            1: { x: 8, y: 24 },
+            2: { x: 9, y: 24 },
+            3: { x: 21, y: 16 }
+        }
+    },
 };
 
 function isWounded(creep) {

@@ -6,10 +6,10 @@ var terminalLogic = {
             partners: [
                 {
                     room: 'W14N37',
-                    //resources: [RESOURCE_HYDROGEN, RESOURCE_OXYGEN],
-                    chunkSize: 1000,
+                    //resources: [RESOURCE_ENERGY],
+                    chunkSize: 10000,
                     allowEnergy: false,        // allow sending energy?
-                    energyTarget: 20000       // stop once receiver has >= this much energy
+                    energyTarget: 5000       // stop once receiver has >= this much energy
                 },
             ]
         },
@@ -19,8 +19,8 @@ var terminalLogic = {
             partners: [
                 {
                     room: 'W15N37',
-                    //resources: [RESOURCE_ZYNTHIUM], // only send Z
-                    chunkSize: 1000,
+                    //resources: [RESOURCE_HYDROGEN], // only send Z
+                    chunkSize: 5000,
                     allowEnergy: false,      // won’t send energy
                     energyTarget: 15000
                 },

@@ -50,17 +50,17 @@ var roleCollector = {
                 collectEnergy: false,
                 maintainTerminal: true,
                 terminalId: '68a0005110ab6307347c0d2e',
-                terminalEnergyTarget: 2000
+                terminalEnergyTarget: 5000
             },
             // group 2: Market tender & Lab tech
             group2: {
                 idlePos: { x: 9, y: 23 },
-                sourceId: '688d5a468b99246abd95096f',
+                sourceId: '68a0005110ab6307347c0d2e', //terminal
                 targets: [
                     {
-                        targetId: '68a0005110ab6307347c0d2e',
+                        targetId: '688d5a468b99246abd95096f', // storage
                         transfers: {
-                            [RESOURCE_HYDROGEN]: { enabled: false, amount: 0 }
+                            [RESOURCE_ENERGY]: { enabled: true, amount: 200000 }
                         }
                     },
                     {
@@ -78,6 +78,18 @@ var roleCollector = {
                 sources: [
                     { id: '68a0005110ab6307347c0d2e' }, // terminal
                     { id: '' }, // example: lab
+                ]
+            },
+            group4: {
+                idlePos: { x: 9, y: 23 },
+                storageId: '688d5a468b99246abd95096f', // deliver target in home
+                targetRoom: 'W13N38',
+                depositId: '', // optional deposit id, leave blank = pick any
+                useCustomPath: true,
+                customPath: [
+                    { room: 'W14N37', x: 25, y: 25 },
+                    { room: 'W14N38', x: 20, y: 20 },
+                    { room: 'W13N38', x: 25, y: 25 }
                 ]
             }
         },
@@ -109,6 +121,60 @@ var roleCollector = {
                 sources: [
                     { id: '689ec5ee57237e81b20999b7' }, // terminal
                 ]
+            },
+            group4: {
+                idlePos: { x: 39, y: 45 },
+                storageId: '689593f14c3ddc337079485d', // deliver target in home
+                targetRoom: 'W13N38',
+                depositId: '', // optional deposit id, leave blank = pick any
+                useCustomPath: true,
+                customPath: [
+                    { room: 'W14N37', x: 25, y: 25 },
+                    { room: 'W14N38', x: 20, y: 20 },
+                    { room: 'W13N38', x: 25, y: 25 }
+                ]
+            }
+        },
+        'W13N39': {
+            group1: {
+                idlePos: { x: 7, y: 24 },
+                dropoffId: '68a688e6d89b6f1cd82a4e03',
+                storageId: '68a688e6d89b6f1cd82a4e03',
+                collectEnergy: false,
+                maintainTerminal: false,
+                terminalId: '',
+                terminalEnergyTarget: 0
+            },
+            group2: {
+                idlePos: { x: 7, y: 25 },
+                sourceId: '68a688e6d89b6f1cd82a4e03',
+                targets: [
+                    {
+                        targetId: '',
+                        transfers: {
+                            [RESOURCE_UTRIUM]: { enabled: false, amount: 0 }
+                        }
+                    }
+                ]
+            },
+            group3: {
+                idlePos: { x: 7, y: 24 },
+                storageId: '68a688e6d89b6f1cd82a4e03',
+                sources: [
+                    { id: '' }, // terminal
+                ]
+            },
+            group4: {
+                idlePos: { x: 7, y: 24 },
+                storageId: '68a688e6d89b6f1cd82a4e03', // deliver target in home
+                targetRoom: 'W12N40',
+                depositId: '68a819389ca9bbdcea944a15', // optional deposit id, leave blank = pick any
+                useCustomPath: true,
+                customPath: [
+                    { room: 'W13N39', x: 20, y: 18 },
+                    { room: 'W13N40', x: 47, y: 31 },
+                    { room: 'W12N40', x: 12, y: 23 }
+                ]
             }
         }
     },
@@ -136,9 +202,11 @@ var roleCollector = {
             this.runGroup2(creep, homeRoom, roomCfg.group2 || {});
         } else if (group === 3) {
             this.runGroup3(creep, homeRoom, roomCfg.group3 || {});
+        } else if (group === 4) {
+            this.runGroup4(creep, homeRoom, roomCfg.group4 || {});
         }
     },
-
+    
     // Group 1: grim reaper + terminal maintainer
     runGroup1: function (creep, homeRoom, cfg) {
         if (!cfg) return;
@@ -298,6 +366,89 @@ var roleCollector = {
         } else {
             // 4. Nothing to do → idle
             this.moveToIdle(creep, homeRoom, cfg);
+        }
+    },
+    
+    // === Group 4: Deposit / Power bank collector ===
+    runGroup4: function (creep, homeRoom, cfg) {
+        if (!cfg || !cfg.storageId || !cfg.targetRoom) return;
+        const storage = Game.getObjectById(cfg.storageId);
+        if (!storage) return;
+    
+        const isFull = _.sum(creep.store) === creep.store.getCapacity();
+    
+        // --- Delivery phase (full and at home) ---
+        if (isFull && creep.room.name === homeRoom) {
+            for (const res in creep.store) {
+                if (creep.transfer(storage, res) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
+                }
+            }
+            return;
+        }
+    
+        // --- Returning phase (full but not home yet) ---
+        if (isFull && creep.room.name !== homeRoom) {
+            if (cfg.useCustomPath && cfg.customPath && cfg.customPath.length > 0) {
+                this.followPath(creep, cfg.customPath.slice().reverse());
+            } else {
+                creep.moveTo(new RoomPosition(25, 25, homeRoom));
+            }
+            return;
+        }
+    
+        // --- Collection phase (not full) ---
+        if (creep.room.name !== cfg.targetRoom) {
+            if (cfg.useCustomPath && cfg.customPath && cfg.customPath.length > 0) {
+                this.followPath(creep, cfg.customPath);
+            } else {
+                creep.moveTo(new RoomPosition(25, 25, cfg.targetRoom));
+            }
+            return;
+        }
+    
+        // At target room: look for deposit or power bank
+        let target = null;
+        if (cfg.depositId) {
+            target = Game.getObjectById(cfg.depositId);
+        } else {
+            target = creep.pos.findClosestByPath(FIND_DEPOSITS) ||
+                     creep.pos.findClosestByPath(FIND_RUINS, { filter: r => _.sum(r.store) > 0 }) ||
+                     creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: t => _.sum(t.store) > 0 }) ||
+                     creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                         filter: s => s.structureType === STRUCTURE_POWER_BANK && s.hits === 0
+                     });
+        }
+    
+        if (target) {
+            if (target instanceof Deposit) {
+                if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
+                }
+            } else if (target.store) {
+                for (const res in target.store) {
+                    if (target.store[res] > 0 && creep.withdraw(target, res) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
+                    }
+                }
+            }
+        } else {
+            this.moveToIdle(creep, creep.room.name, cfg);
+        }
+    },
+
+    
+    // helper for path following
+    followPath: function (creep, path) {
+        if (creep.memory.pathIndex === undefined) creep.memory.pathIndex = 0;
+        const step = path[creep.memory.pathIndex];
+        if (!step) { creep.memory.pathIndex = undefined; return; }
+    
+        if (creep.pos.roomName === step.room && creep.pos.x === step.x && creep.pos.y === step.y) {
+            creep.memory.pathIndex++;
+        } else {
+            creep.moveTo(new RoomPosition(step.x, step.y, step.room),
+                { visualizePathStyle: { stroke: '#ffaa00' } });
         }
     },
 
