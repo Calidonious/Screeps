@@ -67,7 +67,7 @@ module.exports.loop = function () {
     // Auto-renew creeps
     for (const creepName in Game.creeps) {
         const creep = Game.creeps[creepName];
-        if (creep.ticksToLive < 800) {
+        if (creep.ticksToLive < 1500) {
             const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
             if (spawn) spawn.renewCreep(creep);
         }

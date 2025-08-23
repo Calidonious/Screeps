@@ -1,4 +1,4 @@
-const RENEW_THRESHOLD = 800;
+const RENEW_THRESHOLD = 1300;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -377,12 +377,32 @@ var roleCollector = {
     
         const isFull = _.sum(creep.store) === creep.store.getCapacity();
     
+        // --- Renewal check before leaving base ---
+        if (creep.memory.renewAfterDropoff) {
+            const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            if (spawn) {
+                if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
+                }
+                creep.say('🔋');
+                if (creep.ticksToLive >= RENEW_THRESHOLD) {
+                    creep.memory.renewAfterDropoff = false;
+                }
+                return;
+            }
+        }
+    
         // --- Delivery phase (full and at home) ---
         if (isFull && creep.room.name === homeRoom) {
             for (const res in creep.store) {
                 if (creep.transfer(storage, res) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
                 }
+            }
+    
+            // After dropoff, set to renew
+            if (_.sum(creep.store) === 0) {
+                creep.memory.renewAfterDropoff = true;
             }
             return;
         }
@@ -436,6 +456,7 @@ var roleCollector = {
             this.moveToIdle(creep, creep.room.name, cfg);
         }
     },
+
 
     
     // helper for path following
