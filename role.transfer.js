@@ -15,6 +15,7 @@ const TRANSFER_CONFIG = {
         3: {
             fromId: '68927e5688ba96a2a57a121c', // link ID
             toId: '688d5a468b99246abd95096f', // storage ID
+            secondLinkId: '', // optional link to refill from storage
             position: { x: 10, y: 30 },
             type: 'linkToStorage'
         }
@@ -35,13 +36,35 @@ const TRANSFER_CONFIG = {
         3: {
             fromId: '689831029413445505fa93cf', // link ID
             toId: '689593f14c3ddc337079485d', // storage ID
+            secondLinkId: '', // optional
             position: { x: 36, y: 42 },
+            type: 'linkToStorage'
+        }
+    },
+    'W13N39': {
+        1: {
+            fromId: '68a98b2eab78dd2632667cb1',
+            toId: '68a9959216275babcd54414e',
+            position: { x: 43, y: 17 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 28 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '68a97df8d0e860dcf5ffcfae', // link ID
+            toId: '68a688e6d89b6f1cd82a4e03', // storage ID
+            secondLinkId: '', // optional
+            position: { x: 22, y: 16 },
             type: 'linkToStorage'
         }
     }
 };
 
-const RENEW_THRESHOLD = 800;
+const RENEW_THRESHOLD = 1300;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -106,6 +129,7 @@ const roleTransfer = {
 
         const from = Game.getObjectById(config.fromId);
         const to = Game.getObjectById(config.toId);
+        const secondLink = config.secondLinkId ? Game.getObjectById(config.secondLinkId) : null;
         const targetPos = new RoomPosition(config.position.x, config.position.y, roomName);
 
         if (!creep.pos.isEqualTo(targetPos)) {
@@ -115,12 +139,25 @@ const roleTransfer = {
         }
 
         if (config.type === 'containerToLink' || config.type === 'linkToStorage') {
+            // === MAIN JOB ===
             if (creep.store[RESOURCE_ENERGY] === 0 && from && from.store[RESOURCE_ENERGY] > 0) {
                 creep.withdraw(from, RESOURCE_ENERGY);
                 creep.say('🫴');
-            } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                return;
+            } 
+            if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
                 creep.transfer(to, RESOURCE_ENERGY);
                 creep.say('🫳');
+                return;
+            }
+
+            // === SECOND LINK REFILL (only after main job is done) ===
+            if (secondLink) {
+                if (creep.store[RESOURCE_ENERGY] === 0 && to && to.store[RESOURCE_ENERGY] > 5000) {
+                    creep.withdraw(to, RESOURCE_ENERGY); // to = storage in group3
+                } else if (creep.store[RESOURCE_ENERGY] > 0 && secondLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                    creep.transfer(secondLink, RESOURCE_ENERGY);
+                }
             }
         }
     }

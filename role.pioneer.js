@@ -38,12 +38,12 @@ var rolePioneer = {
     config: {
         1: { // Builders
             sourceId: "5bbcac249099fc012e63505b", // leave blank for closest
-            storageId: "", // optional: withdraw from storage if defined
+            storageId: "68a688e6d89b6f1cd82a4e03", // optional: withdraw from storage if defined
             idle: { x: 9, y: 24 }
         },
         2: { // Upgraders
             sourceId: "5bbcac249099fc012e63505b",
-            storageId: "", // optional: withdraw from storage if defined
+            storageId: "68a688e6d89b6f1cd82a4e03", // optional: withdraw from storage if defined
             idle: { x: 8, y: 24 }
         },
         3: { // Fillers
@@ -53,7 +53,7 @@ var rolePioneer = {
         },
         4: { // Harvesters → Storage
             sourceId: "5bbcac249099fc012e63505b", // must be defined
-            storageId: "68a688e6d89b6f1cd82a4e03", // must be defined
+            storageId: "68a98b2eab78dd2632667cb1", // must be defined
             idle: { x: 6, y: 24 }
         }
     },
@@ -209,13 +209,13 @@ var rolePioneer = {
                 s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
 
-        if (!target) {
-            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: s =>
-                    s.structureType === STRUCTURE_TOWER &&
-                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            });
-        }
+        //if (!target) {
+        //    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        //        filter: s =>
+        //            s.structureType === STRUCTURE_TOWER &&
+        //            s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        //    });
+        //}
 
         if (!target && !groupCfg.storageId) {
             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {

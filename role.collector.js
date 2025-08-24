@@ -1,4 +1,4 @@
-const RENEW_THRESHOLD = 1300;
+const RENEW_THRESHOLD = 1400;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
@@ -370,90 +370,80 @@ var roleCollector = {
     },
     
     // === Group 4: Deposit / Power bank collector ===
-    runGroup4: function (creep, homeRoom, cfg) {
+    runGroup4: function(creep, homeRoom, cfg) {
         if (!cfg || !cfg.storageId || !cfg.targetRoom) return;
+    
+        // Initialize state
+        if (!creep.memory.state) {
+            creep.memory.state = "renewing";
+        }
+    
         const storage = Game.getObjectById(cfg.storageId);
-        if (!storage) return;
     
-        const isFull = _.sum(creep.store) === creep.store.getCapacity();
-    
-        // --- Renewal check before leaving base ---
-        if (creep.memory.renewAfterDropoff) {
+        // --- RENEWING ---
+        if (creep.memory.state === "renewing") {
             const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
             if (spawn) {
-                if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
+                if (creep.ticksToLive < RENEW_THRESHOLD) {
+                    if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
+                    }
+                    creep.say("🔋");
+                    return;
+                } else {
+                    creep.memory.state = "collecting";
+                    creep.say("🫴");
                 }
-                creep.say('🔋');
-                if (creep.ticksToLive >= RENEW_THRESHOLD) {
-                    creep.memory.renewAfterDropoff = false;
-                }
-                return;
             }
         }
     
-        // --- Delivery phase (full and at home) ---
-        if (isFull && creep.room.name === homeRoom) {
-            for (const res in creep.store) {
-                if (creep.transfer(storage, res) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
-                }
-            }
-    
-            // After dropoff, set to renew
-            if (_.sum(creep.store) === 0) {
-                creep.memory.renewAfterDropoff = true;
-            }
-            return;
-        }
-    
-        // --- Returning phase (full but not home yet) ---
-        if (isFull && creep.room.name !== homeRoom) {
-            if (cfg.useCustomPath && cfg.customPath && cfg.customPath.length > 0) {
-                this.followPath(creep, cfg.customPath.slice().reverse());
+        // --- COLLECTING ---
+        if (creep.memory.state === "collecting") {
+            if (_.sum(creep.store) === creep.store.getCapacity() || creep.ticksToLive < 300) {
+                creep.memory.state = "delivering";
+                creep.say("📦");
             } else {
-                creep.moveTo(new RoomPosition(25, 25, homeRoom));
-            }
-            return;
-        }
-    
-        // --- Collection phase (not full) ---
-        if (creep.room.name !== cfg.targetRoom) {
-            if (cfg.useCustomPath && cfg.customPath && cfg.customPath.length > 0) {
-                this.followPath(creep, cfg.customPath);
-            } else {
-                creep.moveTo(new RoomPosition(25, 25, cfg.targetRoom));
-            }
-            return;
-        }
-    
-        // At target room: look for deposit or power bank
-        let target = null;
-        if (cfg.depositId) {
-            target = Game.getObjectById(cfg.depositId);
-        } else {
-            target = creep.pos.findClosestByPath(FIND_DEPOSITS) ||
-                     creep.pos.findClosestByPath(FIND_RUINS, { filter: r => _.sum(r.store) > 0 }) ||
-                     creep.pos.findClosestByPath(FIND_TOMBSTONES, { filter: t => _.sum(t.store) > 0 }) ||
-                     creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                         filter: s => s.structureType === STRUCTURE_POWER_BANK && s.hits === 0
-                     });
-        }
-    
-        if (target) {
-            if (target instanceof Deposit) {
-                if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
-                }
-            } else if (target.store) {
-                for (const res in target.store) {
-                    if (target.store[res] > 0 && creep.withdraw(target, res) === ERR_NOT_IN_RANGE) {
+                if (creep.room.name !== cfg.targetRoom) {
+                    // go to target room
+                    if (cfg.useCustomPath && cfg.customPath.length > 0) {
+                        this.followPath(creep, cfg.customPath);
+                    } else {
+                        creep.moveTo(new RoomPosition(25, 25, cfg.targetRoom));
+                    }
+                } else {
+                    // at target room → look for deposit
+                    let target = cfg.depositId ? Game.getObjectById(cfg.depositId) : creep.pos.findClosestByPath(FIND_DEPOSITS);
+                    if (target && creep.harvest(target) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
+                    } else if (!target) {
+                        this.moveToIdle(creep, creep.room.name, cfg);
                     }
                 }
             }
-        } else {
-            this.moveToIdle(creep, creep.room.name, cfg);
+            return;
+        }
+    
+        // --- DELIVERING ---
+        if (creep.memory.state === "delivering") {
+            if (_.sum(creep.store) === 0) {
+                creep.memory.state = "renewing"; // restart cycle
+                creep.say("🔋");
+            } else {
+                if (creep.room.name !== homeRoom) {
+                    if (cfg.useCustomPath && cfg.customPath.length > 0) {
+                        this.followPath(creep, cfg.customPath.slice().reverse());
+                    } else {
+                        creep.moveTo(new RoomPosition(25, 25, homeRoom));
+                    }
+                } else if (storage) {
+                    for (const res in creep.store) {
+                        if (creep.transfer(storage, res) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
+                        }
+                    }
+                }
+            }
+            return;
         }
     },
 

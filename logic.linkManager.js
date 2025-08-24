@@ -15,8 +15,14 @@ const LinkManager = {
                     'LINK_ID_4'
                 ],
                 receiverLink: '689831029413445505fa93cf'
+            },
+            'W13N39': {
+                sourceLinks: [
+                    '68a9959216275babcd54414e',
+                    ''
+                ],
+                receiverLink: '68a97df8d0e860dcf5ffcfae'
             }
-            
         };
 
         // Loop through each room config

@@ -16,7 +16,7 @@ const towerLogic = {
     roomConfig: {
         'W14N37': {
             repairWalls: true,
-            wallThreshold: 300000,
+            wallThreshold: 320000,
             repairRamparts: true,
             rampartThreshold: 3000000
         },
@@ -28,9 +28,9 @@ const towerLogic = {
         },
         'W13N39': {
             repairWalls: true,
-            wallThreshold: 50000,
+            wallThreshold: 60000,
             repairRamparts: true,
-            rampartThreshold: 50000
+            rampartThreshold: 60000
         }
     },
 

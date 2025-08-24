@@ -33,15 +33,15 @@ const HARVESTER_CONFIG = {
         },
         2: {
             sourceId: '5bbcac249099fc012e63505b',
-            containerId: '',
-            idlePos: new RoomPosition(44, 19, 'W13N39')
+            containerId: '68a98b2eab78dd2632667cb1',
+            idlePos: new RoomPosition(44, 18, 'W13N39')
         },
         storageId: '68a688e6d89b6f1cd82a4e03'
     },
 };
 
 
-const RENEW_THRESHOLD = 800;
+const RENEW_THRESHOLD = 1400;
 
 function getRoomConfig(creep) {
     const roomName = creep.room.name;
