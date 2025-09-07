@@ -61,7 +61,7 @@ function isWounded(creep) {
 }
 
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 200 && !creep.memory.renewing;
+    return creep.ticksToLive < 300 && !creep.memory.renewing;
 }
 
 function shouldContinueRenewing(creep) {

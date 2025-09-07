@@ -7,7 +7,7 @@ const towerLogic = {
     // Auto-alternation config
     alternation: {
         enabled: true,  // toggle auto alternation
-        interval: 5,    // ticks between switching modes
+        interval: 2,    // ticks between switching modes
         lastSwitch: 0,   // internal state
         currentMode: "focus"
     },
@@ -16,21 +16,27 @@ const towerLogic = {
     roomConfig: {
         'W14N37': {
             repairWalls: true,
-            wallThreshold: 320000,
+            wallThreshold: 600000,
             repairRamparts: true,
             rampartThreshold: 3000000
         },
         'W15N37': {
             repairWalls: true,
-            wallThreshold: 500000,
+            wallThreshold: 600000,
             repairRamparts: true,
             rampartThreshold: 3000000
         },
         'W13N39': {
             repairWalls: true,
-            wallThreshold: 60000,
+            wallThreshold: 200000,
             repairRamparts: true,
-            rampartThreshold: 60000
+            rampartThreshold: 200000
+        },
+        'W13N33': {
+            repairWalls: true,
+            wallThreshold: 2000,
+            repairRamparts: true,
+            rampartThreshold: 2000
         }
     },
 
@@ -85,7 +91,7 @@ const towerLogic = {
                     }
                 } else if (currentMode === "split") {
                     // === SPLIT MODE ===
-                    if (healers.length > 0) {
+                    if (healers.length > 2) {
                         target = healers[idx % healers.length];
                     } else {
                         target = hostiles[idx % hostiles.length];
@@ -96,6 +102,14 @@ const towerLogic = {
                     tower.attack(target);
                     return;
                 }
+            }
+            
+            // Heal creeps
+            const injured = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
+                filter: (creep) => creep.hits < creep.hitsMax
+            });
+            if (injured) {
+                tower.heal(injured);
             }
 
             // === No hostiles, do repairs/heals ===
@@ -117,14 +131,6 @@ const towerLogic = {
                 damagedStructures.sort((a, b) => a.hits - b.hits);
                 tower.repair(damagedStructures[0]);
                 return;
-            }
-
-            // Heal creeps
-            const injured = tower.pos.findClosestByRange(FIND_MY_CREEPS, {
-                filter: (creep) => creep.hits < creep.hitsMax
-            });
-            if (injured) {
-                tower.heal(injured);
             }
         });
     }

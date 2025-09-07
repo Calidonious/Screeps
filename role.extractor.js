@@ -1,11 +1,11 @@
-const RENEW_THRESHOLD = 800;
+const RENEW_THRESHOLD = 1400;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
 
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 200 && !creep.memory.renewing;
+    return creep.ticksToLive < 300 && !creep.memory.renewing;
 }
 
 function shouldContinueRenewing(creep) {
@@ -49,7 +49,12 @@ var roleExtractor = {
         'W15N37': {
             idlePos: { x: 8, y: 29 },
             mineralId: '5bbcb24f40062e4259e938bd', // zynthium
-            dropoffId: '689593f14c3ddc337079485d', // terminal
+            dropoffId: '689ec5ee57237e81b20999b7', // terminal
+        },
+        'W13N39': {
+            idlePos: { x: 6, y: 9 },
+            mineralId: '5bbcb25d40062e4259e93951', // Oxygen
+            dropoffId: '68b4bd6f9c4840f48e1ae829', // terminal
         }
     },
 

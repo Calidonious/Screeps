@@ -5,7 +5,7 @@ function isWounded(creep) {
 }
 
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 200 && !creep.memory.renewing;
+    return creep.ticksToLive < 300 && !creep.memory.renewing;
 }
 
 function shouldContinueRenewing(creep) {
@@ -27,6 +27,8 @@ function renewCreep(creep) {
             creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
         }
         creep.say('⏳');
+    } else {
+        creep.moveTo(new RoomPosition(25, 25,creep.memory.homeRoom, { visualizePathStyle: { stroke: '#ffffff' } }));
     }
 }
 
@@ -60,7 +62,12 @@ var roleCollector = {
                     {
                         targetId: '688d5a468b99246abd95096f', // storage
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: true, amount: 200000 }
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 200000 },
+                            [RESOURCE_GHODIUM_OXIDE]: { enabled: true, amount: 20000 },
+                            [RESOURCE_KEANIUM_OXIDE]: { enabled: true, amount: 20000 },
+                            [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: true, amount: 20000 },
+                            [RESOURCE_UTRIUM_HYDRIDE]: { enabled: true, amount: 20000 },
+                            [RESOURCE_SILICON]: { enabled: true, amount: 20000 },
                         }
                     },
                     {
@@ -105,12 +112,12 @@ var roleCollector = {
             },
             group2: {
                 idlePos: { x: 39, y: 45 },
-                sourceId: '689593f14c3ddc337079485d',
+                sourceId: '689ec5ee57237e81b20999b7',
                 targets: [
                     {
-                        targetId: '689ec5ee57237e81b20999b7',
+                        targetId: '689593f14c3ddc337079485d',
                         transfers: {
-                            [RESOURCE_UTRIUM]: { enabled: false, amount: 0 }
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 300000 }
                         }
                     }
                 ]
@@ -138,21 +145,21 @@ var roleCollector = {
         'W13N39': {
             group1: {
                 idlePos: { x: 7, y: 24 },
-                dropoffId: '68a688e6d89b6f1cd82a4e03',
+                dropoffId: '68b4bd6f9c4840f48e1ae829',
                 storageId: '68a688e6d89b6f1cd82a4e03',
                 collectEnergy: false,
-                maintainTerminal: false,
-                terminalId: '',
-                terminalEnergyTarget: 0
+                maintainTerminal: true,
+                terminalId: '68b4bd6f9c4840f48e1ae829',
+                terminalEnergyTarget: 5000
             },
             group2: {
                 idlePos: { x: 7, y: 25 },
-                sourceId: '68a688e6d89b6f1cd82a4e03',
+                sourceId: '68b4bd6f9c4840f48e1ae829',
                 targets: [
                     {
-                        targetId: '',
+                        targetId: '68a688e6d89b6f1cd82a4e03',
                         transfers: {
-                            [RESOURCE_UTRIUM]: { enabled: false, amount: 0 }
+                            [RESOURCE_OXYGEN]: { enabled: true, amount: 50000 }
                         }
                     }
                 ]
@@ -161,19 +168,18 @@ var roleCollector = {
                 idlePos: { x: 7, y: 24 },
                 storageId: '68a688e6d89b6f1cd82a4e03',
                 sources: [
-                    { id: '' }, // terminal
+                    { id: '68b4bd6f9c4840f48e1ae829' }, // terminal
                 ]
             },
             group4: {
                 idlePos: { x: 7, y: 24 },
-                storageId: '68a688e6d89b6f1cd82a4e03', // deliver target in home
-                targetRoom: 'W12N40',
-                depositId: '68a819389ca9bbdcea944a15', // optional deposit id, leave blank = pick any
+                storageId: '68b4bd6f9c4840f48e1ae829', // deliver target in home
+                targetRoom: 'W13N40',
+                depositId: '68af26d782aa226d643c2f49', // optional deposit id, leave blank = pick any
                 useCustomPath: true,
                 customPath: [
                     { room: 'W13N39', x: 20, y: 18 },
-                    { room: 'W13N40', x: 47, y: 31 },
-                    { room: 'W12N40', x: 12, y: 23 }
+                    { room: 'W13N40', x: 32, y: 38 },
                 ]
             }
         }

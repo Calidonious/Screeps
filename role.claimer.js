@@ -5,11 +5,14 @@ var roleClaimer = {
 
         // Define custom path with waypoints
         const path = [
-            { room: 'W14N36', x: 20, y: 10 },
-            { room: 'W14N36', x: 1, y: 36 },
-            { room: 'W15N36', x: 40, y: 23 },
-            { room: 'W15N36', x: 27, y: 2 },
-            { room: 'W15N37', x: 21, y: 45 } // Center of target room
+            { room: 'W13N37', x: 37, y: 46 },
+            { room: 'W13N36', x: 44, y: 40 },
+            { room: 'W12N36', x: 31, y: 46 },
+            { room: 'W12N35', x: 27, y: 27 },
+            { room: 'W12N35', x: 18, y: 36 },
+            { room: 'W12N34', x: 19, y: 47 },
+            { room: 'W12N33', x: 2, y: 10 },
+            { room: targetRoom, x: 7, y: 17 }
         ];
 
         // Step index stored in memory

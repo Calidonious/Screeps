@@ -70,7 +70,7 @@ function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 200 && !creep.memory.renewing;
+    return creep.ticksToLive < 300 && !creep.memory.renewing;
 }
 function shouldContinueRenewing(creep) {
     return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;

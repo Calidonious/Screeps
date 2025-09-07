@@ -4,7 +4,7 @@ function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 200 && !creep.memory.renewing;
+    return creep.ticksToLive < 100 && !creep.memory.renewing;
 }
 function shouldContinueRenewing(creep) {
     return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
@@ -37,24 +37,24 @@ var rolePioneer = {
     // Config per group
     config: {
         1: { // Builders
-            sourceId: "5bbcac249099fc012e63505b", // leave blank for closest
-            storageId: "68a688e6d89b6f1cd82a4e03", // optional: withdraw from storage if defined
-            idle: { x: 9, y: 24 }
+            sourceId: "5bbcac249099fc012e635070", // leave blank for closest
+            storageId: "", // optional: withdraw from storage if defined
+            idle: { x: 9, y: 14 }
         },
         2: { // Upgraders
-            sourceId: "5bbcac249099fc012e63505b",
-            storageId: "68a688e6d89b6f1cd82a4e03", // optional: withdraw from storage if defined
-            idle: { x: 8, y: 24 }
+            sourceId: "5bbcac249099fc012e635070",
+            storageId: "", // optional: withdraw from storage if defined
+            idle: { x: 4, y: 37 }
         },
         3: { // Fillers
-            sourceId: "5bbcac249099fc012e63505a",
-            storageId: "68a688e6d89b6f1cd82a4e03", // optional: withdraw from storage if defined
-            idle: { x: 8, y: 24 }
+            sourceId: "5bbcac249099fc012e63506f",
+            storageId: "", // optional: withdraw from storage if defined
+            idle: { x: 5, y: 13 }
         },
         4: { // Harvesters → Storage
-            sourceId: "5bbcac249099fc012e63505b", // must be defined
-            storageId: "68a98b2eab78dd2632667cb1", // must be defined
-            idle: { x: 6, y: 24 }
+            sourceId: "5bbcac249099fc012e63506f", // must be defined
+            storageId: "", // must be defined
+            idle: { x: 9, y: 14 }
         }
     },
 
@@ -79,10 +79,14 @@ var rolePioneer = {
 
         // Pathing
         const path = [
-            { room: 'W14N38', x: 22, y: 22 },
-            { room: 'W14N39', x: 29, y: 28 },
-            { room: 'W13N39', x: 31, y: 34 },
-            { room: targetRoom, x: 31, y: 34 }
+            { room: 'W13N37', x: 37, y: 46 },
+            { room: 'W13N36', x: 44, y: 40 },
+            { room: 'W12N36', x: 31, y: 46 },
+            { room: 'W12N35', x: 27, y: 27 },
+            { room: 'W12N35', x: 18, y: 36 },
+            { room: 'W12N34', x: 22, y: 48 },
+            { room: 'W12N33', x: 2, y: 10 },
+            { room: targetRoom, x: 7, y: 17 }
         ];
         if (creep.memory.pathIndex === undefined) creep.memory.pathIndex = 0;
         if (creep.room.name !== targetRoom) {
@@ -209,13 +213,13 @@ var rolePioneer = {
                 s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
 
-        //if (!target) {
-        //    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        //        filter: s =>
-        //            s.structureType === STRUCTURE_TOWER &&
-        //            s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        //    });
-        //}
+        if (!target) {
+            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: s =>
+                    s.structureType === STRUCTURE_TOWER &&
+                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+            });
+        }
 
         if (!target && !groupCfg.storageId) {
             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {

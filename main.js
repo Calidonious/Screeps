@@ -20,6 +20,52 @@ const roleTransporter = require('role.transporter');
 const roleUpgrader = require('role.upgrader');
 const roleLabManager = require('role.labManager');
 
+// === Energy Monitor === showEnergyRates(); to show the results
+// Updates once per tick, tracks net energy/hour for each room with storage.
+function updateEnergyStats() {
+    if (!Memory.energyStats) Memory.energyStats = {};
+
+    for (const roomName in Game.rooms) {
+        const room = Game.rooms[roomName];
+        if (!room.storage) continue;
+
+        const stored = room.storage.store[RESOURCE_ENERGY];
+        let stats = Memory.energyStats[roomName];
+
+        if (!stats) {
+            stats = Memory.energyStats[roomName] = {
+                last: stored,
+                totalDelta: 0,
+                ticks: 0
+            };
+        }
+
+        const delta = stored - stats.last;
+        stats.totalDelta += delta;
+        stats.ticks++;
+        stats.last = stored;
+
+        // Keep memory small: only store recent history
+        if (stats.ticks > 5000) { // ~5k ticks ≈ 8 hours real time
+            stats.totalDelta = 0;
+            stats.ticks = 0;
+        }
+    }
+}
+
+// Console helper to check average energy/hour
+global.showEnergyRates = function() {
+    if (!Memory.energyStats) return "No energy stats yet.";
+    const lines = [];
+    for (const roomName in Memory.energyStats) {
+        const stats = Memory.energyStats[roomName];
+        if (!stats.ticks) continue;
+        const perHour = (stats.totalDelta / stats.ticks) * 3600;
+        lines.push(`${roomName}: ${perHour.toFixed(2)} energy/hour`);
+    }
+    return lines.join("\n");
+};
+
 module.exports.loop = function () {
     const funnyNames = [
         'Killbot 3000','Stabby Boi','Sneaky Steve','MurderCube','AngryToast','Zap Lad',
@@ -50,6 +96,9 @@ module.exports.loop = function () {
             c && c.memory && c.memory.role === role && c.memory.homeRoom === roomName ? 1 : 0
         );
     }
+    
+    // update energy tracking
+    updateEnergyStats();
 
     // Run static logic
     towerLogic.run();
@@ -64,14 +113,26 @@ module.exports.loop = function () {
         }
     }
 
-    // Auto-renew creeps
-    for (const creepName in Game.creeps) {
-        const creep = Game.creeps[creepName];
-        if (creep.ticksToLive < 2000) {
-            const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-            if (spawn) spawn.renewCreep(creep);
+    // Auto-renew creeps (lowest TTL first per spawn)
+    for (const spawnName in Game.spawns) {
+        const spawn = Game.spawns[spawnName];
+        if (!spawn) continue;
+    
+        // Find all creeps in range 1 of the spawn that need renewal
+        const creepsNeedingRenew = spawn.pos.findInRange(FIND_MY_CREEPS, 1, {
+            filter: c => c.ticksToLive < 2000
+        });
+    
+        if (creepsNeedingRenew.length > 0) {
+            // Pick the one with the lowest TTL
+            const lowest = _.min(creepsNeedingRenew, c => c.ticksToLive);
+            if (lowest && lowest !== Infinity) {
+                spawn.renewCreep(lowest);
+                spawn.room.visual.text(`🔋 Renewing ${lowest.name}`, spawn.pos.x + 1, spawn.pos.y, { align: 'left', opacity: 0.7 });
+            }
         }
     }
+
 
     // Auto-adjust defender/medic needs per room
     Object.values(spawnConfigs).forEach(cfg => {

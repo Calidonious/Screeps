@@ -14,7 +14,7 @@ const ROOM_CONFIGS = {
         STORAGE_ID: '689593f14c3ddc337079485d',
         IDLE_POSITIONS: {
             1: [ { x: 37, y: 44 }, { x: 38, y: 44 } ],
-            2: [ { x: 39, y: 43 }, { x: 39, y: 44 } ],
+            2: [ { x: 39, y: 45 }, { x: 39, y: 44 } ],
             3: [ { x: 33, y: 46 }, { x: 32, y: 47 } ]
         }
     },
@@ -22,7 +22,7 @@ const ROOM_CONFIGS = {
         STORAGE_ID: '68a688e6d89b6f1cd82a4e03',
         IDLE_POSITIONS: {
             1: [ { x: 8, y: 24 }, { x: 9, y: 24 } ],
-            2: [ { x: 9, y: 24 }, { x: 10, y: 24 } ],
+            2: [ { x: 8, y: 24 }, { x: 9, y: 24 } ],
             3: [ { x: 19, y: 17 }, { x: 20, y: 17 } ]
         }
     },
@@ -33,7 +33,7 @@ function isWounded(creep) {
 }
 
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 200 && !creep.memory.renewing;
+    return creep.ticksToLive < 300 && !creep.memory.renewing;
 }
 
 function shouldContinueRenewing(creep) {
