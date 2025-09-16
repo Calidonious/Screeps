@@ -2,12 +2,12 @@ const HARVESTER_CONFIG = {
     'W14N37': {
         1: {
             sourceId: '5bbcac169099fc012e634e30',
-            containerId: '6898df3629f295767f335f7c',
+            containerId: '68c4fc9627ec1e6281926636',
             idlePos: new RoomPosition(28, 29, 'W14N37')
         },
         2: {
             sourceId: '5bbcac169099fc012e634e2f',
-            containerId: '68927f15563654719b60fc5f',
+            containerId: '68c5013c3b8b634dce256d71',
             idlePos: new RoomPosition(8, 13, 'W14N37')
         },
         storageId: '688d5a468b99246abd95096f'
@@ -20,10 +20,10 @@ const HARVESTER_CONFIG = {
         },
         2: {
             sourceId: '5bbcac099099fc012e634c0f',
-            containerId: '68982f5e7bc95867b188c3c0',
+            containerId: '68982bc28899736031f0d7e1',
             idlePos: new RoomPosition(41, 22, 'W15N37')
         },
-        storageId: '689593f14c3ddc337079485d'
+        storageId: '68c3b86cd6203efa74f701eb'
     },
     'W13N39': {
         1: {
@@ -33,10 +33,23 @@ const HARVESTER_CONFIG = {
         },
         2: {
             sourceId: '5bbcac249099fc012e63505b',
-            containerId: '68a98b2eab78dd2632667cb1',
+            containerId: '68c4ba17c4d2233b8f57d414',
             idlePos: new RoomPosition(44, 18, 'W13N39')
         },
         storageId: '68a688e6d89b6f1cd82a4e03'
+    },
+    'W13N33': {
+        1: {
+            sourceId: '5bbcac249099fc012e63506f',
+            containerId: '',
+            idlePos: new RoomPosition(9, 14, 'W13N33')
+        },
+        2: {
+            sourceId: '5bbcac249099fc012e635070',
+            containerId: '68c119c3b7caff57e8b17fb5',
+            idlePos: new RoomPosition(4, 38, 'W13N33')
+        },
+        storageId: '68bcf12d24113a2b16da16d5'
     },
 };
 

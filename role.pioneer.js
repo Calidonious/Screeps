@@ -1,10 +1,10 @@
-const RENEW_THRESHOLD = 500;
+const RENEW_THRESHOLD = 800;
 
 function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 100 && !creep.memory.renewing;
+    return creep.ticksToLive < 150 && !creep.memory.renewing;
 }
 function shouldContinueRenewing(creep) {
     return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
@@ -38,23 +38,23 @@ var rolePioneer = {
     config: {
         1: { // Builders
             sourceId: "5bbcac249099fc012e635070", // leave blank for closest
-            storageId: "", // optional: withdraw from storage if defined
-            idle: { x: 9, y: 14 }
+            storageId: "68bcf12d24113a2b16da16d5", // optional: withdraw from storage if defined
+            idle: { x: 2, y: 17 }
         },
         2: { // Upgraders
             sourceId: "5bbcac249099fc012e635070",
-            storageId: "", // optional: withdraw from storage if defined
-            idle: { x: 4, y: 37 }
+            storageId: "68bcf12d24113a2b16da16d5", // optional: withdraw from storage if defined
+            idle: { x: 6, y: 46 }
         },
         3: { // Fillers
             sourceId: "5bbcac249099fc012e63506f",
-            storageId: "", // optional: withdraw from storage if defined
+            storageId: "68bcf12d24113a2b16da16d5", // optional: withdraw from storage if defined
             idle: { x: 5, y: 13 }
         },
         4: { // Harvesters → Storage
-            sourceId: "5bbcac249099fc012e63506f", // must be defined
-            storageId: "", // must be defined
-            idle: { x: 9, y: 14 }
+            sourceId: "5bbcac249099fc012e635070", // must be defined
+            storageId: "68bcf12d24113a2b16da16d5", // must be defined
+            idle: { x: 4, y: 37 }
         }
     },
 
@@ -84,6 +84,7 @@ var rolePioneer = {
             { room: 'W12N36', x: 31, y: 46 },
             { room: 'W12N35', x: 27, y: 27 },
             { room: 'W12N35', x: 18, y: 36 },
+            { room: 'W12N34', x: 20, y: 26 },
             { room: 'W12N34', x: 22, y: 48 },
             { room: 'W12N33', x: 2, y: 10 },
             { room: targetRoom, x: 7, y: 17 }
@@ -129,7 +130,7 @@ var rolePioneer = {
                     creep.moveTo(ctrl, { visualizePathStyle: { stroke: '#00ffcc' } });
                 }
             }
-            return;
+            return
         }
 
         // === Group 3: Filler ===
@@ -213,13 +214,13 @@ var rolePioneer = {
                 s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
 
-        if (!target) {
-            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: s =>
-                    s.structureType === STRUCTURE_TOWER &&
-                    s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            });
-        }
+        //if (!target) {
+        //    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        //        filter: s =>
+        //            s.structureType === STRUCTURE_TOWER &&
+        //            s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        //    });
+        //}
 
         if (!target && !groupCfg.storageId) {
             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {

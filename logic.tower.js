@@ -14,29 +14,29 @@ const towerLogic = {
 
     // Per-room tower settings
     roomConfig: {
-        'W14N37': {
+        'W14N37': { // 46 walls, 4 ramparts - 50 total
             repairWalls: true,
             wallThreshold: 600000,
             repairRamparts: true,
             rampartThreshold: 3000000
         },
-        'W15N37': {
+        'W15N37': { // 22 walls, 3 ramparts - 25 total
             repairWalls: true,
             wallThreshold: 600000,
             repairRamparts: true,
             rampartThreshold: 3000000
         },
-        'W13N39': {
+        'W13N39': { // 25 walls, 6 ramparts - 31 total
             repairWalls: true,
-            wallThreshold: 200000,
+            wallThreshold: 600000,
             repairRamparts: true,
-            rampartThreshold: 200000
+            rampartThreshold: 2200000
         },
-        'W13N33': {
+        'W13N33': { // 39 walls, 9 ramparts - 48 total
             repairWalls: true,
-            wallThreshold: 2000,
+            wallThreshold: 225000,
             repairRamparts: true,
-            rampartThreshold: 2000
+            rampartThreshold: 225000
         }
     },
 

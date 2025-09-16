@@ -2,14 +2,18 @@ var roleHarasser = {
 
     config: {
         default: {
-            homeRoom: 'W13N39',
-            targetRoom: 'W12N40',
+            homeRoom: 'W14N37',
+            targetRoom: 'W14N36',
             useCustomPath: true,
             customPath: [
-                { room: 'W13N39', x: 36, y: 4 },
-                { room: 'W13N40', x: 47, y: 30 },
-                { room: 'W12N40', x: 15, y: 10 }
-            ]
+                { room: 'W14N37', x: 17, y: 44 },
+                { room: 'W14N36', x: 20, y: 5 },
+                { room: 'W14N36', x: 32, y: 11 } // defend position if attackInRange is true
+            ],
+            attackInRange: true,   // true = guard mode, false = normal hunt
+            attackRange: 10,         // radius when guarding
+            staging: false,          // true = wait at idlePos before deploying
+            idlePos: { x: 18, y: 44 } // staging position in homeRoom
         }
     },
 
@@ -18,9 +22,9 @@ var roleHarasser = {
         const isRanged = creep.getActiveBodyparts(RANGED_ATTACK) > 0;
         const isMelee = creep.getActiveBodyparts(ATTACK) > 0;
         const canHeal = creep.getActiveBodyparts(HEAL) > 0;
-        const safeHealthRatio = 0.6; // below this % health, creep retreats
+        const safeHealthRatio = 0.6;
 
-        const cfg = this.config.default; // could extend for multiple configs
+        const cfg = this.config.default;
         const inTargetRoom = creep.room.name === cfg.targetRoom;
 
         // --- Auto-heal self ---
@@ -28,11 +32,27 @@ var roleHarasser = {
             creep.heal(creep);
         }
 
-        // --- Retreat if health is low ---
+        // --- Retreat if low health ---
         if (creep.hits < creep.hitsMax * safeHealthRatio) {
             creep.say('🏃Fallback');
             creep.moveTo(new RoomPosition(25, 25, cfg.homeRoom));
             return;
+        }
+
+        // --- Staging Mode ---
+        if (cfg.staging) {
+            if (creep.room.name !== cfg.homeRoom) {
+                creep.moveTo(new RoomPosition(25, 25, cfg.homeRoom), {
+                    visualizePathStyle: { stroke: '#ffaa00' }
+                });
+                return;
+            }
+            if (cfg.idlePos) {
+                creep.moveTo(new RoomPosition(cfg.idlePos.x, cfg.idlePos.y, cfg.homeRoom),
+                    { visualizePathStyle: { stroke: '#00ff00' } });
+                creep.say('⏳Stage');
+            }
+            return; // stay here until staging is disabled
         }
 
         // --- Travel to target room ---
@@ -47,18 +67,39 @@ var roleHarasser = {
             return;
         }
 
-        // --- In target room: prioritize hostiles ---
+        // --- Guard Mode ---
+        if (cfg.attackInRange) {
+            const defendPos = cfg.customPath[cfg.customPath.length - 1];
+            const pos = new RoomPosition(defendPos.x, defendPos.y, defendPos.room);
+
+            if (!creep.pos.isEqualTo(pos)) {
+                creep.moveTo(pos, { visualizePathStyle: { stroke: '#00ff00' } });
+                return;
+            }
+
+            const nearbyEnemies = creep.pos.findInRange(FIND_HOSTILE_CREEPS, cfg.attackRange);
+            if (nearbyEnemies.length > 0) {
+                const target = nearbyEnemies[0];
+                if (isRanged && creep.pos.inRangeTo(target, 3)) {
+                    creep.rangedAttack(target);
+                }
+                if (isMelee && creep.pos.isNearTo(target)) {
+                    creep.attack(target);
+                }
+            }
+            return;
+        }
+
+        // --- Normal Hunt Mode ---
         const target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS) ||
             creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
                 filter: s => s.structureType !== STRUCTURE_CONTROLLER
             });
 
         if (target) {
-            // RANGED
             if (isRanged) {
                 if (creep.pos.inRangeTo(target, 3)) {
                     creep.rangedAttack(target);
-                    // Optional kiting: back off if too close
                     if (creep.pos.inRangeTo(target, 1)) {
                         creep.moveTo(creep.pos.findClosestByPath(FIND_EXIT));
                     }
@@ -67,14 +108,12 @@ var roleHarasser = {
                 }
             }
 
-            // MELEE
             if (isMelee) {
                 if (creep.attack(target) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, { visualizePathStyle: { stroke: '#ff0000' } });
                 }
             }
         } else {
-            // Patrol controller if no targets
             const idlePos = creep.room.controller
                 ? creep.room.controller.pos
                 : new RoomPosition(25, 25, creep.room.name);

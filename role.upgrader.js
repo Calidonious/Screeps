@@ -50,6 +50,11 @@ const upgraderConfig = {
         group1Pos: { x: 33, y: 44 },
         group2Pos: { x: 34, y: 45 },
         signText: "Glory to the machine! All my watts for the great coil!"
+    },
+    "W13N33": {
+        group1Pos: { x: 7, y: 46 },
+        group2Pos: { x: 7, y: 46 },
+        signText: "Glory to the machine! All my watts for the great coil!"
     }
 };
 

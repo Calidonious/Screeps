@@ -6,10 +6,10 @@ var terminalLogic = {
             partners: [
                 {
                     room: 'W14N37',
-                    resources: [RESOURCE_ZYNTHIUM,RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_SILICON],
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,],
                     chunkSize: 10000,
                     allowEnergy: false,        // allow sending energy?
-                    energyTarget: 105000       // stop once receiver has >= this much energy
+                    energyTarget: 15000       // stop once receiver has >= this much energy
                 },
             ]
         },
@@ -19,10 +19,10 @@ var terminalLogic = {
             partners: [
                 {
                     room: 'W13N39',
-                    resources: [RESOURCE_ENERGY], // only send
-                    chunkSize: 10000,
-                    allowEnergy: true,      // won’t send energy
-                    energyTarget: 125000
+                    resources: [RESOURCE_BIOMASS], // only send
+                    chunkSize: 1000,
+                    allowEnergy: false,      // won’t send energy
+                    energyTarget: 15000
                 },
             ]
         },
@@ -31,11 +31,11 @@ var terminalLogic = {
             mode: 'receive',
             partners: [
                 {
-                    room: 'W14N37',
+                    room: 'W15N37',
                     resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_SILICON], // only send
-                    chunkSize: 10000,
+                    chunkSize: 9000,
                     allowEnergy: false,      // won’t send energy
-                    energyTarget: 15000
+                    energyTarget: 55000
                 },
             ]
         },

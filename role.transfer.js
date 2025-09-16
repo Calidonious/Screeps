@@ -14,7 +14,7 @@ const TRANSFER_CONFIG = {
         },
         3: {
             fromId: '68927e5688ba96a2a57a121c', // link ID
-            toId: '688d5a468b99246abd95096f', // storage ID
+            toId: '68c7922490f95e795dc1f70e', // storage ID
             secondLinkId: '', // optional link to refill from storage
             position: { x: 10, y: 30 },
             type: 'linkToStorage'
@@ -35,7 +35,7 @@ const TRANSFER_CONFIG = {
         },
         3: {
             fromId: '689831029413445505fa93cf', // link ID
-            toId: '689593f14c3ddc337079485d', // storage ID
+            toId: '68c3b86cd6203efa74f701eb', // storage ID
             secondLinkId: '', // optional
             position: { x: 36, y: 42 },
             type: 'linkToStorage'
@@ -61,7 +61,28 @@ const TRANSFER_CONFIG = {
             position: { x: 22, y: 16 },
             type: 'linkToStorage'
         }
-    }
+    },
+    'W13N33': {
+        1: {
+            fromId: '',
+            toId: '',
+            position: { x: 43, y: 17 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 28 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '68c112b8d6203e685ef64d66', // link ID
+            toId: '68bcf12d24113a2b16da16d5', // storage ID
+            secondLinkId: '', // optional
+            position: { x: 9, y: 15 },
+            type: 'linkToStorage'
+        }
+    },
 };
 
 const RENEW_THRESHOLD = 1300;

@@ -5,13 +5,18 @@ const RENEW_THRESHOLD = 800; // Minimum desired life span after renewal
 const BUILDER_GROUPS = {
     1: {
         sourceId: '', //5bbcac169099fc012e634e30
-        storageId: '688d5a468b99246abd95096f',
-        idlePos: new RoomPosition(7, 24, 'W14N37')
+        storageId: '68a0005110ab6307347c0d2e',
+        idlePos: new RoomPosition(8, 22, 'W14N37')
     },
     2: {
         sourceId: '', //5bbcac169099fc012e634e30
-        storageId: '689593f14c3ddc337079485d',
+        storageId: '68c3b86cd6203efa74f701eb',
         idlePos: new RoomPosition(30, 46, 'W15N37')
+    },
+    3: {
+        sourceId: '', //5bbcac169099fc012e634e30
+        storageId: '68a688e6d89b6f1cd82a4e03',
+        idlePos: new RoomPosition(7, 25, 'W13N39')
     },
 };
 

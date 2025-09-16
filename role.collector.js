@@ -47,12 +47,12 @@ var roleCollector = {
             // group 1: Grim Reaper
             group1: {
                 idlePos: { x: 9, y: 23 },
-                dropoffId: '688d5a468b99246abd95096f',
-                storageId: '688d5a468b99246abd95096f',
+                dropoffId: '68a0005110ab6307347c0d2e',
+                storageId: '68c7922490f95e795dc1f70e',
                 collectEnergy: false,
                 maintainTerminal: true,
                 terminalId: '68a0005110ab6307347c0d2e',
-                terminalEnergyTarget: 5000
+                terminalEnergyTarget: 15000
             },
             // group 2: Market tender & Lab tech
             group2: {
@@ -60,14 +60,24 @@ var roleCollector = {
                 sourceId: '68a0005110ab6307347c0d2e', //terminal
                 targets: [
                     {
-                        targetId: '688d5a468b99246abd95096f', // storage
+                        targetId: '68c7922490f95e795dc1f70e', // storage
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 200000 },
-                            [RESOURCE_GHODIUM_OXIDE]: { enabled: true, amount: 20000 },
-                            [RESOURCE_KEANIUM_OXIDE]: { enabled: true, amount: 20000 },
-                            [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: true, amount: 20000 },
-                            [RESOURCE_UTRIUM_HYDRIDE]: { enabled: true, amount: 20000 },
-                            [RESOURCE_SILICON]: { enabled: true, amount: 20000 },
+                            [RESOURCE_ENERGY]: { enabled: true, amount: 50000 },
+                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM_OXIDE]: { enabled: false, amount: 20000 },
+                            [RESOURCE_KEANIUM_OXIDE]: { enabled: false, amount: 20000 },
+                            [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: false, amount: 20000 },
+                            [RESOURCE_UTRIUM_HYDRIDE]: { enabled: false, amount: 20000 },
                         }
                     },
                     {
@@ -88,36 +98,46 @@ var roleCollector = {
                 ]
             },
             group4: {
-                idlePos: { x: 9, y: 23 },
+                idlePos: { x: 22, y: 3 },
                 storageId: '688d5a468b99246abd95096f', // deliver target in home
-                targetRoom: 'W13N38',
+                targetRoom: 'W14N36',
                 depositId: '', // optional deposit id, leave blank = pick any
                 useCustomPath: true,
                 customPath: [
-                    { room: 'W14N37', x: 25, y: 25 },
-                    { room: 'W14N38', x: 20, y: 20 },
-                    { room: 'W13N38', x: 25, y: 25 }
+                    { room: 'W14N37', x: 16, y: 44 },
+                    { room: 'W14N36', x: 20, y: 5 },
                 ]
             }
         },
         'W15N37': {
             group1: {
-                idlePos: { x: 39, y: 46 },
+                idlePos: { x: 31, y: 47 },
                 dropoffId: '689ec5ee57237e81b20999b7',
-                storageId: '689593f14c3ddc337079485d',
+                storageId: '68c3b86cd6203efa74f701eb',
                 collectEnergy: false,
                 maintainTerminal: true,
                 terminalId: '689ec5ee57237e81b20999b7',
-                terminalEnergyTarget: 5000
+                terminalEnergyTarget: 15000
             },
             group2: {
-                idlePos: { x: 39, y: 45 },
+                idlePos: { x: 31, y: 47 },
                 sourceId: '689ec5ee57237e81b20999b7',
                 targets: [
                     {
-                        targetId: '689593f14c3ddc337079485d',
+                        targetId: '68c3b86cd6203efa74f701eb',
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 300000 }
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 140000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 1000 },
+                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
                         }
                     }
                 ]
@@ -150,7 +170,7 @@ var roleCollector = {
                 collectEnergy: false,
                 maintainTerminal: true,
                 terminalId: '68b4bd6f9c4840f48e1ae829',
-                terminalEnergyTarget: 5000
+                terminalEnergyTarget: 15000
             },
             group2: {
                 idlePos: { x: 7, y: 25 },
@@ -159,7 +179,18 @@ var roleCollector = {
                     {
                         targetId: '68a688e6d89b6f1cd82a4e03',
                         transfers: {
-                            [RESOURCE_OXYGEN]: { enabled: true, amount: 50000 }
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 400000 },
+                            [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
+                            [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 1000 },
+                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
                         }
                     }
                 ]
@@ -175,11 +206,11 @@ var roleCollector = {
                 idlePos: { x: 7, y: 24 },
                 storageId: '68b4bd6f9c4840f48e1ae829', // deliver target in home
                 targetRoom: 'W13N40',
-                depositId: '68af26d782aa226d643c2f49', // optional deposit id, leave blank = pick any
+                depositId: '68c16397285a7f81c0b3e625', // optional deposit id, leave blank = pick any
                 useCustomPath: true,
                 customPath: [
                     { room: 'W13N39', x: 20, y: 18 },
-                    { room: 'W13N40', x: 32, y: 38 },
+                    { room: 'W13N40', x: 38, y: 43 },
                 ]
             }
         }

@@ -3,6 +3,7 @@ const LinkManager = require('logic.linkManager');
 const terminalLogic = require('logic.terminal');
 const towerLogic = require('logic.tower');
 const labLogic = require('logic.lab');
+const factoryLogic = require('logic.factory');
 
 
 const roleBuilder = require('role.builder');
@@ -19,6 +20,8 @@ const roleTransfer = require('role.transfer');
 const roleTransporter = require('role.transporter');
 const roleUpgrader = require('role.upgrader');
 const roleLabManager = require('role.labManager');
+const roleFactoryWorker = require('role.factoryWorker');
+
 
 // === Energy Monitor === showEnergyRates(); to show the results
 // Updates once per tick, tracks net energy/hour for each room with storage.
@@ -105,6 +108,7 @@ module.exports.loop = function () {
     LinkManager.run();
     terminalLogic.run();
     labLogic.run();
+    factoryLogic.run();
 
     // Memory cleanup
     for (let name in Memory.creeps) {
@@ -120,7 +124,7 @@ module.exports.loop = function () {
     
         // Find all creeps in range 1 of the spawn that need renewal
         const creepsNeedingRenew = spawn.pos.findInRange(FIND_MY_CREEPS, 1, {
-            filter: c => c.ticksToLive < 2000
+            filter: c => c.ticksToLive < 1800
         });
     
         if (creepsNeedingRenew.length > 0) {
@@ -195,6 +199,7 @@ module.exports.loop = function () {
         collector: roleCollector,
         extractor: roleExtractor,
         labManager: roleLabManager,
+        factoryWorker: roleFactoryWorker,
     };
 
     // Run all creeps by role
