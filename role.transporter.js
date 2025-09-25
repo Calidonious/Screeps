@@ -25,10 +25,10 @@ const ROOM_CONFIGS = {
         }
     },
     'W13N33': {
-        STORAGE_ID: '68bcf12d24113a2b16da16d5',
+        STORAGE_ID: '68cf7e69214ab9925ea67037',
         IDLE_POSITIONS: {
-            1: [ { x: 8, y: 24 }, { x: 9, y: 24 } ],
-            2: [ { x: 8, y: 24 }, { x: 9, y: 24 } ],
+            1: [ { x: 5, y: 13 }, { x: 6, y: 13 } ],
+            2: [ { x: 6, y: 13 }, { x: 5, y: 13 } ],
             3: [ { x: 10, y: 18 } ]
         }
     },

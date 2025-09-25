@@ -55,6 +55,11 @@ var roleExtractor = {
             idlePos: { x: 6, y: 9 },
             mineralId: '5bbcb25d40062e4259e93951', // Oxygen
             dropoffId: '68b4bd6f9c4840f48e1ae829', // terminal
+        },
+        'W13N33': {
+            idlePos: { x: 22, y: 4 },
+            mineralId: '5bbcb25e40062e4259e93957', // Oxygen
+            dropoffId: '68ce48fe41ac19b556a39163', // terminal
         }
     },
 

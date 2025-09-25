@@ -49,7 +49,7 @@ const HARVESTER_CONFIG = {
             containerId: '68c119c3b7caff57e8b17fb5',
             idlePos: new RoomPosition(4, 38, 'W13N33')
         },
-        storageId: '68bcf12d24113a2b16da16d5'
+        storageId: '68cf7e69214ab9925ea67037'
     },
 };
 

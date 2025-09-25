@@ -1,6 +1,19 @@
 var terminalLogic = {
     config: {
-        W15N37: {
+        W14N37: { // hydrogen
+            id: '68a0005110ab6307347c0d2e',
+            mode: 'receive',
+            partners: [
+                {
+                    room: 'W13N33',
+                    resources: [RESOURCE_METAL], // only send
+                    chunkSize: 1000,
+                    allowEnergy: false,      // won’t send energy
+                    energyTarget: 200000
+                },
+            ]
+        },
+        W15N37: { // zynthium
             id: '689ec5ee57237e81b20999b7',
             mode: 'receive',
             partners: [
@@ -13,27 +26,27 @@ var terminalLogic = {
                 },
             ]
         },
-        W14N37: {
-            id: '68a0005110ab6307347c0d2e',
-            mode: 'receive',
-            partners: [
-                {
-                    room: 'W13N39',
-                    resources: [RESOURCE_BIOMASS], // only send
-                    chunkSize: 1000,
-                    allowEnergy: false,      // won’t send energy
-                    energyTarget: 15000
-                },
-            ]
-        },
-        W13N39: {
+        W13N39: { // oxygen
             id: '68b4bd6f9c4840f48e1ae829',
             mode: 'receive',
             partners: [
                 {
                     room: 'W15N37',
                     resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_SILICON], // only send
-                    chunkSize: 9000,
+                    chunkSize: 10000,
+                    allowEnergy: false,      // won’t send energy
+                    energyTarget: 55000
+                },
+            ]
+        },
+        W13N33: { // utrium
+            id: '68ce48fe41ac19b556a39163',
+            mode: 'receive',
+            partners: [
+                {
+                    room: 'W15N37',
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE], // only send
+                    chunkSize: 10000,
                     allowEnergy: false,      // won’t send energy
                     energyTarget: 55000
                 },

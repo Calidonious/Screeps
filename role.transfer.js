@@ -77,7 +77,7 @@ const TRANSFER_CONFIG = {
         },
         3: {
             fromId: '68c112b8d6203e685ef64d66', // link ID
-            toId: '68bcf12d24113a2b16da16d5', // storage ID
+            toId: '68cf7e69214ab9925ea67037', // storage ID
             secondLinkId: '', // optional
             position: { x: 9, y: 15 },
             type: 'linkToStorage'

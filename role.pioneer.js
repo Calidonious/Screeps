@@ -38,22 +38,22 @@ var rolePioneer = {
     config: {
         1: { // Builders
             sourceId: "5bbcac249099fc012e635070", // leave blank for closest
-            storageId: "68bcf12d24113a2b16da16d5", // optional: withdraw from storage if defined
+            storageId: "68cf7e69214ab9925ea67037", // optional: withdraw from storage if defined
             idle: { x: 2, y: 17 }
         },
         2: { // Upgraders
             sourceId: "5bbcac249099fc012e635070",
-            storageId: "68bcf12d24113a2b16da16d5", // optional: withdraw from storage if defined
+            storageId: "", // optional: withdraw from storage if defined
             idle: { x: 6, y: 46 }
         },
         3: { // Fillers
             sourceId: "5bbcac249099fc012e63506f",
-            storageId: "68bcf12d24113a2b16da16d5", // optional: withdraw from storage if defined
+            storageId: "68cf7e69214ab9925ea67037", // optional: withdraw from storage if defined
             idle: { x: 5, y: 13 }
         },
         4: { // Harvesters → Storage
             sourceId: "5bbcac249099fc012e635070", // must be defined
-            storageId: "68bcf12d24113a2b16da16d5", // must be defined
+            storageId: "68cf7e69214ab9925ea67037", // must be defined
             idle: { x: 4, y: 37 }
         }
     },
