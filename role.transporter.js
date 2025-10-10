@@ -29,7 +29,15 @@ const ROOM_CONFIGS = {
         IDLE_POSITIONS: {
             1: [ { x: 5, y: 13 }, { x: 6, y: 13 } ],
             2: [ { x: 6, y: 13 }, { x: 5, y: 13 } ],
-            3: [ { x: 10, y: 18 } ]
+            3: [ { x: 11, y: 41 } ]
+        }
+    },
+    'W23N34': {
+        STORAGE_ID: '68df0b30a4f59bce4d154ff6',
+        IDLE_POSITIONS: {
+            1: [ { x: 10, y: 27 }, { x: 10, y: 28 } ],
+            2: [ { x: 10, y: 27 }, { x: 10, y: 28 } ],
+            3: [ { x: 11, y: 41 } ]
         }
     },
 };
@@ -38,7 +46,7 @@ const RENEW_THRESHOLD = 800;
 
 // === Renewal Helpers ===
 function isWounded(creep) { return creep.hits < creep.hitsMax / 2; }
-function shouldStartRenewing(creep) { return creep.ticksToLive < 300 && !creep.memory.renewing; }
+function shouldStartRenewing(creep) { return creep.ticksToLive < 200 && !creep.memory.renewing; }
 function shouldContinueRenewing(creep) { return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD; }
 function startRenewing(creep) { creep.memory.renewing = true; }
 function stopRenewing(creep) { creep.memory.renewing = false; }

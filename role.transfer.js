@@ -83,6 +83,27 @@ const TRANSFER_CONFIG = {
             type: 'linkToStorage'
         }
     },
+    'W23N34': {
+        1: {
+            fromId: '',
+            toId: '',
+            position: { x: 43, y: 17 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 28 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '68e42048a4f59b67f316bd04', // link ID
+            toId: '68df0b30a4f59bce4d154ff6', // storage ID
+            secondLinkId: '', // optional
+            position: { x: 14, y: 40 },
+            type: 'linkToStorage'
+        }
+    }
 };
 
 const RENEW_THRESHOLD = 1300;

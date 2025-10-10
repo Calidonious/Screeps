@@ -70,7 +70,7 @@ var roleCollector = {
                             [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
                             [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
                             [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
-                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
+                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
                             [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
                             [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
                             [RESOURCE_MIST]: { enabled: false, amount: 1000 },

@@ -4,7 +4,7 @@ function isWounded(creep) {
     return creep.hits < creep.hitsMax / 2;
 }
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 150 && !creep.memory.renewing;
+    return creep.ticksToLive < 200 && !creep.memory.renewing;
 }
 function shouldContinueRenewing(creep) {
     return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
@@ -37,24 +37,24 @@ var rolePioneer = {
     // Config per group
     config: {
         1: { // Builders
-            sourceId: "5bbcac249099fc012e635070", // leave blank for closest
-            storageId: "68cf7e69214ab9925ea67037", // optional: withdraw from storage if defined
-            idle: { x: 2, y: 17 }
+            sourceId: "", // leave blank for closest
+            storageId: "68df0b30a4f59bce4d154ff6", // optional: withdraw from storage if defined
+            idle: { x: 10, y: 29 }
         },
         2: { // Upgraders
-            sourceId: "5bbcac249099fc012e635070",
+            sourceId: "",
             storageId: "", // optional: withdraw from storage if defined
-            idle: { x: 6, y: 46 }
+            idle: { x: 10, y: 26 }
         },
         3: { // Fillers
-            sourceId: "5bbcac249099fc012e63506f",
-            storageId: "68cf7e69214ab9925ea67037", // optional: withdraw from storage if defined
-            idle: { x: 5, y: 13 }
+            sourceId: "",
+            storageId: "68df0b30a4f59bce4d154ff6", // optional: withdraw from storage if defined
+            idle: { x: 10, y: 27 }
         },
         4: { // Harvesters → Storage
-            sourceId: "5bbcac249099fc012e635070", // must be defined
-            storageId: "68cf7e69214ab9925ea67037", // must be defined
-            idle: { x: 4, y: 37 }
+            sourceId: "5bbcaba09099fc012e634009", // must be defined
+            storageId: "68df0b30a4f59bce4d154ff6", // must be defined
+            idle: { x: 19, y: 26 }
         }
     },
 
@@ -76,18 +76,31 @@ var rolePioneer = {
         const targetRoom = creep.memory.targetRoom;
         const group = creep.memory.group || 1;
         const groupCfg = this.config[group] || {};
-
+        /*{ room: 'W14N37', x: 12, y: 46 },
+            { room: 'W14N36', x: 23, y: 16 },
+            { room: 'W14N36', x: 30, y: 42 },
+            { room: 'W14N35', x: 31, y: 13 },
+            { room: 'W14N35', x: 23, y: 45 },
+            { room: 'W14N34', x: 2, y: 10 },
+            { room: 'W15N34', x: 45, y: 23 },
+            { room: 'W15N34', x: 10, y: 25 },
+            { room: 'W15N34', x: 2, y: 41 },
+            { room: 'W16N34', x: 44, y: 44 },
+            { room: 'W16N34', x: 14, y: 37 },
+            { room: 'W16N34', x: 2, y: 36 },
+            { room: 'W17N34', x: 2, y: 30 },
+            { room: 'W18N34', x: 2, y: 30 },
+            { room: 'W19N34', x: 2, y: 12 },
+            { room: 'W20N34', x: 38, y: 2 },
+            { room: 'W20N35', x: 2, y: 13 },
+            { room: 'W21N35', x: 4, y: 35 },
+            { room: 'W22N35', x: 34, y: 47 },
+            { room: 'W22N34', x: 2, y: 10 },
+        */
         // Pathing
         const path = [
-            { room: 'W13N37', x: 37, y: 46 },
-            { room: 'W13N36', x: 44, y: 40 },
-            { room: 'W12N36', x: 31, y: 46 },
-            { room: 'W12N35', x: 27, y: 27 },
-            { room: 'W12N35', x: 18, y: 36 },
-            { room: 'W12N34', x: 20, y: 26 },
-            { room: 'W12N34', x: 22, y: 48 },
-            { room: 'W12N33', x: 2, y: 10 },
-            { room: targetRoom, x: 7, y: 17 }
+            { room: 'W23N34', x: 10, y: 28 },
+            { room: targetRoom, x: 23, y: 39 }
         ];
         if (creep.memory.pathIndex === undefined) creep.memory.pathIndex = 0;
         if (creep.room.name !== targetRoom) {
@@ -163,13 +176,13 @@ var rolePioneer = {
         }
 
         const fillTarget = this.findFillTarget(creep, groupCfg);
-        if (fillTarget && creep.transfer(fillTarget, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-            creep.moveTo(fillTarget, { visualizePathStyle: { stroke: '#ffaa00' } });
-            return;
-        }
+        //if (fillTarget && creep.transfer(fillTarget, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        //    creep.moveTo(fillTarget, { visualizePathStyle: { stroke: '#ffaa00' } });
+        //    return;
+        //}
 
         const repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: s => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
+            filter: s => s.hits < 10000 && s.structureType == STRUCTURE_WALL && s.structureType !== STRUCTURE_RAMPART
         });
         if (repairTarget && creep.repair(repairTarget) === ERR_NOT_IN_RANGE) {
             creep.moveTo(repairTarget, { visualizePathStyle: { stroke: '#9999ff' } });

@@ -31,8 +31,8 @@ var terminalLogic = {
             mode: 'receive',
             partners: [
                 {
-                    room: 'W15N37',
-                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_SILICON], // only send
+                    room: 'W14N37',
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_OXYGEN], // only send
                     chunkSize: 10000,
                     allowEnergy: false,      // won’t send energy
                     energyTarget: 55000
@@ -44,9 +44,9 @@ var terminalLogic = {
             mode: 'receive',
             partners: [
                 {
-                    room: 'W15N37',
+                    room: 'W14N37',
                     resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE], // only send
-                    chunkSize: 10000,
+                    chunkSize: 1000,
                     allowEnergy: false,      // won’t send energy
                     energyTarget: 55000
                 },

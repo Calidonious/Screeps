@@ -51,6 +51,19 @@ const HARVESTER_CONFIG = {
         },
         storageId: '68cf7e69214ab9925ea67037'
     },
+    'W23N34': {
+        1: {
+            sourceId: '5bbcaba09099fc012e634009',
+            containerId: '68e41b941f0e522431493b3b',
+            idlePos: new RoomPosition(20, 25, 'W23N34')
+        },
+        2: {
+            sourceId: '5bbcaba09099fc012e63400a',
+            containerId: '',
+            idlePos: new RoomPosition(12, 39, 'W23N34')
+        },
+        storageId: '68df0b30a4f59bce4d154ff6'
+    },
 };
 
 

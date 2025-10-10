@@ -1,20 +1,36 @@
+
+
 var roleClaimer = {
-    // W23N34 X 
-    // W7N24 X
+    // W12N29 L
     
     run: function(creep) {
         const targetRoom = creep.memory.targetRoom;
 
         // Define custom path with waypoints
         const path = [
-            { room: 'W13N37', x: 37, y: 46 },
-            { room: 'W13N36', x: 44, y: 40 },
-            { room: 'W12N36', x: 31, y: 46 },
-            { room: 'W12N35', x: 27, y: 27 },
-            { room: 'W12N35', x: 18, y: 36 },
-            { room: 'W12N34', x: 19, y: 47 },
-            { room: 'W12N33', x: 2, y: 10 },
-            { room: targetRoom, x: 7, y: 17 }
+            { room: 'W15N37', x: 24, y: 48 },
+            { room: 'W15N36', x: 21, y: 8 },
+            { room: 'W15N36', x: 12, y: 13 },
+            { room: 'W15N36', x: 1, y: 15 },
+            { room: 'W16N36', x: 33, y: 34 },
+            { room: 'W16N36', x: 29, y: 44 },
+            { room: 'W16N36', x: 1, y: 45 },
+            { room: 'W17N36', x: 42, y: 37 },
+            { room: 'W17N36', x: 24, y: 2 },
+            { room: 'W17N36', x: 1, y: 7 },
+            { room: 'W18N36', x: 25, y: 17 },
+            { room: 'W18N36', x: 2, y: 20 },
+            { room: 'W19N36', x: 40, y: 18 },
+            { room: 'W19N36', x: 35, y: 33 },
+            { room: 'W19N36', x: 22, y: 39 },
+            { room: 'W19N36', x: 2, y: 36 },
+            { room: 'W20N36', x: 23, y: 47 },
+            { room: 'W20N35', x: 2, y: 10 },
+            { room: 'W21N35', x: 4, y: 35 },
+            { room: 'W22N35', x: 34, y: 47 },
+            { room: 'W22N34', x: 2, y: 10 },
+            { room: 'W23N34', x: 23, y: 40 },
+            { room: targetRoom, x: 23, y: 39 }
         ];
 
         // Step index stored in memory

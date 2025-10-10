@@ -124,7 +124,7 @@ module.exports.loop = function () {
     
         // Find all creeps in range 1 of the spawn that need renewal
         const creepsNeedingRenew = spawn.pos.findInRange(FIND_MY_CREEPS, 1, {
-            filter: c => c.ticksToLive < 1800
+            filter: c => c.ticksToLive < 1400
         });
     
         if (creepsNeedingRenew.length > 0) {

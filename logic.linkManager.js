@@ -29,6 +29,13 @@ const LinkManager = {
                     ''
                 ],
                 receiverLink: '68c112b8d6203e685ef64d66'
+            },
+            'W23N34': {
+                sourceLinks: [
+                    '68e41b941f0e522431493b3b',
+                    ''
+                ],
+                receiverLink: '68e42048a4f59b67f316bd04'
             }
         };
 
