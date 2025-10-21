@@ -73,7 +73,7 @@ var roleCollector = {
                             [RESOURCE_METAL]: { enabled: true, amount: 10000 },
                             [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
                             [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: false, amount: 1000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
                             [RESOURCE_GHODIUM_OXIDE]: { enabled: false, amount: 20000 },
                             [RESOURCE_KEANIUM_OXIDE]: { enabled: false, amount: 20000 },
                             [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: false, amount: 20000 },
@@ -135,8 +135,8 @@ var roleCollector = {
                             [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
                             [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
                             [RESOURCE_METAL]: { enabled: true, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 1000 },
-                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: true, amount: 10000 },
                             [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
                         }
                     }
@@ -189,7 +189,7 @@ var roleCollector = {
                             [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
                             [RESOURCE_METAL]: { enabled: false, amount: 10000 },
                             [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 1000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
                             [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
                         }
                     }
@@ -243,7 +243,7 @@ var roleCollector = {
                             [RESOURCE_METAL]: { enabled: true, amount: 10000 },
                             [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
                             [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 1000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
                         }
                     }
                 ]
@@ -258,6 +258,59 @@ var roleCollector = {
             group4: {
                 idlePos: { x: 5, y: 11 },
                 storageId: '68bcf12d24113a2b16da16d5', // deliver target in home
+                targetRoom: 'W13N40',
+                depositId: '68ce48fe41ac19b556a39163', // optional deposit id, leave blank = pick any
+                useCustomPath: true,
+                customPath: [
+                    { room: 'W13N39', x: 20, y: 18 },
+                    { room: 'W13N40', x: 38, y: 43 },
+                ]
+            }
+        },
+        'W23N34': {
+            group1: {
+                idlePos: { x: 14, y: 42 },
+                dropoffId: '68f682150fb1f8a4d6e87cb1',
+                storageId: '68df0b30a4f59bce4d154ff6',
+                collectEnergy: false,
+                maintainTerminal: true,
+                terminalId: '68f682150fb1f8a4d6e87cb1',
+                terminalEnergyTarget: 15000
+            },
+            group2: {
+                idlePos: { x: 14, y: 42 },
+                sourceId: '68f682150fb1f8a4d6e87cb1',
+                targets: [
+                    {
+                        targetId: '68df0b30a4f59bce4d154ff6',
+                        transfers: {
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 250000 },
+                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
+                            // region based
+                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
+                        }
+                    }
+                ]
+            },
+            group3: {
+                idlePos: { x: 14, y: 42 },
+                storageId: '68df0b30a4f59bce4d154ff6',
+                sources: [
+                    { id: '68f682150fb1f8a4d6e87cb1' }, // terminal
+                ]
+            },
+            group4: {
+                idlePos: { x: 14, y: 42 },
+                storageId: '68f682150fb1f8a4d6e87cb1', // deliver target in home
                 targetRoom: 'W13N40',
                 depositId: '68ce48fe41ac19b556a39163', // optional deposit id, leave blank = pick any
                 useCustomPath: true,

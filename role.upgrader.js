@@ -57,7 +57,7 @@ const upgraderConfig = {
         signText: "Glory to the machine! All my watts for the great coil!"
     },
     "W23N34": {
-        group1Pos: { x: 11, y: 29 },
+        group1Pos: { x: 24, y: 41 },
         group2Pos: { x: 11, y: 29 },
         signText: "Glory to the machine! All my watts for the great coil!"
     }

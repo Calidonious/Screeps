@@ -2,24 +2,24 @@ var terminalLogic = {
     config: {
         W14N37: { // hydrogen
             id: '68a0005110ab6307347c0d2e',
-            mode: 'receive',
+            mode: 'recieve',
             partners: [
                 {
-                    room: 'W13N33',
+                    room: 'W23N34',
                     resources: [RESOURCE_METAL], // only send
-                    chunkSize: 1000,
+                    chunkSize: 9000,
                     allowEnergy: false,      // won’t send energy
-                    energyTarget: 200000
+                    energyTarget: 20000
                 },
             ]
         },
         W15N37: { // zynthium
             id: '689ec5ee57237e81b20999b7',
-            mode: 'receive',
+            mode: 'recieve',
             partners: [
                 {
-                    room: 'W14N37',
-                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,],
+                    room: 'W23N34',
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_LEMERGIUM_OXIDE,RESOURCE_ZYNTHIUM],
                     chunkSize: 10000,
                     allowEnergy: false,        // allow sending energy?
                     energyTarget: 15000       // stop once receiver has >= this much energy
@@ -28,11 +28,11 @@ var terminalLogic = {
         },
         W13N39: { // oxygen
             id: '68b4bd6f9c4840f48e1ae829',
-            mode: 'receive',
+            mode: 'recieve',
             partners: [
                 {
-                    room: 'W14N37',
-                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_OXYGEN], // only send
+                    room: 'W23N34',
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_LEMERGIUM_OXIDE], // only send
                     chunkSize: 10000,
                     allowEnergy: false,      // won’t send energy
                     energyTarget: 55000
@@ -41,12 +41,25 @@ var terminalLogic = {
         },
         W13N33: { // utrium
             id: '68ce48fe41ac19b556a39163',
+            mode: 'recieve',
+            partners: [
+                {
+                    room: 'W23N34',
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_LEMERGIUM_OXIDE,RESOURCE_UTRIUM], // only send
+                    chunkSize: 10000,
+                    allowEnergy: false,      // won’t send energy
+                    energyTarget: 55000
+                },
+            ]
+        },
+        W23N34: { // catalyst
+            id: '68f682150fb1f8a4d6e87cb1',
             mode: 'receive',
             partners: [
                 {
-                    room: 'W14N37',
-                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE], // only send
-                    chunkSize: 1000,
+                    room: 'W15N37',
+                    resources: [RESOURCE_GHODIUM_OXIDE,RESOURCE_KEANIUM_OXIDE,RESOURCE_ZYNTHIUM_HYDRIDE,RESOURCE_UTRIUM_HYDRIDE,RESOURCE_LEMERGIUM_OXIDE], // only send
+                    chunkSize: 10000,
                     allowEnergy: false,      // won’t send energy
                     energyTarget: 55000
                 },

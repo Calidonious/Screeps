@@ -1,7 +1,7 @@
 
 
 var roleClaimer = {
-    // W12N29 L
+    // W14N22 L
     
     run: function(creep) {
         const targetRoom = creep.memory.targetRoom;
