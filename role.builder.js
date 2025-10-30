@@ -23,6 +23,11 @@ const BUILDER_GROUPS = {
         storageId: '68df0b30a4f59bce4d154ff6',
         idlePos: new RoomPosition(16, 39, 'W23N34')
     },
+    5: {
+        sourceId: '', //5bbcac169099fc012e634e30
+        storageId: '68cf7e69214ab9925ea67037',
+        idlePos: new RoomPosition(6, 9, 'W13N33')
+    },
 };
 
 function getGroupConfig(creep) {

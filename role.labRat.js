@@ -40,7 +40,7 @@ function moveToSpawn(creep) {
 }
 
 const labLogic = require('logic.lab');
-var roleLabManager = {
+var roleLabRat = {
     run: function (creep) {
         const roomCfg = labLogic.config[creep.room.name];
         if (!roomCfg) return;
@@ -167,4 +167,4 @@ var roleLabManager = {
     }
 };
 
-module.exports = roleLabManager;
+module.exports = roleLabRat;

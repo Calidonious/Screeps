@@ -57,7 +57,7 @@ const TRANSFER_CONFIG = {
         3: {
             fromId: '68a97df8d0e860dcf5ffcfae', // link ID
             toId: '68a688e6d89b6f1cd82a4e03', // storage ID
-            secondLinkId: '', // optional
+            secondLinkId: '68e4c7be491880065f5cee36', // optional
             position: { x: 22, y: 16 },
             type: 'linkToStorage'
         }
@@ -108,23 +108,15 @@ const TRANSFER_CONFIG = {
 
 const RENEW_THRESHOLD = 1300;
 
-function isWounded(creep) {
-    return creep.hits < creep.hitsMax / 2;
-}
-function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 300 && !creep.memory.renewing;
-}
-function shouldContinueRenewing(creep) {
-    return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD;
-}
-function stopRenewing(creep) {
-    creep.memory.renewing = false;
-}
-function startRenewing(creep) {
-    creep.memory.renewing = true;
-}
+// === Renewal Helpers ===
+function isWounded(creep) { return creep.hits < creep.hitsMax / 2; }
+function shouldStartRenewing(creep) { return creep.ticksToLive < 300 && !creep.memory.renewing; }
+function shouldContinueRenewing(creep) { return creep.memory.renewing && creep.ticksToLive < RENEW_THRESHOLD; }
+function startRenewing(creep) { creep.memory.renewing = true; }
+function stopRenewing(creep) { creep.memory.renewing = false; }
+
 function renewCreep(creep) {
-    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+    var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
     if (spawn) {
         if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
@@ -132,8 +124,9 @@ function renewCreep(creep) {
         creep.say('⏳');
     }
 }
+
 function moveToSpawn(creep) {
-    const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+    var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
     if (spawn) {
         creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
         return true;
@@ -141,8 +134,10 @@ function moveToSpawn(creep) {
     return false;
 }
 
-const roleTransfer = {
-    run(creep) {
+// === ROLE MAIN ===
+var roleTransfer = {
+    run: function (creep) {
+        // --- Renewal ---
         if (isWounded(creep)) {
             creep.say('🏥');
             if (moveToSpawn(creep)) return;
@@ -156,23 +151,18 @@ const roleTransfer = {
             stopRenewing(creep);
         }
 
-        const roomName = creep.memory.homeRoom || creep.room.name;
-        if (!TRANSFER_CONFIG[roomName]) {
-            console.log(`❌ No transfer config for room ${roomName} (${creep.name})`);
-            return;
-        }
+        var roomName = creep.memory.homeRoom || creep.room.name;
+        var group = creep.memory.group;
+        var roomConfig = TRANSFER_CONFIG[roomName];
+        if (!roomConfig) return;
 
-        const group = creep.memory.group;
-        const config = TRANSFER_CONFIG[roomName][group];
-        if (!config) {
-            console.log(`❌ Invalid group ${group} in room ${roomName} for ${creep.name}`);
-            return;
-        }
+        var config = roomConfig[group];
+        if (!config) return;
 
-        const from = Game.getObjectById(config.fromId);
-        const to = Game.getObjectById(config.toId);
-        const secondLink = config.secondLinkId ? Game.getObjectById(config.secondLinkId) : null;
-        const targetPos = new RoomPosition(config.position.x, config.position.y, roomName);
+        var from = Game.getObjectById(config.fromId);
+        var to = Game.getObjectById(config.toId);
+        var secondLink = config.secondLinkId ? Game.getObjectById(config.secondLinkId) : null;
+        var targetPos = new RoomPosition(config.position.x, config.position.y, roomName);
 
         if (!creep.pos.isEqualTo(targetPos)) {
             creep.moveTo(targetPos, { visualizePathStyle: { stroke: '#8888ff' } });
@@ -180,27 +170,50 @@ const roleTransfer = {
             return;
         }
 
-        if (config.type === 'containerToLink' || config.type === 'linkToStorage') {
-            // === MAIN JOB ===
+        // === CONTAINER -> LINK ===
+        if (config.type === 'containerToLink') {
             if (creep.store[RESOURCE_ENERGY] === 0 && from && from.store[RESOURCE_ENERGY] > 0) {
                 creep.withdraw(from, RESOURCE_ENERGY);
                 creep.say('🫴');
-                return;
-            } 
-            if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
                 creep.transfer(to, RESOURCE_ENERGY);
                 creep.say('🫳');
+            }
+            return;
+        }
+
+        // === LINK -> STORAGE & SECOND LINK LOGIC ===
+        if (config.type === 'linkToStorage') {
+            var mainLinkHasEnergy = from && from.store[RESOURCE_ENERGY] > 0;
+            var storageHasEnergy = to && to.store[RESOURCE_ENERGY] > 50000;
+            var secondLinkNeedsEnergy = secondLink && secondLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+
+            // --- PRIMARY JOB: Move energy from main link to storage ---
+            if (mainLinkHasEnergy) {
+                if (creep.store.getFreeCapacity() > 0) {
+                    creep.withdraw(from, RESOURCE_ENERGY);
+                    creep.say('🫴');
+                } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                    creep.transfer(to, RESOURCE_ENERGY);
+                    creep.say('🫳');
+                }
                 return;
             }
 
-            // === SECOND LINK REFILL (only after main job is done) ===
-            if (secondLink) {
-                if (creep.store[RESOURCE_ENERGY] === 0 && to && to.store[RESOURCE_ENERGY] > 5000) {
-                    creep.withdraw(to, RESOURCE_ENERGY); // to = storage in group3
-                } else if (creep.store[RESOURCE_ENERGY] > 0 && secondLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            // --- SECONDARY JOB: Move energy from storage to upgrader link ---
+            if (!mainLinkHasEnergy && secondLink && secondLinkNeedsEnergy && storageHasEnergy) {
+                if (creep.store[RESOURCE_ENERGY] === 0) {
+                    creep.withdraw(to, RESOURCE_ENERGY);
+                    creep.say('🫴2');
+                } else {
                     creep.transfer(secondLink, RESOURCE_ENERGY);
+                    creep.say('🫳2');
                 }
+                return;
             }
+
+            // --- Idle when nothing to do ---
+            creep.say('📭');
         }
     }
 };

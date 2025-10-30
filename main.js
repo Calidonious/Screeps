@@ -1,5 +1,5 @@
 const spawnConfigs = require('config.spawn');
-const LinkManager = require('logic.linkManager');
+const linkLogic = require('logic.link');
 const terminalLogic = require('logic.terminal');
 const towerLogic = require('logic.tower');
 const labLogic = require('logic.lab');
@@ -19,7 +19,7 @@ const roleScout = require('role.scout');
 const roleTransfer = require('role.transfer');
 const roleTransporter = require('role.transporter');
 const roleUpgrader = require('role.upgrader');
-const roleLabManager = require('role.labManager');
+const roleLabRat = require('role.labRat');
 const roleFactoryWorker = require('role.factoryWorker');
 
 
@@ -105,7 +105,7 @@ module.exports.loop = function () {
 
     // Run static logic
     towerLogic.run();
-    LinkManager.run();
+    linkLogic.run();
     terminalLogic.run();
     labLogic.run();
     factoryLogic.run();
@@ -198,7 +198,7 @@ module.exports.loop = function () {
         pioneer: rolePioneer,
         collector: roleCollector,
         extractor: roleExtractor,
-        labManager: roleLabManager,
+        labRat: roleLabRat,
         factoryWorker: roleFactoryWorker,
     };
 

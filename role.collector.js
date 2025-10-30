@@ -62,7 +62,7 @@ var roleCollector = {
                     {
                         targetId: '68c7922490f95e795dc1f70e', // storage
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 50000 },
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
                             [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
                             [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
                             [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
@@ -70,14 +70,33 @@ var roleCollector = {
                             [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
                             [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
                             [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
-                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
+                            // Reginal resources
+                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
                             [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
                             [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
-                            [RESOURCE_GHODIUM_OXIDE]: { enabled: false, amount: 20000 },
-                            [RESOURCE_KEANIUM_OXIDE]: { enabled: false, amount: 20000 },
-                            [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: false, amount: 20000 },
-                            [RESOURCE_UTRIUM_HYDRIDE]: { enabled: false, amount: 20000 },
+                            [RESOURCE_MIST]: { enabled: false, amount: 10000 },
+                            // Power Creep resources
+                            [RESOURCE_POWER]: { enabled: false, amount: 1000 },
+                            [RESOURCE_OPS]: { enabled: false, amount: 1000 },
+                            // Factory Packed resources
+                            [RESOURCE_REDUCTANT]: { enabled: false, amount: 1000 },
+                            [RESOURCE_OXIDANT]: { enabled: false, amount: 1000 },
+                            [RESOURCE_KEANIUM_BAR]: { enabled: false, amount: 1000 },
+                            [RESOURCE_LEMERGIUM_BAR]: { enabled: false, amount: 1000 },
+                            [RESOURCE_UTRIUM_BAR]: { enabled: false, amount: 1000 },
+                            [RESOURCE_PURIFIER]: { enabled: false, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: false, amount: 1000 },
+                            [RESOURCE_GHODIUM_MELT]: { enabled: false, amount: 1000 },
+                            // Factory Products
+                            [RESOURCE_BATTERY]: { enabled: false, amount: 1000 },
+                            [RESOURCE_COMPOSITE]: { enabled: true, amount: 100 },
+                            [RESOURCE_CRYSTAL]: { enabled: true, amount: 100 },
+                            [RESOURCE_LIQUID]: { enabled: true, amount: 100 },
+                            // Ghodium production
+                            [RESOURCE_HYDROXIDE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_LEMERGITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     },
                     {
@@ -91,9 +110,9 @@ var roleCollector = {
             // group 3: Mineral hauler
             group3: {
                 idlePos: { x: 9, y: 23 },
-                storageId: '688d5a468b99246abd95096f', // where to deliver minerals
+                storageId: '68a0005110ab6307347c0d2e', // where to deliver minerals
                 sources: [
-                    { id: '68a0005110ab6307347c0d2e' }, // terminal
+                    { id: '68be30ea4d8f7158203bdc5b' }, // terminal
                     { id: '' }, // example: lab
                 ]
             },
@@ -126,18 +145,41 @@ var roleCollector = {
                     {
                         targetId: '68c3b86cd6203efa74f701eb',
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 140000 },
-                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
-                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
-                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
-                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
-                            [RESOURCE_BIOMASS]: { enabled: true, amount: 10000 },
-                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
+                            [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
+                            // Reginal resources
+                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: false, amount: 10000 },
+                            // Power Creep resources
+                            [RESOURCE_POWER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OPS]: { enabled: true, amount: 1000 },
+                            // Factory Packed resources
+                            [RESOURCE_REDUCTANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OXIDANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_KEANIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_LEMERGIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_PURIFIER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM_MELT]: { enabled: true, amount: 1000 },
+                            // Factory Products
+                            [RESOURCE_BATTERY]: { enabled: true, amount: 1000 },
+                            [RESOURCE_COMPOSITE]: { enabled: true, amount: 100 },
+                            [RESOURCE_CRYSTAL]: { enabled: true, amount: 100 },
+                            [RESOURCE_LIQUID]: { enabled: true, amount: 100 },
+                            // Ghodium production
+                            [RESOURCE_HYDROXIDE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_LEMERGITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     }
                 ]
@@ -179,18 +221,41 @@ var roleCollector = {
                     {
                         targetId: '68a688e6d89b6f1cd82a4e03',
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 400000 },
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
                             [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
                             [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
-                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
-                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
                             [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
                             [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
                             [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
+                            // Reginal resources
                             [RESOURCE_METAL]: { enabled: false, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
                             [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
-                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
+                            [RESOURCE_MIST]: { enabled: false, amount: 10000 },
+                            // Power Creep resources
+                            [RESOURCE_POWER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OPS]: { enabled: true, amount: 1000 },
+                            // Factory Packed resources
+                            [RESOURCE_REDUCTANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OXIDANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_KEANIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_LEMERGIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_PURIFIER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM_MELT]: { enabled: true, amount: 1000 },
+                            // Factory Products
+                            [RESOURCE_BATTERY]: { enabled: true, amount: 1000 },
+                            [RESOURCE_COMPOSITE]: { enabled: true, amount: 100 },
+                            [RESOURCE_CRYSTAL]: { enabled: true, amount: 100 },
+                            [RESOURCE_LIQUID]: { enabled: true, amount: 100 },
+                            // Ghodium production
+                            [RESOURCE_HYDROXIDE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_LEMERGITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     }
                 ]
@@ -231,19 +296,41 @@ var roleCollector = {
                     {
                         targetId: '68cf7e69214ab9925ea67037',
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 250000 },
-                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
-                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
-                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
-                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
-                            // region based
-                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
-                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
-                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
+                            [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
+                            // Reginal resources
+                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: false, amount: 10000 },
+                            // Power Creep resources
+                            [RESOURCE_POWER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OPS]: { enabled: true, amount: 1000 },
+                            // Factory Packed resources
+                            [RESOURCE_REDUCTANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OXIDANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_KEANIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_LEMERGIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_PURIFIER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM_MELT]: { enabled: true, amount: 1000 },
+                            // Factory Products
+                            [RESOURCE_BATTERY]: { enabled: true, amount: 1000 },
+                            [RESOURCE_COMPOSITE]: { enabled: true, amount: 100 },
+                            [RESOURCE_CRYSTAL]: { enabled: true, amount: 100 },
+                            [RESOURCE_LIQUID]: { enabled: true, amount: 100 },
+                            // Ghodium production
+                            [RESOURCE_HYDROXIDE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_LEMERGITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     }
                 ]
@@ -284,19 +371,41 @@ var roleCollector = {
                     {
                         targetId: '68df0b30a4f59bce4d154ff6',
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 250000 },
-                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
-                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
-                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
-                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
-                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
-                            // region based
-                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
-                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
-                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
+                            [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
+                            // Reginal resources
+                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: false, amount: 10000 },
+                            // Power Creep resources
+                            [RESOURCE_POWER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OPS]: { enabled: true, amount: 1000 },
+                            // Factory Packed resources
+                            [RESOURCE_REDUCTANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OXIDANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_KEANIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_LEMERGIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_PURIFIER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM_MELT]: { enabled: true, amount: 1000 },
+                            // Factory Products
+                            [RESOURCE_BATTERY]: { enabled: true, amount: 1000 },
+                            [RESOURCE_COMPOSITE]: { enabled: true, amount: 100 },
+                            [RESOURCE_CRYSTAL]: { enabled: true, amount: 100 },
+                            [RESOURCE_LIQUID]: { enabled: true, amount: 100 },
+                            // Ghodium production
+                            [RESOURCE_HYDROXIDE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_LEMERGITE]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     }
                 ]

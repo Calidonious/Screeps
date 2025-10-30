@@ -84,6 +84,17 @@ const roleFactoryWorker = {
 
         // === Delivering ===
         if (creep.memory.delivering) {
+            // Deliver inputs to factory
+            if (creep.memory.targetInput) {
+                const res = creep.memory.targetInput;
+                if (creep.transfer(factory, res) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(factory, { visualizePathStyle: { stroke: '#ffaa00' } });
+                } else {
+                    creep.memory.targetInput = null; // done
+                }
+                return;
+            }
+            
             // Drop outputs first
             if (Object.keys(creep.store).length > 0) {
                 const res = Object.keys(creep.store)[0];
@@ -96,16 +107,7 @@ const roleFactoryWorker = {
                 return;
             }
 
-            // Deliver inputs to factory
-            if (creep.memory.targetInput) {
-                const res = creep.memory.targetInput;
-                if (creep.transfer(factory, res) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(factory, { visualizePathStyle: { stroke: '#ffaa00' } });
-                } else {
-                    creep.memory.targetInput = null; // done
-                }
-                return;
-            }
+            
 
             // Idle at custom position if defined
             if (fMem.idlePos) {

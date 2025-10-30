@@ -2,10 +2,10 @@ const FACTORY_CONFIG = {
     'W14N37': {
         enabled: false,                 // toggle factory logic
         mode: 'produce',               // "produce" or "unpack"
-        product: RESOURCE_BATTERY,     // what to produce/unpack
+        product: RESOURCE_REDUCTANT,     // what to produce/unpack
         amount: 5000,                  // target stockpile (skip if >= this)
-        inputSource: 'storage',        // "storage" or "terminal"
-        outputTarget: 'storage',
+        inputSource: 'terminal',        // "storage" or "terminal"
+        outputTarget: 'terminal',
         idlePos: { x: 9, y: 27 }
     },
     'W15N37': {

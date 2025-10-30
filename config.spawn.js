@@ -245,7 +245,7 @@ module.exports = {
         min: {
             harvester: 2,
             builder: 0,
-            upgrader: 1,
+            upgrader: 2,
             transporter: 4,
             transfer: 1,
             claimer: 0,
@@ -261,7 +261,7 @@ module.exports = {
         },
         bodies: {
             harvester: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
-            builder: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
+            builder: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
             upgrader: [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
             transporter: [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],
             transfer: [CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],
@@ -350,7 +350,7 @@ module.exports = {
         room: 'W23N34',
         min: {
             harvester: 2,
-            builder: 1,
+            builder: 0,
             upgrader: 2,
             transporter: 4,
             transfer: 1,
