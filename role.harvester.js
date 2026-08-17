@@ -2,15 +2,15 @@ const HARVESTER_CONFIG = {
     'W14N37': {
         1: {
             sourceId: '5bbcac169099fc012e634e30',
-            containerId: '68c4fc9627ec1e6281926636',
-            idlePos: new RoomPosition(28, 29, 'W14N37')
+            containerId: '',
+            idlePos: new RoomPosition(29, 29, 'W14N37')
         },
         2: {
             sourceId: '5bbcac169099fc012e634e2f',
             containerId: '68c5013c3b8b634dce256d71',
             idlePos: new RoomPosition(8, 13, 'W14N37')
         },
-        storageId: '688d5a468b99246abd95096f'
+        storageId: '690588679eec9049d769fa8a'
     },
     'W15N37': {
         1: {
@@ -64,6 +64,32 @@ const HARVESTER_CONFIG = {
         },
         storageId: '68df0b30a4f59bce4d154ff6'
     },
+    'W19N35': {
+        1: {
+            sourceId: '5bbcabd29099fc012e63451e',
+            containerId: '',
+            idlePos: new RoomPosition(41, 8, 'W19N35')
+        },
+        2: {
+            sourceId: '5bbcabd29099fc012e63451f',
+            containerId: '690cf566d9971d602c9e140b',
+            idlePos: new RoomPosition(13, 11, 'W19N35')
+        },
+        storageId: '690a9e2492f8696749731e0a'
+    },
+    'W7N37': {
+        1: {
+            sourceId: '5bbcac7b9099fc012e635886',
+            containerId: '',
+            idlePos: new RoomPosition(40, 39, 'W7N37')
+        },
+        2: {
+            sourceId: '5bbcac7b9099fc012e635884',
+            containerId: '69309b1592103f118c15d5b7',
+            idlePos: new RoomPosition(27, 24, 'W7N37')
+        },
+        storageId: '692d364fd6272870014194d9'
+    },
 };
 
 
@@ -108,18 +134,18 @@ function renewCreep(creep) {
         if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
             creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('⏳');
+        //creep.say('⏳');
     }
 }
 
 function harvestEnergy(creep, source, idlePos) {
     if (source && source.energy > 0) {
-        creep.say('🚜');
+        //creep.say('🚜');
         if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
             creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
         }
     } else {
-        creep.say('👍🏻'); //no energy
+        //creep.say('👍🏻'); //no energy
         if (idlePos) {
             creep.moveTo(idlePos);
         }
@@ -131,7 +157,7 @@ function deliverEnergy(creep, container, storage) {
         if (creep.transfer(container, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(container, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('📦 C');
+        //creep.say('📦 C');
         return;
     }
 
@@ -139,7 +165,7 @@ function deliverEnergy(creep, container, storage) {
         if (creep.transfer(storage, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('📦 S');
+        //creep.say('📦 S');
         return;
     }
 
@@ -159,9 +185,9 @@ function deliverEnergy(creep, container, storage) {
         if (creep.transfer(fallbackTargets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(fallbackTargets[0], { visualizePathStyle: { stroke: '#ffffff' } });
         }
-        creep.say('📦 Fallback');
+        //creep.say('📦 Fallback');
     } else {
-        creep.say('📦 Nowhere');
+        //creep.say('📦 Nowhere');
     }
 }
 

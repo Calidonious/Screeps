@@ -5,7 +5,7 @@ function isWounded(creep) {
 }
 
 function shouldStartRenewing(creep) {
-    return creep.ticksToLive < 300 && !creep.memory.renewing;
+    return creep.ticksToLive < 200 && !creep.memory.renewing;
 }
 
 function shouldContinueRenewing(creep) {
@@ -44,7 +44,7 @@ var roleExtractor = {
         'W14N37': {
             idlePos: { x: 22, y: 26 }, // Where to wait when idle
             mineralId: '5bbcb25640062e4259e93905', // hydrogen
-            dropoffId: '68a0005110ab6307347c0d2e' // Terminal
+            dropoffId: '6906c6621f06eba3035cd79c' // Terminal
         },
         'W15N37': {
             idlePos: { x: 8, y: 29 },
@@ -58,13 +58,23 @@ var roleExtractor = {
         },
         'W13N33': {
             idlePos: { x: 22, y: 4 },
-            mineralId: '5bbcb25e40062e4259e93957', // Oxygen
+            mineralId: '5bbcb25e40062e4259e93957', // Utrium
             dropoffId: '68ce48fe41ac19b556a39163', // terminal
         },
         'W23N34': {
             idlePos: { x: 20, y: 10 },
-            mineralId: '5bbcb20740062e4259e935f6', // Oxygen
+            mineralId: '5bbcb20740062e4259e935f6', // Catalyst
             dropoffId: '68f682150fb1f8a4d6e87cb1', // terminal
+        },
+        'W19N35': {
+            idlePos: { x: 40, y: 21 },
+            mineralId: '5bbcb22a40062e4259e93739', // Keanium
+            dropoffId: '691516a13b615a8d91fd3224', // terminal
+        },
+        'W7N37': {
+            idlePos: { x: 19, y: 7 },
+            mineralId: '5bbcb29340062e4259e93b6f', // Lemergium
+            dropoffId: '6938b57fa6c51780656ff5fe', // terminal
         }
     },
 

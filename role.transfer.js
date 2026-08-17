@@ -13,10 +13,10 @@ const TRANSFER_CONFIG = {
             type: 'containerToLink'
         },
         3: {
-            fromId: '68927e5688ba96a2a57a121c', // link ID
-            toId: '68c7922490f95e795dc1f70e', // storage ID
-            secondLinkId: '', // optional link to refill from storage
-            position: { x: 10, y: 30 },
+            fromId: '690590cb9b5be35de114411d', // link ID
+            toId: '690588679eec9049d769fa8a', // storage ID
+            secondLinkId: '69058ff8cd25efd96c4eaed4', // optional link to refill from storage
+            position: { x: 29, y: 27 },
             type: 'linkToStorage'
         }
     },
@@ -78,7 +78,7 @@ const TRANSFER_CONFIG = {
         3: {
             fromId: '68c112b8d6203e685ef64d66', // link ID
             toId: '68cf7e69214ab9925ea67037', // storage ID
-            secondLinkId: '', // optional
+            secondLinkId: '69007227b5dbcb7825a0ed8a', // optional
             position: { x: 9, y: 15 },
             type: 'linkToStorage'
         }
@@ -99,8 +99,50 @@ const TRANSFER_CONFIG = {
         3: {
             fromId: '68e42048a4f59b67f316bd04', // link ID
             toId: '68df0b30a4f59bce4d154ff6', // storage ID
-            secondLinkId: '', // optional
+            secondLinkId: '6903bb6924113a03b3edec6e', // optional
             position: { x: 14, y: 40 },
+            type: 'linkToStorage'
+        }
+    },
+    'W19N35': {
+        1: {
+            fromId: '',
+            toId: '',
+            position: { x: 43, y: 17 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 28 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '690cbd1599cbb621e2f29541', // link ID
+            toId: '690a9e2492f8696749731e0a', // storage ID
+            secondLinkId: '', // optional
+            position: { x: 39, y: 10 },
+            type: 'linkToStorage'
+        }
+    },
+    'W7N37': {
+        1: {
+            fromId: '',
+            toId: '',
+            position: { x: 43, y: 17 },
+            type: 'containerToLink'
+        },
+        2: {
+            fromId: 'CONTAINER_ID_GROUP_2',
+            toId: 'LINK_ID_GROUP_2',
+            position: { x: 29, y: 28 },
+            type: 'containerToLink'
+        },
+        3: {
+            fromId: '693095348f43a85bc1eaf8d1', // link ID
+            toId: '692d364fd6272870014194d9', // storage ID
+            secondLinkId: '', // optional
+            position: { x: 39, y: 40 },
             type: 'linkToStorage'
         }
     }
@@ -185,17 +227,17 @@ var roleTransfer = {
         // === LINK -> STORAGE & SECOND LINK LOGIC ===
         if (config.type === 'linkToStorage') {
             var mainLinkHasEnergy = from && from.store[RESOURCE_ENERGY] > 0;
-            var storageHasEnergy = to && to.store[RESOURCE_ENERGY] > 50000;
+            var storageHasEnergy = to && to.store[RESOURCE_ENERGY] > 150000;
             var secondLinkNeedsEnergy = secondLink && secondLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
 
             // --- PRIMARY JOB: Move energy from main link to storage ---
             if (mainLinkHasEnergy) {
                 if (creep.store.getFreeCapacity() > 0) {
                     creep.withdraw(from, RESOURCE_ENERGY);
-                    creep.say('🫴');
+                    //creep.say('🫴');
                 } else if (creep.store[RESOURCE_ENERGY] > 0 && to && to.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
                     creep.transfer(to, RESOURCE_ENERGY);
-                    creep.say('🫳');
+                    //creep.say('🫳');
                 }
                 return;
             }
@@ -204,16 +246,16 @@ var roleTransfer = {
             if (!mainLinkHasEnergy && secondLink && secondLinkNeedsEnergy && storageHasEnergy) {
                 if (creep.store[RESOURCE_ENERGY] === 0) {
                     creep.withdraw(to, RESOURCE_ENERGY);
-                    creep.say('🫴2');
+                    //creep.say('🫴2');
                 } else {
                     creep.transfer(secondLink, RESOURCE_ENERGY);
-                    creep.say('🫳2');
+                    //creep.say('🫳2');
                 }
                 return;
             }
 
             // --- Idle when nothing to do ---
-            creep.say('📭');
+            //creep.say('📭');
         }
     }
 };

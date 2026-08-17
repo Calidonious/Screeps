@@ -4,12 +4,12 @@ const LinkLogic = {
         const linkConfigs = {
             'W14N37': {
                 receiverLinks: {
-                    main: '68927e5688ba96a2a57a121c',     // link near storage
-                    secondary: '' // example secondary receiver
+                    main: '690590cb9b5be35de114411d',     // link near storage
+                    secondary: '6905915dc4d223b4486a9c35' // secondary receiver
                 },
                 sourceLinks: [
                     { id: '68c5013c3b8b634dce256d71', target: 'main' },      // source link 1
-                    { id: '68c4fc9627ec1e6281926636', target: 'main' }  // source link 2
+                    { id: '69058ff8cd25efd96c4eaed4', target: 'secondary' }  // source link 2
                 ]
             },
 
@@ -38,21 +38,43 @@ const LinkLogic = {
             'W13N33': {
                 receiverLinks: {
                     main: '68c112b8d6203e685ef64d66',
-                    secondary: ''
+                    secondary: '69007b73caaf571776d75449'
                 },
                 sourceLinks: [
                     { id: '68c119c3b7caff57e8b17fb5', target: 'main' },
-                    { id: '', target: 'secondary' }
+                    { id: '69007227b5dbcb7825a0ed8a', target: 'secondary' }
                 ]
             },
 
             'W23N34': {
                 receiverLinks: {
                     main: '68e42048a4f59b67f316bd04',
-                    secondary: ''
+                    secondary: '693a74329f9eced9f73865d0'
                 },
                 sourceLinks: [
                     { id: '68e41b941f0e522431493b3b', target: 'main' },
+                    { id: '6903bb6924113a03b3edec6e', target: 'secondary' }
+                ]
+            },
+            
+            'W19N35': {
+                receiverLinks: {
+                    main: '690cbd1599cbb621e2f29541',
+                    secondary: ''
+                },
+                sourceLinks: [
+                    { id: '690cf566d9971d602c9e140b', target: 'main' },
+                    { id: '', target: 'secondary' }
+                ]
+            },
+            
+            'W7N37': {
+                receiverLinks: {
+                    main: '693095348f43a85bc1eaf8d1',
+                    secondary: ''
+                },
+                sourceLinks: [
+                    { id: '69309b1592103f118c15d5b7', target: 'main' },
                     { id: '', target: 'secondary' }
                 ]
             }
@@ -76,7 +98,7 @@ const LinkLogic = {
                 if (srcLink.cooldown === 0 && srcLink.energy >= 800) {
                     const result = srcLink.transferEnergy(recvLink);
                     if (result === OK) {
-                        console.log(`🔗 [${roomName}] ${srcLink.id} → ${recvLink.id}`);
+                        //console.log(`🔗 [${roomName}] ${srcLink.id} → ${recvLink.id}`);
                     }
                 }
             });

@@ -46,49 +46,49 @@ var roleCollector = {
         'W14N37': {
             // group 1: Grim Reaper
             group1: {
-                idlePos: { x: 9, y: 23 },
-                dropoffId: '68a0005110ab6307347c0d2e',
+                idlePos: { x: 33, y: 26 },
+                dropoffId: '6906c6621f06eba3035cd79c',
                 storageId: '68c7922490f95e795dc1f70e',
                 collectEnergy: false,
                 maintainTerminal: true,
-                terminalId: '68a0005110ab6307347c0d2e',
+                terminalId: '6906c6621f06eba3035cd79c',
                 terminalEnergyTarget: 15000
             },
             // group 2: Market tender & Lab tech
             group2: {
-                idlePos: { x: 9, y: 23 },
-                sourceId: '68a0005110ab6307347c0d2e', //terminal
+                idlePos: { x: 33, y: 26 },
+                sourceId: '6906c6621f06eba3035cd79c', //terminal
                 targets: [
                     {
-                        targetId: '68c7922490f95e795dc1f70e', // storage
+                        targetId: '690588679eec9049d769fa8a', // storage
                         transfers: {
-                            [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
-                            [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
-                            [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
-                            [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
-                            [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
-                            [RESOURCE_UTRIUM]: { enabled: false, amount: 10000 },
-                            [RESOURCE_CATALYST]: { enabled: false, amount: 10000 },
-                            [RESOURCE_ZYNTHIUM]: { enabled: false, amount: 10000 },
+                            [RESOURCE_ENERGY]: { enabled: false, amount: 750000 },
+                            [RESOURCE_HYDROGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_OXYGEN]: { enabled: true, amount: 10000 },
+                            [RESOURCE_KEANIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_LEMERGIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_UTRIUM]: { enabled: true, amount: 10000 },
+                            [RESOURCE_CATALYST]: { enabled: true, amount: 10000 },
+                            [RESOURCE_ZYNTHIUM]: { enabled: true, amount: 10000 },
                             // Reginal resources
-                            [RESOURCE_METAL]: { enabled: false, amount: 10000 },
-                            [RESOURCE_BIOMASS]: { enabled: false, amount: 1000 },
-                            [RESOURCE_SILICON]: { enabled: false, amount: 10000 },
-                            [RESOURCE_MIST]: { enabled: false, amount: 10000 },
+                            [RESOURCE_METAL]: { enabled: true, amount: 10000 },
+                            [RESOURCE_BIOMASS]: { enabled: true, amount: 1000 },
+                            [RESOURCE_SILICON]: { enabled: true, amount: 10000 },
+                            [RESOURCE_MIST]: { enabled: true, amount: 10000 },
                             // Power Creep resources
-                            [RESOURCE_POWER]: { enabled: false, amount: 1000 },
-                            [RESOURCE_OPS]: { enabled: false, amount: 1000 },
+                            [RESOURCE_POWER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OPS]: { enabled: true, amount: 1000 },
                             // Factory Packed resources
-                            [RESOURCE_REDUCTANT]: { enabled: false, amount: 1000 },
-                            [RESOURCE_OXIDANT]: { enabled: false, amount: 1000 },
-                            [RESOURCE_KEANIUM_BAR]: { enabled: false, amount: 1000 },
-                            [RESOURCE_LEMERGIUM_BAR]: { enabled: false, amount: 1000 },
-                            [RESOURCE_UTRIUM_BAR]: { enabled: false, amount: 1000 },
-                            [RESOURCE_PURIFIER]: { enabled: false, amount: 1000 },
-                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: false, amount: 1000 },
-                            [RESOURCE_GHODIUM_MELT]: { enabled: false, amount: 1000 },
+                            [RESOURCE_REDUCTANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_OXIDANT]: { enabled: true, amount: 1000 },
+                            [RESOURCE_KEANIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_LEMERGIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_UTRIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_PURIFIER]: { enabled: true, amount: 1000 },
+                            [RESOURCE_ZYNTHIUM_BAR]: { enabled: true, amount: 1000 },
+                            [RESOURCE_GHODIUM_MELT]: { enabled: true, amount: 1000 },
                             // Factory Products
-                            [RESOURCE_BATTERY]: { enabled: false, amount: 1000 },
+                            [RESOURCE_BATTERY]: { enabled: true, amount: 1000 },
                             [RESOURCE_COMPOSITE]: { enabled: true, amount: 100 },
                             [RESOURCE_CRYSTAL]: { enabled: true, amount: 100 },
                             [RESOURCE_LIQUID]: { enabled: true, amount: 100 },
@@ -106,40 +106,20 @@ var roleCollector = {
                         }
                     },
                 ]
-            },
-            // group 3: Mineral hauler
-            group3: {
-                idlePos: { x: 9, y: 23 },
-                storageId: '68a0005110ab6307347c0d2e', // where to deliver minerals
-                sources: [
-                    { id: '68be30ea4d8f7158203bdc5b' }, // terminal
-                    { id: '' }, // example: lab
-                ]
-            },
-            group4: {
-                idlePos: { x: 22, y: 3 },
-                storageId: '688d5a468b99246abd95096f', // deliver target in home
-                targetRoom: 'W14N36',
-                depositId: '', // optional deposit id, leave blank = pick any
-                useCustomPath: true,
-                customPath: [
-                    { room: 'W14N37', x: 16, y: 44 },
-                    { room: 'W14N36', x: 20, y: 5 },
-                ]
             }
         },
         'W15N37': {
             group1: {
-                idlePos: { x: 31, y: 47 },
+                idlePos: { x: 30, y: 46 },
                 dropoffId: '689ec5ee57237e81b20999b7',
                 storageId: '68c3b86cd6203efa74f701eb',
                 collectEnergy: false,
                 maintainTerminal: true,
                 terminalId: '689ec5ee57237e81b20999b7',
-                terminalEnergyTarget: 15000
+                terminalEnergyTarget: 5000
             },
             group2: {
-                idlePos: { x: 31, y: 47 },
+                idlePos: { x: 30, y: 46 },
                 sourceId: '689ec5ee57237e81b20999b7',
                 targets: [
                     {
@@ -182,25 +162,6 @@ var roleCollector = {
                             [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     }
-                ]
-            },
-            group3: {
-                idlePos: { x: 39, y: 45 },
-                storageId: '689593f14c3ddc337079485d',
-                sources: [
-                    { id: '689ec5ee57237e81b20999b7' }, // terminal
-                ]
-            },
-            group4: {
-                idlePos: { x: 39, y: 45 },
-                storageId: '689593f14c3ddc337079485d', // deliver target in home
-                targetRoom: 'W13N38',
-                depositId: '', // optional deposit id, leave blank = pick any
-                useCustomPath: true,
-                customPath: [
-                    { room: 'W14N37', x: 25, y: 25 },
-                    { room: 'W14N38', x: 20, y: 20 },
-                    { room: 'W13N38', x: 25, y: 25 }
                 ]
             }
         },
@@ -259,24 +220,6 @@ var roleCollector = {
                         }
                     }
                 ]
-            },
-            group3: {
-                idlePos: { x: 7, y: 24 },
-                storageId: '68a688e6d89b6f1cd82a4e03',
-                sources: [
-                    { id: '68b4bd6f9c4840f48e1ae829' }, // terminal
-                ]
-            },
-            group4: {
-                idlePos: { x: 7, y: 24 },
-                storageId: '68b4bd6f9c4840f48e1ae829', // deliver target in home
-                targetRoom: 'W13N40',
-                depositId: '68c16397285a7f81c0b3e625', // optional deposit id, leave blank = pick any
-                useCustomPath: true,
-                customPath: [
-                    { room: 'W13N39', x: 20, y: 18 },
-                    { room: 'W13N40', x: 38, y: 43 },
-                ]
             }
         },
         'W13N33': {
@@ -333,24 +276,6 @@ var roleCollector = {
                             [RESOURCE_GHODIUM]: { enabled: true, amount: 1000 },
                         }
                     }
-                ]
-            },
-            group3: {
-                idlePos: { x: 5, y: 11 },
-                storageId: '68bcf12d24113a2b16da16d5',
-                sources: [
-                    { id: '68ce48fe41ac19b556a39163' }, // terminal
-                ]
-            },
-            group4: {
-                idlePos: { x: 5, y: 11 },
-                storageId: '68bcf12d24113a2b16da16d5', // deliver target in home
-                targetRoom: 'W13N40',
-                depositId: '68ce48fe41ac19b556a39163', // optional deposit id, leave blank = pick any
-                useCustomPath: true,
-                customPath: [
-                    { room: 'W13N39', x: 20, y: 18 },
-                    { room: 'W13N40', x: 38, y: 43 },
                 ]
             }
         },
@@ -409,24 +334,6 @@ var roleCollector = {
                         }
                     }
                 ]
-            },
-            group3: {
-                idlePos: { x: 14, y: 42 },
-                storageId: '68df0b30a4f59bce4d154ff6',
-                sources: [
-                    { id: '68f682150fb1f8a4d6e87cb1' }, // terminal
-                ]
-            },
-            group4: {
-                idlePos: { x: 14, y: 42 },
-                storageId: '68f682150fb1f8a4d6e87cb1', // deliver target in home
-                targetRoom: 'W13N40',
-                depositId: '68ce48fe41ac19b556a39163', // optional deposit id, leave blank = pick any
-                useCustomPath: true,
-                customPath: [
-                    { room: 'W13N39', x: 20, y: 18 },
-                    { room: 'W13N40', x: 38, y: 43 },
-                ]
             }
         },
     },
@@ -452,10 +359,6 @@ var roleCollector = {
             this.runGroup1(creep, homeRoom, roomCfg.group1 || {});
         } else if (group === 2) {
             this.runGroup2(creep, homeRoom, roomCfg.group2 || {});
-        } else if (group === 3) {
-            this.runGroup3(creep, homeRoom, roomCfg.group3 || {});
-        } else if (group === 4) {
-            this.runGroup4(creep, homeRoom, roomCfg.group4 || {});
         }
     },
     
@@ -582,124 +485,7 @@ var roleCollector = {
 
         this.moveToIdle(creep, homeRoom, cfg);
     },
-
-    // Group 3: Mineral hauler
-    runGroup3: function (creep, homeRoom, cfg) {
-        if (!cfg || !cfg.sources || !cfg.storageId) return;
     
-        const storage = Game.getObjectById(cfg.storageId);
-        if (!storage) return;
-    
-        // 1. If full → deliver immediately
-        if (_.sum(creep.store) === creep.store.getCapacity()) {
-            this.deliverToStorage(creep, storage);
-            return;
-        }
-    
-        // 2. Look for minerals in any configured sources
-        for (let s of cfg.sources) {
-            const source = Game.getObjectById(s.id);
-            if (!source) continue;
-    
-            const minerals = Object.keys(source.store).filter(res => res !== RESOURCE_ENERGY && source.store[res] > 0);
-            if (minerals.length > 0) {
-                const res = minerals[0];
-                if (creep.withdraw(source, res) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ffaa00' } });
-                }
-                return; // stop after targeting one mineral source
-            }
-        }
-    
-        // 3. No minerals found in sources
-        if (_.sum(creep.store) > 0) {
-            // Deliver any partial load
-            this.deliverToStorage(creep, storage);
-        } else {
-            // 4. Nothing to do → idle
-            this.moveToIdle(creep, homeRoom, cfg);
-        }
-    },
-    
-    // === Group 4: Deposit / Power bank collector ===
-    runGroup4: function(creep, homeRoom, cfg) {
-        if (!cfg || !cfg.storageId || !cfg.targetRoom) return;
-    
-        // Initialize state
-        if (!creep.memory.state) {
-            creep.memory.state = "renewing";
-        }
-    
-        const storage = Game.getObjectById(cfg.storageId);
-    
-        // --- RENEWING ---
-        if (creep.memory.state === "renewing") {
-            const spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-            if (spawn) {
-                if (creep.ticksToLive < RENEW_THRESHOLD) {
-                    if (spawn.renewCreep(creep) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(spawn, { visualizePathStyle: { stroke: '#ffffff' } });
-                    }
-                    creep.say("🔋");
-                    return;
-                } else {
-                    creep.memory.state = "collecting";
-                    creep.say("🫴");
-                }
-            }
-        }
-    
-        // --- COLLECTING ---
-        if (creep.memory.state === "collecting") {
-            if (_.sum(creep.store) === creep.store.getCapacity() || creep.ticksToLive < 300) {
-                creep.memory.state = "delivering";
-                creep.say("📦");
-            } else {
-                if (creep.room.name !== cfg.targetRoom) {
-                    // go to target room
-                    if (cfg.useCustomPath && cfg.customPath.length > 0) {
-                        this.followPath(creep, cfg.customPath);
-                    } else {
-                        creep.moveTo(new RoomPosition(25, 25, cfg.targetRoom));
-                    }
-                } else {
-                    // at target room → look for deposit
-                    let target = cfg.depositId ? Game.getObjectById(cfg.depositId) : creep.pos.findClosestByPath(FIND_DEPOSITS);
-                    if (target && creep.harvest(target) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } });
-                    } else if (!target) {
-                        this.moveToIdle(creep, creep.room.name, cfg);
-                    }
-                }
-            }
-            return;
-        }
-    
-        // --- DELIVERING ---
-        if (creep.memory.state === "delivering") {
-            if (_.sum(creep.store) === 0) {
-                creep.memory.state = "renewing"; // restart cycle
-                creep.say("🔋");
-            } else {
-                if (creep.room.name !== homeRoom) {
-                    if (cfg.useCustomPath && cfg.customPath.length > 0) {
-                        this.followPath(creep, cfg.customPath.slice().reverse());
-                    } else {
-                        creep.moveTo(new RoomPosition(25, 25, homeRoom));
-                    }
-                } else if (storage) {
-                    for (const res in creep.store) {
-                        if (creep.transfer(storage, res) === ERR_NOT_IN_RANGE) {
-                            creep.moveTo(storage, { visualizePathStyle: { stroke: '#ffffff' } });
-                        }
-                    }
-                }
-            }
-            return;
-        }
-    },
-
-
     
     // helper for path following
     followPath: function (creep, path) {

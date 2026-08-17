@@ -130,4 +130,11 @@ const towerLogic = {
     }
 };
 
+/*Game.market.createOrder({
+    type: ORDER_SELL,
+    resourceType: RESOURCE_HYDROGEN,
+    price: 201.0,
+    totalAmount: 100000,
+    roomName: "W14N37"
+});*/
 module.exports = towerLogic;

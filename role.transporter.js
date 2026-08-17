@@ -1,7 +1,7 @@
 // === Per-Room Configuration ===
 const ROOM_CONFIGS = {
     'W14N37': {
-        STORAGE_ID: '68c7922490f95e795dc1f70e',
+        STORAGE_ID: '690588679eec9049d769fa8a',
         IDLE_POSITIONS: {
             1: [ { x: 8, y: 29 }, { x: 9, y: 29 }, { x: 10, y: 29 } ],
             2: [ { x: 14, y: 36 }, { x: 15, y: 36 } ],
@@ -38,6 +38,22 @@ const ROOM_CONFIGS = {
             1: [ { x: 10, y: 27 }, { x: 10, y: 28 } ],
             2: [ { x: 10, y: 27 }, { x: 10, y: 28 } ],
             3: [ { x: 11, y: 41 } ]
+        }
+    },
+    'W19N35': {
+        STORAGE_ID: '690a9e2492f8696749731e0a',
+        IDLE_POSITIONS: {
+            1: [ { x: 36, y: 8 }, { x: 36, y: 9 } ],
+            2: [ { x: 36, y: 8 }, { x: 36, y: 9 } ],
+            3: [ { x: 32, y: 13 }, { x: 31, y: 12 } ]
+        }
+    },
+    'W7N37': {
+        STORAGE_ID: '692d364fd6272870014194d9',
+        IDLE_POSITIONS: {
+            1: [ { x: 31, y: 23 }, { x: 31, y: 24 } ],
+            2: [ { x: 31, y: 23 }, { x: 31, y: 24 } ],
+            3: [ { x: 38, y: 41 }, { x: 39, y: 42 } ]
         }
     },
 };
@@ -196,7 +212,7 @@ const roleTransporter = {
             }
 
             // --- Idle ---
-            creep.say('📭');
+            //creep.say('📭');
             moveToIdle(creep, roomName, roomConfig);
             
 

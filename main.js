@@ -1,222 +1,163 @@
-const spawnConfigs = require('config.spawn');
-const linkLogic = require('logic.link');
-const terminalLogic = require('logic.terminal');
-const towerLogic = require('logic.tower');
-const labLogic = require('logic.lab');
-const factoryLogic = require('logic.factory');
+var spawnConfigs = require('config.spawn');
+var linkLogic = require('logic.link');
+var terminalLogic = require('logic.terminal');
+var towerLogic = require('logic.tower');
+var labLogic = require('logic.lab');
+var factoryLogic = require('logic.factory');
 
-
-const roleBuilder = require('role.builder');
-const roleClaimer = require('role.claimer');
-const roleCollector = require('role.collector');
-const roleDefender = require('role.defender');
-const roleExtractor = require('role.extractor');
-const roleHarasser = require('role.harasser');
-const roleHarvester = require('role.harvester');
-const roleMedic = require('role.medic');
-const rolePioneer = require('role.pioneer');
-const roleScout = require('role.scout');
-const roleTransfer = require('role.transfer');
-const roleTransporter = require('role.transporter');
-const roleUpgrader = require('role.upgrader');
-const roleLabRat = require('role.labRat');
-const roleFactoryWorker = require('role.factoryWorker');
-
-
-// === Energy Monitor === showEnergyRates(); to show the results
-// Updates once per tick, tracks net energy/hour for each room with storage.
-function updateEnergyStats() {
-    if (!Memory.energyStats) Memory.energyStats = {};
-
-    for (const roomName in Game.rooms) {
-        const room = Game.rooms[roomName];
-        if (!room.storage) continue;
-
-        const stored = room.storage.store[RESOURCE_ENERGY];
-        let stats = Memory.energyStats[roomName];
-
-        if (!stats) {
-            stats = Memory.energyStats[roomName] = {
-                last: stored,
-                totalDelta: 0,
-                ticks: 0
-            };
-        }
-
-        const delta = stored - stats.last;
-        stats.totalDelta += delta;
-        stats.ticks++;
-        stats.last = stored;
-
-        // Keep memory small: only store recent history
-        if (stats.ticks > 5000) { // ~5k ticks ≈ 8 hours real time
-            stats.totalDelta = 0;
-            stats.ticks = 0;
-        }
-    }
-}
-
-// Console helper to check average energy/hour
-global.showEnergyRates = function() {
-    if (!Memory.energyStats) return "No energy stats yet.";
-    const lines = [];
-    for (const roomName in Memory.energyStats) {
-        const stats = Memory.energyStats[roomName];
-        if (!stats.ticks) continue;
-        const perHour = (stats.totalDelta / stats.ticks) * 3600;
-        lines.push(`${roomName}: ${perHour.toFixed(2)} energy/hour`);
-    }
-    return lines.join("\n");
+var roleModules = {
+    harvester: require('role.harvester'),
+    builder: require('role.builder'),
+    upgrader: require('role.upgrader'),
+    defender: require('role.defender'),
+    scout: require('role.scout'),
+    transporter: require('role.transporter'),
+    transfer: require('role.transfer'),
+    claimer: require('role.claimer'),
+    harasser: require('role.harasser'),
+    medic: require('role.medic'),
+    pioneer: require('role.pioneer'),
+    collector: require('role.collector'),
+    extractor: require('role.extractor'),
+    labRat: require('role.labRat'),
+    factoryWorker: require('role.factoryWorker'),
 };
 
-module.exports.loop = function () {
-    const funnyNames = [
-        'Killbot 3000','Stabby Boi','Sneaky Steve','MurderCube','AngryToast','Zap Lad',
-        'Blood Exanguination Bot','MeatShield','Boomba Roomba','Sir Slashalot','Pain Distributor',
-        'Yeeter','Hostile Hugger','Clanka','Clanker','Bob The Atom Smasher', 'Emancipator bot', 
-        'T-2000', 'Optimus', 'Astro', 'Awsomo', 'C-3PO', 'Darlik', 'CogsWorth', 'Hal', 'Jimmy',
-        'Officer Stabbington',
-    ];
+var funnyNames = [
+    'Killbot 3000','Stabby Boi','Sneaky Steve','MurderCube','AngryToast','Zap Lad',
+    'Boomba Roomba','Sir Slashalot','Clanker','Bob The Atom Smasher','T-2000','Optimus'
+];
 
-    const getUniqueCreepName = (role) => {
-        const base = `${role} ${funnyNames[Math.floor(Math.random() * funnyNames.length)]}`;
-        let name = base, i = 1;
-        while (Game.creeps[name]) name = `${base} ${i++}`;
-        return name;
-    };
-
-    const defenseRooms = Object.values(spawnConfigs).map(cfg => cfg.room);
-    const getHostiles = roomName => {
-        if (Game.rooms[roomName]) {
-            return Game.rooms[roomName].find(FIND_HOSTILE_CREEPS) || [];
-        }
-        return [];
-    };
-
-    // Utility to count creeps by role AND homeRoom
-    function countCreepsByRoomAndRole(roomName, role) {
-        return _.sum(Game.creeps, c =>
-            c && c.memory && c.memory.role === role && c.memory.homeRoom === roomName ? 1 : 0
-        );
+function getUniqueCreepName(role) {
+    var base = role + ' ' + funnyNames[Math.floor(Math.random() * funnyNames.length)];
+    var name = base;
+    var i = 1;
+    while (Game.creeps[name]) {
+        name = base + ' ' + i++;
     }
-    
-    // update energy tracking
-    updateEnergyStats();
+    return name;
+}
 
-    // Run static logic
+// Cache hostiles every 10 ticks
+if (!Memory._cacheTick) Memory._cacheTick = 0;
+if (Game.time % 10 === 0) {
+    Memory._cachedHostiles = {};
+    for (var sName in spawnConfigs) {
+        var cfg = spawnConfigs[sName];
+        var room = Game.rooms[cfg.room];
+        if (room) {
+            var hostiles = room.find(FIND_HOSTILE_CREEPS);
+            Memory._cachedHostiles[cfg.room] = hostiles.length;
+        }
+    }
+    Memory._cacheTick = Game.time;
+}
+
+module.exports.loop = function () {
+    var creeps = Game.creeps;
+    var spawns = Game.spawns;
+
+    // === Memory cleanup every 50 ticks ===
+    if (Game.time % 50 === 0) {
+        for (var name in Memory.creeps) {
+            if (!creeps[name]) delete Memory.creeps[name];
+        }
+    }
+
+    // === Static logic ===
     towerLogic.run();
     linkLogic.run();
     terminalLogic.run();
     labLogic.run();
     factoryLogic.run();
 
-    // Memory cleanup
-    for (let name in Memory.creeps) {
-        if (!Game.creeps[name]) {
-            delete Memory.creeps[name];
-        }
-    }
-
-    // Auto-renew creeps (lowest TTL first per spawn)
-    for (const spawnName in Game.spawns) {
-        const spawn = Game.spawns[spawnName];
-        if (!spawn) continue;
-    
-        // Find all creeps in range 1 of the spawn that need renewal
-        const creepsNeedingRenew = spawn.pos.findInRange(FIND_MY_CREEPS, 1, {
-            filter: c => c.ticksToLive < 1400
-        });
-    
-        if (creepsNeedingRenew.length > 0) {
-            // Pick the one with the lowest TTL
-            const lowest = _.min(creepsNeedingRenew, c => c.ticksToLive);
-            if (lowest && lowest !== Infinity) {
-                spawn.renewCreep(lowest);
-                spawn.room.visual.text(`🔋 Renewing ${lowest.name}`, spawn.pos.x + 1, spawn.pos.y, { align: 'left', opacity: 0.7 });
+    // === Auto-renew creeps every 10 ticks ===
+    if (Game.time % 1 === 0) {
+        for (var spawnName in spawns) {
+            var spawn = spawns[spawnName];
+            if (!spawn) continue;
+            var renewTargets = spawn.pos.findInRange(FIND_MY_CREEPS, 1, {
+                filter: function(c) { return c.ticksToLive < 1400; }
+            });
+            if (renewTargets.length) {
+                var lowest = _.min(renewTargets, 'ticksToLive');
+                if (lowest !== Infinity) spawn.renewCreep(lowest);
             }
         }
     }
 
+    // === Adjust defenders/medics every 20 ticks ===
+    if (Game.time % 20 === 0) {
+        for (var cfgName in spawnConfigs) {
+            var cfg = spawnConfigs[cfgName];
+            var hostiles = (Memory._cachedHostiles && Memory._cachedHostiles[cfg.room]) || 0;
 
-    // Auto-adjust defender/medic needs per room
-    Object.values(spawnConfigs).forEach(cfg => {
-        const hostiles = getHostiles(cfg.room);
-    
-        let roomDefenders = 0;
-        let roomMedics = 0;
-    
-        if (hostiles.length > 0) {
-            console.log(`[ALERT] Room ${cfg.room} under attack! Hostiles: ${hostiles.length}`);
-            
-            if (hostiles.length >= 2) roomDefenders = Math.min(1, hostiles.length);
-            if (hostiles.length >= 4) roomMedics = Math.min(1, Math.ceil(hostiles.length / 2));
+            cfg.min.defender = hostiles >= 3 ? Math.min(1, hostiles) : 0;
+            cfg.min.medic = hostiles >= 4 ? Math.min(1, Math.ceil(hostiles / 2)) : 0;
+
+            if (hostiles > 0) {
+                console.log('[ALERT] ' + cfg.room + ' under attack: ' + hostiles + ' hostiles.');
+            }
         }
-    
-        cfg.min.defender = roomDefenders;
-        cfg.min.medic = roomMedics;
-    });
+    }
 
-    // Spawn creeps per room based on min per role
-    const trySpawn = (spawn, body, role, memory = {}) => {
-        return spawn.spawnCreep(body, getUniqueCreepName(_.capitalize(role)), { memory: { role, ...memory } }) === OK;
-    };
+    // === Spawn creeps (optimized) ===
+    for (var spawnName in spawnConfigs) {
+        var config = spawnConfigs[spawnName];
+        var spawn = spawns[spawnName];
+        if (!spawn || spawn.spawning) continue;
 
-    Object.entries(spawnConfigs).forEach(([spawnName, config]) => {
-        const spawn = Game.spawns[spawnName];
-        if (!spawn || spawn.spawning) return;
+        var min = config.min;
+        var bodies = config.bodies;
+        var memory = config.memory;
+        var room = config.room;
 
-        const { min, bodies, memory, room } = config;
+        // Group creeps by role per room once
+        var roomCreeps = _.groupBy(_.filter(creeps, function(c) {
+            return c.memory.homeRoom === room;
+        }), function(c) {
+            return c.memory.role;
+        });
 
-        for (const role of Object.keys(min)) {
-            if (countCreepsByRoomAndRole(room, role) < min[role]) {
-                const mem = Object.assign({}, memory[role] || {});
+        for (var role in min) {
+            var minCount = min[role];
+            var current = (roomCreeps[role] || []).length;
+            if (current < minCount) {
+                var mem = {};
+                if (memory[role]) {
+                    for (var key in memory[role]) {
+                        mem[key] = memory[role][key];
+                    }
+                }
                 mem.homeRoom = room;
 
-                // Assign medic to follow defender
-                if (role === 'medic' && min[role] > 0 && mem.follow === undefined) {
-                    const defenders = _.filter(Game.creeps, c => c.memory.role === 'defender' && c.memory.homeRoom === room);
-                    if (defenders.length) mem.follow = defenders[0].name;
+                // assign medic follow
+                if (role === 'medic' && !mem.follow && roomCreeps.defender && roomCreeps.defender.length) {
+                    mem.follow = roomCreeps.defender[0].name;
                 }
 
-                if (trySpawn(spawn, bodies[role], role, mem)) break;
+                var result = spawn.spawnCreep(
+                    bodies[role],
+                    getUniqueCreepName(role.charAt(0).toUpperCase() + role.slice(1)),
+                    { memory: _.merge({ role: role }, mem) }
+                );
+
+                if (result === OK) break; // spawn one creep max per tick
             }
         }
-    });
+    }
 
-    // Role execution map
-    const roleModules = {
-        harvester: roleHarvester,
-        builder: roleBuilder,
-        upgrader: roleUpgrader,
-        defender: roleDefender,
-        scout: roleScout,
-        transporter: roleTransporter,
-        transfer: roleTransfer,
-        claimer: roleClaimer,
-        harasser: roleHarasser,
-        medic: roleMedic,
-        pioneer: rolePioneer,
-        collector: roleCollector,
-        extractor: roleExtractor,
-        labRat: roleLabRat,
-        factoryWorker: roleFactoryWorker,
-    };
+    // === Run role logic ===
+    for (var name in creeps) {
+        var creep = creeps[name];
+        if (!creep.memory || !creep.memory.role) continue;
 
-    // Run all creeps by role
-    for (const name in Game.creeps) {
-        const creep = Game.creeps[name];
-        if (!creep || !creep.memory || !creep.memory.role) {
-            continue; // skip creeps without memory/role
-        }
-
-        const role = creep.memory.role;
-        const roleModule = roleModules[role];
-
-        if (roleModule && roleModule.run) {
+        var mod = roleModules[creep.memory.role];
+        if (mod && mod.run) {
             try {
-                roleModule.run(creep);
+                mod.run(creep);
             } catch (err) {
-                console.log(`[Error] ${creep.name} (${role}): ${err}`);
+                console.log('[Error] ' + creep.name + ': ' + err);
             }
         }
     }

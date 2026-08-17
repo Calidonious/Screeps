@@ -1,13 +1,13 @@
 var terminalLogic = {
     config: {
         W14N37: {
-            id: '68a0005110ab6307347c0d2e',
-            mode: 'recieve', // or 'receive'
+            id: '6906c6621f06eba3035cd79c',
+            mode: 'recieve', // send or 'receive'
             partners: [
                 {
-                    room: 'W23N34',
+                    room: 'W15N37',
                     sendResources: {
-                        [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
+                        [RESOURCE_ENERGY]: { enabled: true, amount: 200000 },
                         [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
@@ -42,8 +42,14 @@ var terminalLogic = {
                         [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: false, amount: 1000 },
                         [RESOURCE_UTRIUM_LEMERGITE]: { enabled: false, amount: 1000 },
                         [RESOURCE_GHODIUM]: { enabled: false, amount: 1000 },
+                        // Body drops
+                        [RESOURCE_GHODIUM_OXIDE]: { enabled: false, amount: 70000 },
+                        [RESOURCE_KEANIUM_OXIDE]: { enabled: false, amount: 50000 },
+                        [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: false, amount: 50000 },
+                        [RESOURCE_UTRIUM_HYDRIDE]: { enabled: false, amount: 50000 },
+                        [RESOURCE_LEMERGIUM_OXIDE]: { enabled: false, amount: 50000 },
                     },
-                    chunkSize: 10000,
+                    chunkSize: 100000,
                     allowEnergy: false,
                     energyTarget: 50000
                 },
@@ -54,10 +60,10 @@ var terminalLogic = {
             mode: 'recieve', // or 'receive'
             partners: [
                 {
-                    room: 'W15N37',
+                    room: 'W14N37',
                     sendResources: {
                         [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
-                        [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
+                        [RESOURCE_HYDROGEN]: { enabled: true, amount: 150000 },
                         [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
                         [RESOURCE_LEMERGIUM]: { enabled: false, amount: 10000 },
@@ -91,8 +97,14 @@ var terminalLogic = {
                         [RESOURCE_ZYNTHIUM_KEANITE]: { enabled: false, amount: 1000 },
                         [RESOURCE_UTRIUM_LEMERGITE]: { enabled: false, amount: 1000 },
                         [RESOURCE_GHODIUM]: { enabled: false, amount: 1000 },
+                        // Body Drops
+                        [RESOURCE_GHODIUM_OXIDE]: { enabled: true, amount: 70000 },
+                        [RESOURCE_KEANIUM_OXIDE]: { enabled: true, amount: 50000 },
+                        [RESOURCE_ZYNTHIUM_HYDRIDE]: { enabled: true, amount: 50000 },
+                        [RESOURCE_UTRIUM_HYDRIDE]: { enabled: true, amount: 50000 },
+                        [RESOURCE_LEMERGIUM_OXIDE]: { enabled: true, amount: 50000 },
                     },
-                    chunkSize: 10000,
+                    chunkSize: 20000,
                     allowEnergy: false,
                     energyTarget: 50000
                 },
@@ -100,12 +112,12 @@ var terminalLogic = {
         },
         W13N33: {
             id: '68ce48fe41ac19b556a39163',
-            mode: 'recieve', // or 'receive'
+            mode: 'receive', // or 'receive'
             partners: [
                 {
                     room: 'W15N37',
                     sendResources: {
-                        [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
+                        [RESOURCE_ENERGY]: { enabled: true, amount: 220000 },
                         [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
@@ -143,7 +155,7 @@ var terminalLogic = {
                     },
                     chunkSize: 10000,
                     allowEnergy: false,
-                    energyTarget: 50000
+                    energyTarget: 100000
                 },
             ]
         },
@@ -201,9 +213,9 @@ var terminalLogic = {
             mode: 'recieve', // or 'receive'
             partners: [
                 {
-                    room: 'W15N37',
+                    room: 'W14N37',
                     sendResources: {
-                        [RESOURCE_ENERGY]: { enabled: false, amount: 420000 },
+                        [RESOURCE_ENERGY]: { enabled: true, amount: 620000 },
                         [RESOURCE_HYDROGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_OXYGEN]: { enabled: false, amount: 10000 },
                         [RESOURCE_KEANIUM]: { enabled: false, amount: 10000 },
@@ -239,7 +251,7 @@ var terminalLogic = {
                         [RESOURCE_UTRIUM_LEMERGITE]: { enabled: false, amount: 1000 },
                         [RESOURCE_GHODIUM]: { enabled: false, amount: 1000 },
                     },
-                    chunkSize: 10000,
+                    chunkSize: 80000,
                     allowEnergy: false,
                     energyTarget: 50000
                 },
